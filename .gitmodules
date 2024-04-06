@@ -1,7 +1,7 @@
 [submodule "scop/vendor/glfw"]
-	path = scop/vendor/glfw/glfw
+	path = scop/vendor/glfw
 	url = https://github.com/glfw/glfw.git
 	branch = 3.3-stable
 [submodule "scop/vendor/glad"]
-	path = scop/vendor/glad/glad
+	path = scop/vendor/glad
 	url = https://github.com/dVaGaymer/glad.git
