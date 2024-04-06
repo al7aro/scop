@@ -28,7 +28,7 @@ void init(GLFWwindow* window)
 
 	GLuint program;
 	/* TODO: Study how to make the path more portable*/
-	program = shader_create("scop\\src\\shaders\\main.vert", "scop\\src\\shaders\\main.frag");
+	program = shader_create("scop\\shaders\\main.vert", "scop\\shaders\\main.frag");
 	glUseProgram(program);
 }
 
