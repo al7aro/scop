@@ -1,0 +1,7 @@
+[submodule "ProjectName/vendor/glfw"]
+	path = ProjectName/vendor/glfw
+	url = https://github.com/glfw/glfw.git
+	branch = 3.3-stable
+[submodule "ProjectName/vendor/glad"]
+	path = ProjectName/vendor/glad
+	url = https://github.com/dVaGaymer/glad.git
