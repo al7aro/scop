@@ -30,8 +30,8 @@ file(GLOB_RECURSE source_files
 )
 
 file(GLOB_RECURSE shader_files
-    "${PROJECT_DIR}/src/shaders/*.vert"
-    "${PROJECT_DIR}/src/shaders/*.frag"
+    "${PROJECT_DIR}/shaders/*.vert"
+    "${PROJECT_DIR}/shaders/*.frag"
 )
 source_group("Shaders" FILES ${shader_files})
 
