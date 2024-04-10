@@ -3,7 +3,9 @@
 
 #include <stdio.h>
 #include <Windows.h>
+
 #include "shader_reader.h"
+#include "scop_math.h"
 
 GLuint VAO;
 GLuint VBO;
