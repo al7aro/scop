@@ -25,13 +25,16 @@ find_package(OpenGL REQUIRED)
 
 # Project Sources
 file(GLOB_RECURSE source_files
-    "${PROJECT_DIR}/src/*.c"
-    "${PROJECT_DIR}/src/include/*.h"
+        "${PROJECT_DIR}/src/*.c"
+        "${PROJECT_DIR}/src/include/*.h"
+
+        "${PROJECT_DIR}/src/math/*.c"
+        "${PROJECT_DIR}/src/math/*.h"
 )
 
 file(GLOB_RECURSE shader_files
-    "${PROJECT_DIR}/src/shaders/*.vert"
-    "${PROJECT_DIR}/src/shaders/*.frag"
+    "${PROJECT_DIR}/shaders/*.vert"
+    "${PROJECT_DIR}/shaders/*.frag"
 )
 source_group("Shaders" FILES ${shader_files})
 
@@ -51,6 +54,7 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/include")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/math/")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLFW_DIR}/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLAD_DIR}/include")
