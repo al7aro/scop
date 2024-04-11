@@ -2,6 +2,7 @@
 #define SCOP_MATH_H
 
 #include <stdio.h>
+#include <math.h>
 
 /*
  * TODO:    MAX_ITER    (to prevent infinite loops)
@@ -55,6 +56,10 @@ void mat4_get_zero(mat4_t ret);
 void mat2_get_identity(mat2_t ret);
 void mat3_get_identity(mat3_t ret);
 void mat4_get_identity(mat4_t ret);
+
+void mat4_get_rotX(float angle, mat4_t ret);
+void mat4_get_rotY(float angle, mat4_t ret);
+void mat4_get_rotZ(float angle, mat4_t ret);
 
 void mat4_get_proj_ortho(float L, float R, float B, float T, float N, float F, mat4_t ret);
 
