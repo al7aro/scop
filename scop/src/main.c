@@ -10,14 +10,14 @@
 
 #include <stdio.h>
 
-#include "shader_reader.h"
+#include "shader.h"
 #include "scop_math.h"
 
 GLuint VAO;
 GLuint VBO;
 GLuint EBO;
-GLuint program;
 float angle = 0;
+shader_t sh;
 
 float triangle[9] =
 {
@@ -59,19 +59,18 @@ void init(GLFWwindow* window)
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
-	program = shader_create("..\\..\\..\\scop\\shaders\\main460.vert", "..\\..\\..\\scop\\shaders\\main460.frag");
+	shader_create(&sh, "..\\..\\..\\scop\\shaders\\main460.vert", "..\\..\\..\\scop\\shaders\\main460.frag");
 #endif
 #ifdef __APPLE__
-	program = shader_create("../../scop/shaders/main410.vert", "../../scop/shaders/main410.frag");
+	shader_create(&sh, "../../scop/shaders/main410.vert", "../../scop/shaders/main410.frag");
 #endif
-	glUseProgram(program);
+	shader_use(&sh);
 
 	/* Some simple test math */
 	mat4_t ortho;
 	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 1, ortho);
 	mat4_print(ortho);
-	GLuint proj_loc = glGetUniformLocation(program, "proj");
-	glUniformMatrix4fv(proj_loc, 1, GL_FALSE, ortho);
+	shader_set_mat4(&sh, "proj", ortho);
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -83,8 +82,7 @@ void display(GLFWwindow *window, double currentTime)
 
 	mat4_t rot;
 	mat4_get_rotY(angle, rot);
-	GLuint rot_loc = glGetUniformLocation(program, "rot");
-	glUniformMatrix4fv(rot_loc, 1, GL_FALSE, rot);
+	shader_set_mat4(&sh, "rot", rot);
 	angle += 0.01;
 }
 

@@ -30,6 +30,9 @@ file(GLOB_RECURSE source_files
 
         "${PROJECT_DIR}/src/math/*.c"
         "${PROJECT_DIR}/src/math/*.h"
+
+        "${PROJECT_DIR}/src/shader/*.c"
+        "${PROJECT_DIR}/src/shader/*.h"
 )
 
 file(GLOB_RECURSE shader_files
@@ -55,6 +58,7 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/math/")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/shader/")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLFW_DIR}/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLAD_DIR}/include")
