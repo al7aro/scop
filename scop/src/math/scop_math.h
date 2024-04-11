@@ -1,6 +1,8 @@
 #ifndef SCOP_MATH_H
 #define SCOP_MATH_H
 
+#include <stdio.h>
+
 /*
  * TODO:    MAX_ITER    (to prevent infinite loops)
  *          EPSILON     (to avoid inverse of uninvertible matrices)
@@ -26,9 +28,9 @@ typedef float* matNxM_t;
 /*           [ m3 m7 m11 m15 ]             */
 /*******************************************/
 
-void vec2_print(mat2_t const m);
-void vec3_print(mat3_t const m);
-void vec4_print(mat4_t const m);
+void vec2_print(vec2_t const m);
+void vec3_print(vec3_t const m);
+void vec4_print(vec4_t const m);
 
 void mat2_print(mat2_t const m);
 void mat3_print(mat3_t const m);
@@ -53,6 +55,8 @@ void mat4_get_zero(mat4_t ret);
 void mat2_get_identity(mat2_t ret);
 void mat3_get_identity(mat3_t ret);
 void mat4_get_identity(mat4_t ret);
+
+void mat4_get_proj_ortho(float L, float R, float B, float T, float N, float F, mat4_t ret);
 
 /* TODO: OPERATIONS with matrices/vectors */
 
