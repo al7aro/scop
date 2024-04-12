@@ -1,7 +1,10 @@
 #version 410 core
+
 out vec4 frag_color;
+
+in vec3 varying_col;
 
 void main()
 {
-    frag_color = vec4(1.0f, 0.5f, 0.2f, 1.0f);
+    frag_color = vec4(varying_col, 1.0f);
 } 
