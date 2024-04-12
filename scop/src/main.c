@@ -69,8 +69,27 @@ void init(GLFWwindow* window)
 	/* Some simple test math */
 	mat4_t ortho;
 	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 1, ortho);
-	mat4_print(ortho);
+	// mat4_print(ortho);
 	shader_set_mat4(&sh, "proj", ortho);
+
+	matN_t m1 = (float *)malloc(sizeof(float) * 25);
+	matN_t m2 = (float *)malloc(sizeof(float) * 25);
+	matN_t ret = (float *)malloc(sizeof(float) * 25);
+	vecN_t v = (float *)malloc(sizeof(float) * 5); v[0] = 1; v[1] = 2; v[2] = 3; v[3] = 4; v[4] = 5;
+	vecN_t v_ret = (float *)malloc(sizeof(float) * 5);
+	matN_get_identity(5, m1);
+	matN_get_identity(5, m2);
+	matN_mult_matN(m1, m2, 5, ret);
+	matN_print(m1, 5);
+	printf("\n");
+	matN_print(m2, 5);
+	printf("\n");
+	matN_print(ret, 5);
+	printf("\n");
+	vecN_print(v, 5);
+	matN_mult_vecN(m1, v, 5, v_ret);
+	printf("\n");
+	vecN_print(v_ret, 5);
 }
 
 void display(GLFWwindow *window, double currentTime)
