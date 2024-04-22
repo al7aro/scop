@@ -12,6 +12,7 @@
 
 #include "shader.h"
 #include "scop_math.h"
+#include "px_image.h"
 
 GLuint VAO;
 GLuint VBO;
@@ -62,7 +63,7 @@ void init(GLFWwindow* window)
 	shader_create(&sh, "..\\..\\..\\scop\\shaders\\main460.vert", "..\\..\\..\\scop\\shaders\\main460.frag");
 #endif
 #ifdef __APPLE__
-	shader_create(&sh, "../../scop/shaders/main410.vert", "../../scop/shaders/main410.frag");
+	shader_create(&sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
 #endif
 	shader_use(&sh);
 
