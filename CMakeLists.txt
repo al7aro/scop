@@ -8,6 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR/bin})
 
 set(PROJECT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_NAME})
 set(VENDOR_DIR ${PROJECT_DIR}/vendor)
+set(LIBS_DIR ${PROJECT_DIR}/src/libs)
 
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -20,24 +21,32 @@ add_subdirectory(${GLFW_DIR})
 set(GLAD_DIR ${VENDOR_DIR}/glad)
 add_subdirectory(${GLAD_DIR})
 
+# px_image
+set(PX_IMAGE_DIR ${LIBS_DIR}/px_image)
+add_subdirectory(${PX_IMAGE_DIR})
+
+# px_image
+set(SCOP_MATH_DIR ${LIBS_DIR}/scop_math)
+add_subdirectory(${SCOP_MATH_DIR})
+
 # OpenGL
 find_package(OpenGL REQUIRED)
 
 # Project Sources
 file(GLOB_RECURSE source_files
-        "${PROJECT_DIR}/src/*.c"
-        "${PROJECT_DIR}/src/include/*.h"
+        "${PROJECT_DIR}/src/core/*.c"
+        "${PROJECT_DIR}/include/core/*.c"
 
         "${PROJECT_DIR}/src/math/*.c"
-        "${PROJECT_DIR}/src/math/*.h"
+        "${PROJECT_DIR}/include/math/*.h"
 
         "${PROJECT_DIR}/src/shader/*.c"
-        "${PROJECT_DIR}/src/shader/*.h"
+        "${PROJECT_DIR}/include/shader/*.h"
 )
 
 file(GLOB_RECURSE shader_files
-    "${PROJECT_DIR}/shaders/*.vert"
-    "${PROJECT_DIR}/shaders/*.frag"
+    "${PROJECT_DIR}/assets/shaders/*.vert"
+    "${PROJECT_DIR}/assets/shaders/*.frag"
 )
 source_group("Shaders" FILES ${shader_files})
 
@@ -52,13 +61,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 
 # Libraries
 target_link_libraries(${PROJECT_NAME} glfw)
+target_link_libraries(${PROJECT_NAME} px_image)
+target_link_libraries(${PROJECT_NAME} scop_math)
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
 # Headers
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/include")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/math/")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/src/shader/")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/core")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/math")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/shader")
 
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLFW_DIR}/include")
 target_include_directories(${PROJECT_NAME} PUBLIC "${GLAD_DIR}/include")
