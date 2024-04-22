@@ -39,6 +39,7 @@ typedef struct img_ctx_s
     unsigned char bin;
 
     int* current_field;
+    int current_value;
     unsigned char* buff;
     size_t file_len;
     size_t buff_ptr;

@@ -58,7 +58,8 @@ static int token_is_value_valid(img_ctx_t* ctx)
         num = (num * 10) + *(ctx->buff + ctx->buff_ptr + i) - '0';
     if (isprint(*(ctx->buff + ctx->buff_ptr + i)) && !isspace(*(ctx->buff + ctx->buff_ptr + i)))
         return (0);
-    return (num);
+    ctx->current_value = num;
+    return (1);
 }
 
 /**
@@ -107,39 +108,32 @@ static int token_next(img_ctx_t* ctx, char expected_token)
  */
 void parse_ppm_headers(img_ctx_t* ctx)
 {
-    int value = 0;
-
     ctx->depth = 3;
 
-    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-    if (!value)
+    if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    ctx->w = value;
-    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-    if (!value)
+    ctx->w = ctx->current_value;
+    if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    ctx->h = value;
-    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
-    if (!value)
+    ctx->h = ctx->current_value;
+    if (!token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-    if (!value)
+    if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    ctx->maxval = value;
-    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
-    if (!value)
+    ctx->maxval = ctx->current_value;
+    if (!token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
@@ -154,27 +148,22 @@ void parse_ppm_headers(img_ctx_t* ctx)
  */
 void parse_pbm_headers(img_ctx_t* ctx)
 {
-    int value = 0;
-
     ctx->depth = 1;
     ctx->maxval = 1;
 
-    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-    if (!value)
+    if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    ctx->w = value;
-    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-    if (!value)
+    ctx->w = ctx->current_value;
+    if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
     }
-    ctx->h = value;
-    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
-    if (!value)
+    ctx->h = ctx->current_value;
+    if (!token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
@@ -195,36 +184,30 @@ void parse_pgm_headers(img_ctx_t* ctx)
 
 void parse_pam_headers(img_ctx_t* ctx)
 {
-    int value = 0;
-
     size_t i = 0;
     for (; ctx->current_field && i < 10; i++)
     {
-        value = token_next(ctx, PX_IMAGE_TOKEN_FIELD);
-        if (!value)
+        if (!token_next(ctx, PX_IMAGE_TOKEN_FIELD))
         {
             px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
             return;
         }
         if (ctx->current_field)
         {
-            value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
-            if (!value)
+            if (!token_next(ctx, PX_IMAGE_TOKEN_VALUE))
             {
                 px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
                 return;
             }
-            *(ctx->current_field) = value;
-            value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
-            if (!value)
+            *(ctx->current_field) = ctx->current_value;
+            if (!token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))
             {
                 px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
                 return;
             }
         }
     }
-    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
-    if (!value || i < 6 || i >= 10)
+    if (!token_next(ctx, PX_IMAGE_TOKEN_NEWLINE) || i < 6 || i >= 10)
     {
         px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
         return;
