@@ -1,7 +1,7 @@
 #ifndef PX_IMAGE_H
 # define PX_IMAGE_H
 
-unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsigned int *chn);
+unsigned char* px_load(const char* path, int *w, int *h, int *chn);
 
 # ifdef PX_INTERNAL_FUNCTIONALITY
 
@@ -11,7 +11,6 @@ unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsig
 # include <ctype.h>
 # include <string.h>
 # include <math.h>
-# include <strings.h>
 
 # define PX_IMAGE_WIDTH_ID (uint64_t)((uint64_t)'W' << 32 | (uint64_t)'I' << 24 |  (uint64_t)'D' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
 # define PX_IMAGE_HEIGHT_ID (uint64_t)((uint64_t)'H' << 40 | (uint64_t)'E' << 32 |  (uint64_t)'I' << 24 | (uint64_t)'G' << 16 | (uint64_t)'H' << 8 | (uint64_t)'T')
@@ -32,16 +31,16 @@ unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsig
 
 typedef struct img_ctx_s
 {
-    size_t w;
-    size_t h;
-    size_t depth;
-    size_t maxval;
-    size_t tupletype;
+    int w;
+    int h;
+    int depth;
+    int maxval;
+    int tupletype;
     unsigned char bin;
 
-    size_t* current_field;
-    size_t file_len;
+    int* current_field;
     unsigned char* buff;
+    size_t file_len;
     size_t buff_ptr;
 
     unsigned char* col_data;

@@ -1,9 +1,10 @@
-#include <GLAD/glad.h>
-#include <GLFW/glfw3.h>
-
 #ifdef _WIN32
 	#include <Windows.h>
 #endif
+
+#include <GLAD/glad.h>
+#include <GLFW/glfw3.h>
+
 #ifdef __APPLE__
 	#include <unistd.h>
 #endif
@@ -43,6 +44,7 @@ unsigned int square_idx[6] =
 
 void init(GLFWwindow* window)
 {
+	(void)window;
 	glGenVertexArrays(1, &VAO);
 	glBindVertexArray(VAO);
 	glGenBuffers(1, &VBO);
@@ -60,7 +62,7 @@ void init(GLFWwindow* window)
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
-	shader_create(&sh, "..\\..\\..\\scop\\shaders\\main460.vert", "..\\..\\..\\scop\\shaders\\main460.frag");
+	shader_create(&sh, "..\\..\\..\\scop\\assets\\shaders\\main460.vert", "..\\..\\..\\scop\\assets\\shaders\\main460.frag");
 #endif
 #ifdef __APPLE__
 	shader_create(&sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
@@ -78,6 +80,8 @@ void init(GLFWwindow* window)
 
 void display(GLFWwindow *window, double currentTime)
 {
+	(void)window;
+	(void)currentTime;
 	glClearColor(1.0, 1.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT);
 	// glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -86,7 +90,7 @@ void display(GLFWwindow *window, double currentTime)
 	mat4_t rot;
 	mat4_get_rotY(angle, rot);
 	shader_set_mat4(&sh, "rot", rot);
-	angle += 0.01;
+	angle += 0.01f;
 }
 
 int main()

@@ -55,6 +55,18 @@ set(SOURCES ${source_files})
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files})
 
+if(CMAKE_COMPILER_IS_GNUCXX)
+    target_compile_options(${PROJECT_NAME} PRIVATE 
+        -Wall
+        -Wextra
+        -Werror 
+        -pedantic
+    )
+endif(CMAKE_COMPILER_IS_GNUCXX)
+if(MSVC) 
+    target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
+endif()
+
 # Set the output directory for the executable
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)

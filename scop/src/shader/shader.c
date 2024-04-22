@@ -12,8 +12,7 @@ static char* read_file_(const char *path)
 	size_t	start, end, len;
 	char*	buff;
 
-	fp = fopen(path, "rb");
-	if (NULL == fp)
+	if (fopen_s(&fp, path, "rb") != 0)
 		return (NULL);
 	start = ftell(fp);
 	fseek(fp, 0, SEEK_END);
@@ -36,8 +35,8 @@ GLuint shader_compile_(GLuint type, const char* path)
 
 	shader_src = read_file_(path);
 	if (NULL == shader_src)
-		return (-1);
-	id = glCreateShader(type);
+		return (0);
+	id = (int)glCreateShader(type);
 	glShaderSource(id, 1, &shader_src, NULL);
 	glCompileShader(id);
 	/* Error handling */

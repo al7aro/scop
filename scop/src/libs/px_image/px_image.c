@@ -16,10 +16,10 @@ void px_loader_error(img_ctx_t* ctx, const char* str)
     }
 }
 
-unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsigned int *chn)
+unsigned char* px_load(const char* path, int *w, int *h, int *chn)
 {
-    FILE* fp = fopen(path, "rb");
-    if (!fp)
+    FILE* fp;
+    if (fopen_s(&fp, path, "rb") != 0)
     {
         px_loader_error(NULL, PX_ERROR_FILE_NOT_FOUND);
         return (NULL);
@@ -37,7 +37,7 @@ unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsig
         fclose(fp);
         return (NULL);
     }
-    bzero(ctx.buff, ctx.file_len + 64);
+    memset(ctx.buff, 0, sizeof(unsigned char) * (ctx.file_len + 64));
     fread(ctx.buff, ctx.file_len, 1, fp);
     fclose(fp);
 
@@ -97,7 +97,7 @@ unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h, unsig
         px_loader_error(&ctx, PX_ERROR_FATAL);
         return (NULL);
     }
-    bzero(ctx.col_data, sizeof(unsigned char) * ctx.w * ctx.h * ctx.depth);
+    memset(ctx.col_data, 0, sizeof(unsigned char) * ctx.w * ctx.h * ctx.depth);
     read_color_data(&ctx);
     free(ctx.buff);
     if (w) *w = ctx.w;

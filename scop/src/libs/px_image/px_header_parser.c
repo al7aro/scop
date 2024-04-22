@@ -8,7 +8,7 @@
  * @param expected_token The kind of field we are expecting
  * @return char Wether the field exists and is valid.
  */
-static char token_is_field_valid(img_ctx_t* ctx, char expected_token)
+static char token_is_field_valid(img_ctx_t* ctx)
 {
     size_t i = 0;
     uint64_t id = 0;
@@ -48,9 +48,9 @@ static char token_is_field_valid(img_ctx_t* ctx, char expected_token)
  * @param ctx 
  * @return int64_t The actual value read. Zero if it was invalid
  */
-static int64_t token_is_value_valid(img_ctx_t* ctx)
+static int token_is_value_valid(img_ctx_t* ctx)
 {
-    int64_t num = 0;
+    int num = 0;
     size_t i = 0;
     if (ctx->current_field == &(ctx->tupletype))
         return (1);
@@ -68,9 +68,9 @@ static int64_t token_is_value_valid(img_ctx_t* ctx)
  * 
  * @param ctx 
  * @param expected_token Wether we expect to find a value or the field it belongs to
- * @return int64_t – If expected_token is a value it return its value. If expected_token is field it returns a bool check
+ * @return int – If expected_token is a value it return its value. If expected_token is field it returns a bool check
  */
-static int64_t token_next(img_ctx_t* ctx, char expected_token)
+static int token_next(img_ctx_t* ctx, char expected_token)
 {
     char in_comment = 0;
     /* SKIP NEW LINES AND '#' */
@@ -93,7 +93,7 @@ static int64_t token_next(img_ctx_t* ctx, char expected_token)
 
     /* VALIDATE THE TYPE OF TOKEN FOUND */
     if (PX_IMAGE_TOKEN_FIELD == expected_token)
-        return (token_is_field_valid(ctx, expected_token));
+        return (token_is_field_valid(ctx));
     if (PX_IMAGE_TOKEN_VALUE == expected_token)
         return (token_is_value_valid(ctx));
     return (PX_IMAGE_TOKEN_NEWLINE == expected_token && *(ctx->buff + ctx->buff_ptr) == '\n');
@@ -107,18 +107,43 @@ static int64_t token_next(img_ctx_t* ctx, char expected_token)
  */
 void parse_ppm_headers(img_ctx_t* ctx)
 {
-    uint64_t value = 0;
+    int value = 0;
 
     ctx->depth = 3;
 
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
     ctx->w = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
     ctx->h = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
+    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
     ctx->maxval = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
 }
 
 /**
@@ -129,16 +154,31 @@ void parse_ppm_headers(img_ctx_t* ctx)
  */
 void parse_pbm_headers(img_ctx_t* ctx)
 {
-    uint64_t value = 0;
+    int value = 0;
 
     ctx->depth = 1;
     ctx->maxval = 1;
 
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
     ctx->w = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
     ctx->h = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
+    if (!value)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
 }
 
 /**
@@ -155,18 +195,38 @@ void parse_pgm_headers(img_ctx_t* ctx)
 
 void parse_pam_headers(img_ctx_t* ctx)
 {
-    uint64_t value = 0;
+    int value = 0;
 
     size_t i = 0;
     for (; ctx->current_field && i < 10; i++)
     {
-        if (!(value = token_next(ctx, PX_IMAGE_TOKEN_FIELD))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+        value = token_next(ctx, PX_IMAGE_TOKEN_FIELD);
+        if (!value)
+        {
+            px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+            return;
+        }
         if (ctx->current_field)
         {
-            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+            value = token_next(ctx, PX_IMAGE_TOKEN_VALUE);
+            if (!value)
+            {
+                px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+                return;
+            }
             *(ctx->current_field) = value;
-            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+            value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
+            if (!value)
+            {
+                px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+                return;
+            }
         }
     }
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE)) || i < 6 || i >= 10) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE);
+    if (!value || i < 6 || i >= 10)
+    {
+        px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX);
+        return;
+    }
 }
