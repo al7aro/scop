@@ -3,26 +3,26 @@
 
 unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h);
 
-#ifdef PX_INTERNAL_FUNCTIONALITY
+# ifdef PX_INTERNAL_FUNCTIONALITY
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
-#include <ctype.h>
-#include <string.h>
-#include <math.h>
-#include <strings.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <stdint.h>
+# include <ctype.h>
+# include <string.h>
+# include <math.h>
+# include <strings.h>
 
-#define PX_IMAGE_WIDTH_ID (uint64_t)((uint64_t)'W' << 32 | (uint64_t)'I' << 24 |  (uint64_t)'D' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
-#define PX_IMAGE_HEIGHT_ID (uint64_t)((uint64_t)'H' << 40 | (uint64_t)'E' << 32 |  (uint64_t)'I' << 24 | (uint64_t)'G' << 16 | (uint64_t)'H' << 8 | (uint64_t)'T')
-#define PX_IMAGE_DEPTH_ID (uint64_t)((uint64_t)'D' << 32 |  (uint64_t)'E' << 24 | (uint64_t)'P' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
-#define PX_IMAGE_MAXVAL_ID (uint64_t)((uint64_t)'M' << 40 | (uint64_t)'A' << 32 |  (uint64_t)'X' << 24 | (uint64_t)'V' << 16 | (uint64_t)'A' << 8 | (uint64_t)'L')
-#define PX_IMAGE_TUPLTYPE_ID (uint64_t)((uint64_t)'T' << 56 | (uint64_t)'U' << 48 | (uint64_t)'P' << 40 | (uint64_t)'L' << 32 |  (uint64_t)'T' << 24 | (uint64_t)'Y' << 16 | (uint64_t)'P' << 8 | (uint64_t)'E')
-#define PX_IMAGE_ENDHDR_ID (uint64_t)((uint64_t)'E' << 40 | (uint64_t)'N' << 32 |  (uint64_t)'D' << 24 | (uint64_t)'H' << 16 | (uint64_t)'D' << 8 | (uint64_t)'R')
+# define PX_IMAGE_WIDTH_ID (uint64_t)((uint64_t)'W' << 32 | (uint64_t)'I' << 24 |  (uint64_t)'D' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
+# define PX_IMAGE_HEIGHT_ID (uint64_t)((uint64_t)'H' << 40 | (uint64_t)'E' << 32 |  (uint64_t)'I' << 24 | (uint64_t)'G' << 16 | (uint64_t)'H' << 8 | (uint64_t)'T')
+# define PX_IMAGE_DEPTH_ID (uint64_t)((uint64_t)'D' << 32 |  (uint64_t)'E' << 24 | (uint64_t)'P' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
+# define PX_IMAGE_MAXVAL_ID (uint64_t)((uint64_t)'M' << 40 | (uint64_t)'A' << 32 |  (uint64_t)'X' << 24 | (uint64_t)'V' << 16 | (uint64_t)'A' << 8 | (uint64_t)'L')
+# define PX_IMAGE_TUPLTYPE_ID (uint64_t)((uint64_t)'T' << 56 | (uint64_t)'U' << 48 | (uint64_t)'P' << 40 | (uint64_t)'L' << 32 |  (uint64_t)'T' << 24 | (uint64_t)'Y' << 16 | (uint64_t)'P' << 8 | (uint64_t)'E')
+# define PX_IMAGE_ENDHDR_ID (uint64_t)((uint64_t)'E' << 40 | (uint64_t)'N' << 32 |  (uint64_t)'D' << 24 | (uint64_t)'H' << 16 | (uint64_t)'D' << 8 | (uint64_t)'R')
 
-#define PX_IMAGE_TOKEN_FIELD 0
-#define PX_IMAGE_TOKEN_NEWLINE 1 
-#define PX_IMAGE_TOKEN_VALUE 2
+# define PX_IMAGE_TOKEN_FIELD 0
+# define PX_IMAGE_TOKEN_NEWLINE 1 
+# define PX_IMAGE_TOKEN_VALUE 2
 
 typedef struct img_ctx_s
 {
@@ -48,6 +48,6 @@ void parse_pbm_headers(img_ctx_t* ctx);
 void px_loader_error(img_ctx_t* ctx);
 void read_color_data(img_ctx_t* ctx);
 
-#endif
+# endif
 
 #endif
