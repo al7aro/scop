@@ -72,6 +72,8 @@ void init(GLFWwindow* window)
 	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 1, ortho);
 	mat4_print(ortho);
 	shader_set_mat4(&sh, "proj", ortho);
+
+	px_load("rabo.largo", NULL, NULL, NULL);
 }
 
 void display(GLFWwindow *window, double currentTime)

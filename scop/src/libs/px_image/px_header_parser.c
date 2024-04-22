@@ -111,14 +111,14 @@ void parse_ppm_headers(img_ctx_t* ctx)
 
     ctx->depth = 3;
 
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
     ctx->w = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
     ctx->h = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx));
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
     ctx->maxval = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
 }
 
 /**
@@ -134,11 +134,11 @@ void parse_pbm_headers(img_ctx_t* ctx)
     ctx->depth = 1;
     ctx->maxval = 1;
 
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
     ctx->w = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
     ctx->h = value;
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
 }
 
 /**
@@ -160,13 +160,13 @@ void parse_pam_headers(img_ctx_t* ctx)
     size_t i = 0;
     for (; ctx->current_field && i < 10; i++)
     {
-        if (!(value = token_next(ctx, PX_IMAGE_TOKEN_FIELD))) return (px_loader_error(ctx));
+        if (!(value = token_next(ctx, PX_IMAGE_TOKEN_FIELD))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
         if (ctx->current_field)
         {
-            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx));
+            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_VALUE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
             *(ctx->current_field) = value;
-            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx));
+            if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE))) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
         }
     }
-    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE)) || i < 6 || i >= 10) return (px_loader_error(ctx));
+    if (!(value = token_next(ctx, PX_IMAGE_TOKEN_NEWLINE)) || i < 6 || i >= 10) return (px_loader_error(ctx, PX_ERROR_INVALID_SYNTAX));
 }
