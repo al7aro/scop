@@ -258,6 +258,7 @@ unsigned char* px_load(const char* path, unsigned int *w, unsigned int *h)
     /* READ MAGIC NUMBER */
     for (; isspace(ctx.buff[ctx.buff_ptr]) && ctx.buff_ptr < ctx.file_len; ctx.buff_ptr++);
     ctx.buff_ptr += 2;
+    ctx.current_field = (void *)1;
     switch (ctx.buff[ctx.buff_ptr - 2] << 16 | ctx.buff[ctx.buff_ptr - 1] << 8 | !!isspace(ctx.buff[ctx.buff_ptr]))
     {
         case ('P' << 16 | '1' << 8 | 1):
