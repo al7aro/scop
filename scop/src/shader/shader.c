@@ -12,7 +12,8 @@ static char* read_file_(const char *path)
 	size_t	start, end, len;
 	char*	buff;
 
-	if (fopen_s(&fp, path, "rb") != 0)
+	fp = fopen(path, "rb");
+	if (!fp)
 		return (NULL);
 	start = ftell(fp);
 	fseek(fp, 0, SEEK_END);

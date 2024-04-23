@@ -18,8 +18,8 @@ void px_loader_error(img_ctx_t* ctx, const char* str)
 
 unsigned char* px_load(const char* path, int *w, int *h, int *chn)
 {
-    FILE* fp;
-    if (fopen_s(&fp, path, "rb") != 0)
+    FILE* fp = fopen(path, "rb");
+    if (!fp)
     {
         px_loader_error(NULL, PX_ERROR_FILE_NOT_FOUND);
         return (NULL);

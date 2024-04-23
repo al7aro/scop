@@ -35,10 +35,7 @@ find_package(OpenGL REQUIRED)
 # Project Sources
 file(GLOB_RECURSE source_files
         "${PROJECT_DIR}/src/core/*.c"
-        "${PROJECT_DIR}/include/core/*.c"
-
-        "${PROJECT_DIR}/src/math/*.c"
-        "${PROJECT_DIR}/include/math/*.h"
+        "${PROJECT_DIR}/include/core/*.h"
 
         "${PROJECT_DIR}/src/shader/*.c"
         "${PROJECT_DIR}/include/shader/*.h"
@@ -54,6 +51,8 @@ set(SOURCES ${source_files})
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files})
+
+add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     target_compile_options(${PROJECT_NAME} PRIVATE 
