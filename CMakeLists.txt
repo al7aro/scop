@@ -8,7 +8,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR/bin})
 
 set(PROJECT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_NAME})
 set(VENDOR_DIR ${PROJECT_DIR}/vendor)
-set(LIBS_DIR ${PROJECT_DIR}/src/libs)
+set(LIBS_DIR ${PROJECT_DIR}/libs)
 
 # GLFW
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
@@ -45,12 +45,18 @@ file(GLOB_RECURSE shader_files
     "${PROJECT_DIR}/assets/shaders/*.vert"
     "${PROJECT_DIR}/assets/shaders/*.frag"
 )
-source_group("Shaders" FILES ${shader_files})
+source_group("Assets\\Shaders" FILES ${shader_files})
+
+file(GLOB_RECURSE texture_files
+    "${PROJECT_DIR}/assets/textures/*.pam"
+    "${PROJECT_DIR}/assets/textures/*.pam"
+)
+source_group("Assets\\Textures" FILES ${texture_files})
 
 set(SOURCES ${source_files})
 
 # Executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files})
+add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files} ${texture_files})
 
 add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
