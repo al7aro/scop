@@ -34,13 +34,24 @@ find_package(OpenGL REQUIRED)
 
 # Project Sources
 file(GLOB_RECURSE source_files
-        "${PROJECT_DIR}/src/core/*.c"
-        "${PROJECT_DIR}/include/core/*.h"
+        "${PROJECT_DIR}/src/core/main.c"
+        "${PROJECT_DIR}/include/core/main.h"
 
-        "${PROJECT_DIR}/src/shader/*.c"
-        "${PROJECT_DIR}/include/shader/*.h"
+        "${PROJECT_DIR}/src/shader/shader.c"
+        "${PROJECT_DIR}/include/shader/shader.h"
 )
 
+foreach (src ${source_files})
+    get_filename_component(dir ${src} DIRECTORY)
+    string(REGEX MATCH "scop/scop/(.*)" CMAKE_MATCH_1 ${dir})
+    string(REPLACE "scop/scop/" "" desired_portion ${CMAKE_MATCH_1})
+    string(REGEX REPLACE "^(scop\/scop\/)(.*)" "\\2" desired_portion ${CMAKE_MATCH_1})
+    source_group(${desired_portion} FILES ${src})
+endforeach()
+
+set(SOURCES ${source_files})
+
+# Assets
 file(GLOB_RECURSE shader_files
     "${PROJECT_DIR}/assets/shaders/*.vert"
     "${PROJECT_DIR}/assets/shaders/*.frag"
@@ -52,8 +63,6 @@ file(GLOB_RECURSE texture_files
     "${PROJECT_DIR}/assets/textures/*.pam"
 )
 source_group("Assets\\Textures" FILES ${texture_files})
-
-set(SOURCES ${source_files})
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files} ${texture_files})
