@@ -48,35 +48,35 @@ void matN_tras(matN_t const m, unsigned int n, matN_t ret)
 
 void matN_sum_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
 {
-    for (int i = 0; i < (n * n); i++)
+    for (unsigned int i = 0; i < (n * n); i++)
         ret[i] = m1[i] + m2[i];
 }
 
 void matN_sub_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
 {
-    for (int i = 0; i < (n * n); i++)
+    for (unsigned int i = 0; i < (n * n); i++)
         ret[i] = m1[i] - m2[i];
 }
 
 void matN_mult_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
 {
-    for (int i = 0; i < (n * n); i++)
+    for (unsigned int i = 0; i < (n * n); i++)
     {
         int current_row = i % n;
         int current_col = i / n;
         ret[i] = 0;
-        for (int row = current_row, col = (current_col * n); row < (n * n) && col < ((current_col + 1) * n); row += n, col++)
+        for (unsigned int row = current_row, col = (current_col * n); row < (n * n) && col < ((current_col + 1) * n); row += n, col++)
             ret[i] += m1[row] * m2[col];
     }
 }
 
 void matN_mult_vecN(matN_t m1, vecN_t v, unsigned int n, vecN_t ret)
 {
-    for (int i = 0; i < n; i++)
+    for (unsigned int i = 0; i < n; i++)
     {
         int current_row = i % n;
         ret[i] = 0;
-        for (int row = current_row, col = 0; row < (n * n) && col < n; row += n, col++)
+        for (unsigned int row = current_row, col = 0; row < (n * n) && col < n; row += n, col++)
             ret[i] += m1[row] * v[col];
     }
 }
