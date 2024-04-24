@@ -13,7 +13,7 @@ static char* read_file_(const char *path)
 	char*	buff;
 
 	fp = fopen(path, "rb");
-	if (!fp)
+	if (NULL == fp)
 		return (NULL);
 	start = ftell(fp);
 	fseek(fp, 0, SEEK_END);
@@ -36,9 +36,9 @@ GLuint shader_compile_(GLuint type, const char* path)
 
 	shader_src = read_file_(path);
 	if (NULL == shader_src)
-		return (0);
-	id = (int)glCreateShader(type);
-	glShaderSource(id, 1, &shader_src, NULL);
+		return (-1);
+	id = glCreateShader(type);
+	glShaderSource(id, 1, (const GLchar *const *)&shader_src, NULL);
 	glCompileShader(id);
 	/* Error handling */
 	free(shader_src);

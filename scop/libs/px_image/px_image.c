@@ -49,37 +49,37 @@ unsigned char* px_load(const char* path, int *w, int *h, int *chn)
     {
         case ('P' << 16 | '1' << 8 | 1):
             ctx.bin = 0;
-            printf("ASCII PBM\n");
+            // printf("ASCII PBM\n");
             parse_pbm_headers(&ctx);
             break;
         case ('P' << 16 | '2' << 8 | 1):
             ctx.bin = 0;
-            printf("ASCII PGM\n");
+            // printf("ASCII PGM\n");
             parse_pgm_headers(&ctx);
             break;
         case ('P' << 16 | '3' << 8 | 1):
             ctx.bin = 0;
-            printf("ASCII PPM\n");
+            // printf("ASCII PPM\n");
             parse_ppm_headers(&ctx);
             break;
         case ('P' << 16 | '4' << 8 | 1):
             ctx.bin = 1;
-            printf("BINARY PBM\n");
+            // printf("BINARY PBM\n");
             parse_pbm_headers(&ctx);
             break;
         case ('P' << 16 | '5' << 8 | 1):
             ctx.bin = 1;
-            printf("BINARY PGM\n");
+            // printf("BINARY PGM\n");
             parse_pgm_headers(&ctx);
             break;
         case ('P' << 16 | '6' << 8 | 1):
             ctx.bin = 1;
-            printf("BINARY PPM\n");
+            // printf("BINARY PPM\n");
             parse_ppm_headers(&ctx);
             break;
         case ('P' << 16 | '7' << 8 | 1):
             ctx.bin = 1;
-            printf("PAM\n");
+            // printf("PAM\n");
             parse_pam_headers(&ctx);
             break;
         default:
@@ -88,7 +88,7 @@ unsigned char* px_load(const char* path, int *w, int *h, int *chn)
     }
     if (!ctx.buff)
         return (NULL);
-    printf("W: %ld | H: %ld | depth: %ld | maxval: %ld\n", ctx.w, ctx.h, ctx.depth, ctx.maxval);
+    // printf("W: %ld | H: %ld | depth: %ld | maxval: %ld\n", ctx.w, ctx.h, ctx.depth, ctx.maxval);
     ctx.buff_ptr++;
     /* At this point the header is correct and colors MUST start at the very next byte */
     ctx.col_data = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.w * ctx.h * ctx.depth));

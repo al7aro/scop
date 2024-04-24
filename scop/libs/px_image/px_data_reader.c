@@ -15,7 +15,7 @@ void read_color_data(img_ctx_t* ctx)
             uint64_t ch = 0;
             for (size_t k = 0; k < bytes_per_channel; k++)
                 ch = (ch << 8) | (*(ctx->buff + ctx->buff_ptr + (i * bytes_per_channel) + k));
-            col = ((int)(ch > ctx->maxval) ? 255 : (char)(255.0 * ((double)ch / ctx->maxval)));
+            col = ((int)(ch > (uint64_t)ctx->maxval) ? 255 : (char)(255.0 * ((double)ch / ctx->maxval)));
             *(ctx->col_data + col_ptr) = col;
             col_ptr++; 
         }

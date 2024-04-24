@@ -69,14 +69,14 @@ add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files} ${texture_files})
 
 add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 
-if(CMAKE_COMPILER_IS_GNUCXX)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 
         -Wall
         -Wextra
         -Werror 
         -pedantic
     )
-endif(CMAKE_COMPILER_IS_GNUCXX)
+endif()
 if(MSVC) 
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 endif()

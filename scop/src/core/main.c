@@ -2,7 +2,7 @@
 	#include <Windows.h>
 #endif
 
-#include <GLAD/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #ifdef __APPLE__
@@ -63,9 +63,11 @@ void init(GLFWwindow* window)
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
 	shader_create(&sh, "..\\scop\\assets\\shaders\\main460.vert", "..\\scop\\assets\\shaders\\main460.frag");
+	px_load("..\\scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 #endif
 #ifdef __APPLE__
 	shader_create(&sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
+	px_load("scop/assets/textures/rgb.pam", NULL, NULL, NULL);
 #endif
 	shader_use(&sh);
 
@@ -75,7 +77,6 @@ void init(GLFWwindow* window)
 	mat4_print(ortho);
 	shader_set_mat4(&sh, "proj", ortho);
 
-	px_load("..\\scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -93,7 +94,7 @@ void display(GLFWwindow *window, double currentTime)
 	angle += 0.01f;
 }
 
-int main()
+int main(void)
 {
 	if (!glfwInit())
     {
