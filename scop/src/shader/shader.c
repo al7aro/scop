@@ -38,7 +38,7 @@ GLuint shader_compile_(GLuint type, const char* path)
 	if (NULL == shader_src)
 		return (-1);
 	id = glCreateShader(type);
-	glShaderSource(id, 1, &shader_src, NULL);
+	glShaderSource(id, 1, (const GLchar *const *)&shader_src, NULL);
 	glCompileShader(id);
 	/* Error handling */
 	free(shader_src);

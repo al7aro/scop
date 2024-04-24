@@ -43,23 +43,23 @@ void mat4_get_proj_ortho(float L, float R, float B, float T, float N, float F, m
 void mat4_get_rotX(float angle, mat4_t ret)
 {
     ret[0] = 1; ret[4] = 0;             ret[8] = 0;             ret[12] = 0;
-    ret[1] = 0; ret[5] = cos(angle);    ret[9] = -sin(angle);   ret[13] = 0;
-    ret[2] = 0; ret[6] = sin(angle);    ret[10] = cos(angle);   ret[14] = 0;
+    ret[1] = 0; ret[5] = (float)cos(angle);    ret[9] = -(float)sin(angle);   ret[13] = 0;
+    ret[2] = 0; ret[6] = (float)sin(angle);    ret[10] = (float)cos(angle);   ret[14] = 0;
     ret[3] = 0; ret[7] = 0;             ret[11] = 0;            ret[15] = 1;
 }
 
 void mat4_get_rotY(float angle, mat4_t ret)
 {
-    ret[0] = cos(angle);    ret[4] = 0;             ret[8] = -sin(angle);   ret[12] = 0;
+    ret[0] = (float)cos(angle);    ret[4] = 0;             ret[8] = -(float)sin(angle);   ret[12] = 0;
     ret[1] = 0;             ret[5] = 1;             ret[9] = 0;             ret[13] = 0;
-    ret[2] = sin(angle);    ret[6] = 0;             ret[10] = cos(angle);   ret[14] = 0;
+    ret[2] = (float)sin(angle);    ret[6] = 0;             ret[10] = (float)cos(angle);   ret[14] = 0;
     ret[3] = 0;             ret[7] = 0;             ret[11] = 0;            ret[15] = 1;
 }
 
 void mat4_get_rotZ(float angle, mat4_t ret)
 {
-    ret[0] = cos(angle);    ret[4] = -sin(angle);   ret[8] = 0;     ret[12] = 0;
-    ret[1] = sin(angle);    ret[5] = cos(angle);    ret[9] = 0;     ret[13] = 0;
+    ret[0] = (float)cos(angle);    ret[4] = -(float)sin(angle);   ret[8] = 0;     ret[12] = 0;
+    ret[1] = (float)sin(angle);    ret[5] = (float)cos(angle);    ret[9] = 0;     ret[13] = 0;
     ret[2] = 0;             ret[6] = 0;             ret[10] = 1;    ret[14] = 0;
     ret[3] = 0;             ret[7] = 0;             ret[11] = 0;    ret[15] = 1;
 }
