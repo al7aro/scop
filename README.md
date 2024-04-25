@@ -21,7 +21,7 @@ It is a simple 3D model viewer written in <a href="https://en.wikipedia.org/wiki
 - Load and display 3D models in the Wavefront OBJ format.
 - Load textures in the PAM format.
 
-A usual in <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> we are told to to use the minimum ammount of **external libraries**, except for:
+A usual in <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> we are not allowed to use any **external libraries**, except for:
 
 - <a href="https://www.glfw.org/" ><img src="https://www.glfw.org/img/favicon/favicon-196x196.png" width=30 align="center"/> **GLFW**</a> for window and input management.
 - <a href="https://glad.dav1d.de/">**GLAD**</a> for <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> extension loading.
