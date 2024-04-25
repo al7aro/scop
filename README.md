@@ -18,8 +18,8 @@
 
 As a part of the <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> curriculum, this project aims to introduce the basics of <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> and the use of shaders.
 It is a simple 3D model viewer written in <a href="https://en.wikipedia.org/wiki/C_(programming_language)"><img src="https://upload.wikimedia.org/wikipedia/commons/1/19/C_Logo.png" width=20 align="center"/></a>  and uses the <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> API for rendering and it is able to:
-- Load and display 3D models in the Wavefront OBJ format.
-- Load textures in the PAM format.
+- Load and display 3D models in the <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">**Wavefront**<img src="https://storage.googleapis.com/thangs-thumbnails/production/2e4d4f39-5625-4169-a175-2f15af381bc6/2b.png" width=35 align="center"/>**.OBJ**</a> format.
+- Load textures in the <a href="https://en.wikipedia.org/wiki/Netpbm">**PAM**</a> format.
 
 A usual in <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> we are not allowed to use any **external libraries**, except for:
 
