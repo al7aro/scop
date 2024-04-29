@@ -48,7 +48,9 @@ cmake ..
 
 ## Current power of the **SCOP**
 
-![tes](https://progress-bar.dev/5/)
+![progress](https://progress-bar.dev/5/)
+
+![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/scop.png)
 
 ---
 
@@ -64,4 +66,4 @@ But fear not, my friend! Your current trepidation is an echo felt by countless a
 
 And this is but the first step! If you yearn to truly quench your thirst for knowledge, stay tuned to the <a href="https://github.com/al7aro/scop/wiki">**WIKI**</a>, where I shall lay bare the inner workings of this project, dissecting its secrets piece by piece:
 
-<a href="https://github.com/al7aro/scop/wiki"><img src="https://i.pinimg.com/originals/62/b7/46/62b746a3f5c7dd6fc0b96cdd4acf43e3.gif"/><a/>
+<a href="https://github.com/al7aro/scop/wiki"><img src="https://i.pinimg.com/originals/62/b7/46/62b746a3f5c7dd6fc0b96cdd4acf43e3.gif" width=250/><a/>
