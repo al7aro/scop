@@ -10,6 +10,7 @@
 <h3>Table of contents</h3>
 
 - [About the project](#about-the-project)
+- [Current power of the SCOP](#current-power-of-the-scop)
 - [How cool is this project, I want to know more!](#how-cool-is-this-project-i-want-to-know-more)
 
 ---
@@ -45,4 +46,22 @@ cmake ..
 
 ---
 
+## Current power of the **SCOP**
+
+![tes](https://progress-bar.dev/5/)
+
+---
+
 ## How cool is this project, I want to know more!
+
+### Yeah, I know... 
+
+- Goose bumps <img src="https://preview.redd.it/h9m39vv630h51.png?width=3412&format=png&auto=webp&s=451fbe18a44ad01c9545afcaab9b807b91968103" width=30 align="center"/>
+- Wet hands <img src="https://gallery.yopriceville.com/downloadfullsize/send/5598" width=30 align="center"/>
+- Butterflies in your stomach <img src="https://png.pngtree.com/png-clipart/20230224/ourmid/pngtree-simple-butterfly-paper-style-png-image_6614364.png" width=30 align="center"/>
+
+But fear not, my friend! Your current trepidation is an echo felt by countless adventurers who have dared to unlock the secrets of <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a>.
+
+And this is but the first step! If you yearn to truly quench your thirst for knowledge, stay tuned to the <a href="https://github.com/al7aro/scop/wiki">**WIKI**</a>, where I shall lay bare the inner workings of this project, dissecting its secrets piece by piece:
+
+<a href="https://github.com/al7aro/scop/wiki"><img src="https://i.pinimg.com/originals/62/b7/46/62b746a3f5c7dd6fc0b96cdd4acf43e3.gif"/><a/>
