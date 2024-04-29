@@ -48,7 +48,7 @@ cmake ..
 
 ## Current power of the **SCOP**
 
-![progress](https://progress-bar.dev/5/)
+![progress](https://progress-bar.dev/1/)
 
 ![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/scop.png)
 
