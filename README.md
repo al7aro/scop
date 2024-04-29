@@ -10,7 +10,7 @@
 <h3>Table of contents</h3>
 
 - [About the project](#about-the-project)
-- [...more to come in the future...](#more-to-come-in-the-future)
+- [How cool is this project, I want to know more!](#how-cool-is-this-project-i-want-to-know-more)
 
 ---
 
@@ -45,4 +45,4 @@ cmake ..
 
 ---
 
-## ...more to come in the future...
+## How cool is this project, I want to know more!
