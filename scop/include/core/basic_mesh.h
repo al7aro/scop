@@ -18,6 +18,15 @@
 #define SCOP_TEX_ATTRIBUTE_ID 2
 #define SCOP_COL_ATTRIBUTE_ID 3
 
+typedef struct attrib_format_s
+{
+    GLenum type;
+    char count;
+    const void* offset;
+    char normaliced;
+    GLsizei stride;
+} attrib_format_t;
+
 /**
  * @brief Contains all vertex data and its format
  * 
@@ -32,9 +41,8 @@ typedef struct vertex_data_s
     unsigned int idx_cnt;       /** Contains the number of indeices */
 
     unsigned int vertex_cnt;    /** Contains the number of vertices. */
-    unsigned int att_stride; /** Contains the byte separation between elemnts of the same attribute. */
 
-    uint64_t att_format[16];    /** Space for 64 possible attributes. Each uint64 stores (using 2bytes per each) TYPE, SIZE, OFFSET, NORMALICED */
+    attrib_format_t att_format[16];    /** Space for 64 possible attributes. Each uint64 stores (using 2bytes per each) TYPE, SIZE, OFFSET, NORMALICED */
 } vertex_data_t;
 
 /**

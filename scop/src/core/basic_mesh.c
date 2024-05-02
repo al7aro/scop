@@ -31,7 +31,6 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     mesh->data->raw_size = sizeof(square_data);
     mesh->data->idx_size = sizeof(square_idx);
     mesh->data->idx_cnt = 6;
-    mesh->data->att_stride = sizeof(float) * 8;
     mesh->data->raw = (unsigned char*)malloc(sizeof(square_data));
     mesh->data->idx = (unsigned int*)malloc(sizeof(square_idx));
 
@@ -40,9 +39,23 @@ mesh_t* mesh_load_cube(mesh_t** ret)
 
     /* Attribute Format Setup */
     memset(mesh->data->att_format, 0, sizeof(mesh->data->att_format));
-    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)3, 0, (uint64_t)GL_FALSE);
-    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)3, (uint64_t)(3 * sizeof(float)), (uint64_t)GL_FALSE);
-    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)2, (uint64_t)(6 * sizeof(float)), (uint64_t)GL_FALSE);
+    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID].type = GL_FLOAT;
+    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID].count = 3;
+    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID].offset = 0;
+    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID].normaliced = GL_FALSE;
+    mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID].stride = sizeof(float) * 8;
+
+    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID].type = GL_FLOAT;
+    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID].count = 3;
+    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID].offset = (const void*)(3 * sizeof(float));
+    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID].normaliced = GL_FALSE;
+    mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID].stride = sizeof(float) * 8;
+
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID].type = GL_FLOAT;
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID].count = 2;
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID].offset = (const void*)(6 * sizeof(float));
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID].normaliced = GL_FALSE;
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID].stride = sizeof(float) * 8;
 
     /* Mesh Load to GPU */
     glGenVertexArrays(1, mesh->VAO);
@@ -59,14 +72,14 @@ mesh_t* mesh_load_cube(mesh_t** ret)
 
     for (int i = 0; i < 16; i++)
     {
-        if (mesh->data->att_format[i])
+        if (mesh->data->att_format + i)
         {
             glVertexAttribPointer(i,
-                (GLint)VERTEX_GET_ATTRIB_COUNT(mesh->data->att_format[i]),
-                (GLenum)VERTEX_GET_ATTRIB_TYPE(mesh->data->att_format[i]),
-                (GLboolean)VERTEX_GET_ATTRIB_NORMALICED(mesh->data->att_format[i]),
-                (GLsizei)mesh->data->att_stride,
-                (const void*)VERTEX_GET_ATTRIB_OFFSET(mesh->data->att_format[i]));
+                mesh->data->att_format[i].count,
+                mesh->data->att_format[i].type,
+                mesh->data->att_format[i].normaliced,
+                mesh->data->att_format[i].stride,
+                mesh->data->att_format[i].offset);
             glEnableVertexAttribArray(i);
         }
     }
