@@ -12,17 +12,6 @@ unsigned char* px_load(const char* path, int *w, int *h, int *chn);
 # include <string.h>
 # include <math.h>
 
-# define PX_IMAGE_WIDTH_ID (uint64_t)((uint64_t)'W' << 32 | (uint64_t)'I' << 24 |  (uint64_t)'D' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
-# define PX_IMAGE_HEIGHT_ID (uint64_t)((uint64_t)'H' << 40 | (uint64_t)'E' << 32 |  (uint64_t)'I' << 24 | (uint64_t)'G' << 16 | (uint64_t)'H' << 8 | (uint64_t)'T')
-# define PX_IMAGE_DEPTH_ID (uint64_t)((uint64_t)'D' << 32 |  (uint64_t)'E' << 24 | (uint64_t)'P' << 16 | (uint64_t)'T' << 8 | (uint64_t)'H')
-# define PX_IMAGE_MAXVAL_ID (uint64_t)((uint64_t)'M' << 40 | (uint64_t)'A' << 32 |  (uint64_t)'X' << 24 | (uint64_t)'V' << 16 | (uint64_t)'A' << 8 | (uint64_t)'L')
-# define PX_IMAGE_TUPLTYPE_ID (uint64_t)((uint64_t)'T' << 56 | (uint64_t)'U' << 48 | (uint64_t)'P' << 40 | (uint64_t)'L' << 32 |  (uint64_t)'T' << 24 | (uint64_t)'Y' << 16 | (uint64_t)'P' << 8 | (uint64_t)'E')
-# define PX_IMAGE_ENDHDR_ID (uint64_t)((uint64_t)'E' << 40 | (uint64_t)'N' << 32 |  (uint64_t)'D' << 24 | (uint64_t)'H' << 16 | (uint64_t)'D' << 8 | (uint64_t)'R')
-
-# define PX_IMAGE_TOKEN_FIELD 0
-# define PX_IMAGE_TOKEN_NEWLINE 1 
-# define PX_IMAGE_TOKEN_VALUE 2
-
 # define PX_ERROR_INVALID_SYNTAX "Invalid syntax."
 # define PX_ERROR_FILE_NOT_FOUND "File not found."
 # define PX_ERROR_UNRECOGNICED_FILE "Unrecogniced file type. (Available formats: PAM)."
@@ -39,7 +28,6 @@ typedef struct img_ctx_s
     unsigned char bin;
 
     int* current_field;
-    int current_value;
     unsigned char* buff;
     size_t file_len;
     size_t buff_ptr;
