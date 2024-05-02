@@ -36,6 +36,8 @@ find_package(OpenGL REQUIRED)
 file(GLOB_RECURSE source_files
         "${PROJECT_DIR}/src/core/main.c"
         "${PROJECT_DIR}/include/core/main.h"
+        "${PROJECT_DIR}/src/core/basic_mesh.c"
+        "${PROJECT_DIR}/include/core/basic_mesh.h"
 
         "${PROJECT_DIR}/src/shader/shader.c"
         "${PROJECT_DIR}/include/shader/shader.h"

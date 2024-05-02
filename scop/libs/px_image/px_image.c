@@ -40,6 +40,7 @@ unsigned char* px_load(const char* path, int *w, int *h, int *chn)
     memset(ctx.buff, 0, sizeof(unsigned char) * (ctx.file_len + 64));
     fread(ctx.buff, ctx.file_len, 1, fp);
     fclose(fp);
+    ctx.w = 0; ctx.h = 0; ctx.depth = 0; ctx.maxval = 0; 
 
     /* READ MAGIC NUMBER */
     for (; isspace(ctx.buff[ctx.buff_ptr]) && ctx.buff_ptr < ctx.file_len; ctx.buff_ptr++);
