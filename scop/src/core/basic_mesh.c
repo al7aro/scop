@@ -11,12 +11,12 @@ void mesh_destroy(mesh_t* mesh)
 mesh_t* mesh_load_cube(mesh_t** ret)
 {
     mesh_t* mesh;
-    float square_data[4 * 6] =
+    float square_data[4 * 8] =
     {
-        -0.5, -0.5, 0.0,	1.0, 0.0, 0.0,
-        0.5, -0.5, 0.0,		0.0, 1.0, 0.0,
-        0.5, 0.5, 0.0,		0.0, 0.0, 1.0,
-        -0.5, 0.5, 0.0,		1.0, 1.0, 1.0
+        -0.5, -0.5, 0.0,	1.0, 0.0, 0.0,  1.0, 1.0,
+        0.5, -0.5, 0.0,		0.0, 1.0, 0.0,  1.0, 0.0,
+        0.5, 0.5, 0.0,		0.0, 0.0, 1.0,  0.0, 0.0,
+        -0.5, 0.5, 0.0,		1.0, 1.0, 1.0,  0.0, 1.0
     };
     unsigned int square_idx[6] =
     {
@@ -31,7 +31,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     mesh->data->raw_size = sizeof(square_data);
     mesh->data->idx_size = sizeof(square_idx);
     mesh->data->idx_cnt = 6;
-    mesh->data->att_stride = sizeof(float) * 6;
+    mesh->data->att_stride = sizeof(float) * 8;
     mesh->data->raw = (unsigned char*)malloc(sizeof(square_data));
     mesh->data->idx = (unsigned int*)malloc(sizeof(square_idx));
 
@@ -42,6 +42,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     memset(mesh->data->att_format, 0, sizeof(mesh->data->att_format));
     mesh->data->att_format[SCOP_POS_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)3, 0, (uint64_t)GL_FALSE);
     mesh->data->att_format[SCOP_COL_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)3, (uint64_t)(3 * sizeof(float)), (uint64_t)GL_FALSE);
+    mesh->data->att_format[SCOP_TEX_ATTRIBUTE_ID] = VERTEX_SET_ATTRIB_FORMAT((uint64_t)GL_FLOAT, (uint64_t)2, (uint64_t)(6 * sizeof(float)), (uint64_t)GL_FALSE);
 
     /* Mesh Load to GPU */
     glGenVertexArrays(1, mesh->VAO);
