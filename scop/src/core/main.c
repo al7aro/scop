@@ -28,8 +28,8 @@ void init(GLFWwindow* window)
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
-	shader_create(&sh, "..\\scop\\assets\\shaders\\main460.vert", "..\\scop\\assets\\shaders\\main460.frag");
-	px_load("..\\scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
+	shader_create(&sh, "scop\\assets\\shaders\\main460.vert", "scop\\assets\\shaders\\main460.frag");
+	px_load("scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 #endif
 #if defined(__APPLE__) || defined(__linux__)
 	shader_create(&sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
@@ -85,7 +85,7 @@ void display(GLFWwindow *window, double currentTime)
 	mat4_get_rotY(angle, rot);
 	shader_set_mat4(&sh, "rot", rot);
 	shader_set_float(&sh, "offset", (float)cos(currentTime));
-	angle += 0.005f;
+	angle += 0.01f;
 }
 
 int main(void)

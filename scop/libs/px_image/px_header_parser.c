@@ -53,13 +53,14 @@ void parse_pgm_headers(img_ctx_t* ctx)
 
 void parse_pam_headers(img_ctx_t* ctx)
 {
-    char* token = strtok((char *)(ctx->buff + ctx->buff_ptr), " \r\t\v\n");
+    char* aux = (char *)(ctx->buff + ctx->buff_ptr);
+    char* token = strtok_r((char *)(ctx->buff + ctx->buff_ptr), " \r\t\v\n", &aux);
     while (token != NULL && strcmp(token, "ENDHDR"))
     {
         if (*token == '#')
         {
-            token = strtok(NULL, "\n");
-            token = strtok(NULL, " \r\t\v\n");
+            token = strtok_r(NULL, "\n", &aux);
+            token = strtok_r(NULL, " \r\t\v\n", &aux);
             continue;
         }
         if (!strcmp(token, "WIDTH") && !(ctx->w))
@@ -79,10 +80,10 @@ void parse_pam_headers(img_ctx_t* ctx)
         }
         else
             printf("Error\n");
-        token = strtok(NULL, " \r\t\v\n");
+        token = strtok_r(NULL, " \r\t\v\n", &aux);
     }
-    printf("Headers: [w: %d] [h: %d] [depth: %d] [maxval: %d]\n", ctx->w, ctx->h, ctx->depth, ctx->maxval);
+    // printf("Headers: [w: %d] [h: %d] [depth: %d] [maxval: %d]\n", ctx->w, ctx->h, ctx->depth, ctx->maxval);
     token = strchr(token, '\0');
     ctx->buff_ptr = ((char *)token) - ((char *)ctx->buff);
-    printf("End: [%d] -> Header Size: %ld -> File Size: %ld\n", *(ctx->buff + ctx->buff_ptr), ctx->buff_ptr, ctx->file_len);
+    // printf("End: [%d] -> Header Size: %ld -> File Size: %ld\n", *(ctx->buff + ctx->buff_ptr), ctx->buff_ptr, ctx->file_len);
 }

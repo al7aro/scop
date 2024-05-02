@@ -57,7 +57,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(mesh->EBO));
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->data->idx_size, mesh->data->idx, GL_STATIC_DRAW);
 
-    for (size_t i = 0; i < 16; i++)
+    for (int i = 0; i < 16; i++)
     {
         if (mesh->data->att_format[i])
         {

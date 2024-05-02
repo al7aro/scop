@@ -5,6 +5,10 @@ unsigned char* px_load(const char* path, int *w, int *h, int *chn);
 
 # ifdef PX_INTERNAL_FUNCTIONALITY
 
+#ifdef _WIN32
+	#define strtok_r strtok_s
+#endif
+
 # include <stdio.h>
 # include <stdlib.h>
 # include <stdint.h>
