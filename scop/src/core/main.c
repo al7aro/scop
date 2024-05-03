@@ -38,10 +38,11 @@ void init(GLFWwindow* window)
 	shader_use(&sh);
 
 	/* Some simple test math */
-	mat4_t ortho;
-	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 1, ortho);
-	mat4_print(ortho);
-	shader_set_mat4(&sh, "proj", ortho);
+	mat4_t ortho, persp;
+	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 10, ortho);
+	mat4_get_proj_persp(90.0f*3.14f/180.0f, 1, 0.1f, 10, persp);
+	mat4_print(persp);
+	shader_set_mat4(&sh, "proj", persp);
 
 	/* Textures */
 	glGenTextures(1, &texture0);
@@ -74,18 +75,23 @@ void display(GLFWwindow *window, double currentTime)
 	(void)window;
 	(void)currentTime;
 	glClearColor(1.0, 1.0, 0.0, 1.0);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture0);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	mesh_render(mesh);
 
-	mat4_t rot;
-	mat4_get_rotY(angle, rot);
-	shader_set_mat4(&sh, "rot", rot);
+	mat4_t rot1, rot2, tras, total_rot, model;
+	mat4_get_tras(0.0f, 0.0f, -2.0f, tras);
+	mat4_get_rotY(angle, rot1);
+	mat4_get_rotX(angle, rot2);
+	
+	mat4_mult_mat4(rot1, rot2, total_rot);
+	mat4_mult_mat4(tras, total_rot, model);
+	shader_set_mat4(&sh, "rot", model);
 	shader_set_float(&sh, "offset", (float)cos(currentTime));
-	angle += 0.01f;
+	angle += 0.005f;
 }
 
 int main(void)
@@ -122,6 +128,7 @@ int main(void)
 #endif
 
 	glfwSwapInterval(1);
+	glEnable(GL_DEPTH_TEST);  
 	init(window);
 	while (!glfwWindowShouldClose(window))
 	{

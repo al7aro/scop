@@ -34,8 +34,8 @@ typedef struct attrib_format_s
 typedef struct vertex_data_s
 {
     /* TODO: how should I store raw vertex data in a TYPE-INDEPENDENT way*/
-    unsigned char* raw;         /** Contains the raw data of vertices. */
-    unsigned int raw_size;      /** Contains the total byte size of 'vert' */
+    unsigned char* vertex;         /** Contains the raw data of vertices. */
+    unsigned int vertex_size;      /** Contains the total byte size of 'vert' */
     unsigned int* idx;          /** Contains the indices in which vertices are used. */
     unsigned int idx_size;      /** Contains the total byte size of 'idx' */
     unsigned int idx_cnt;       /** Contains the number of indeices */
