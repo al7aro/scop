@@ -2,15 +2,15 @@
 
 /* USEFUL MATRICES */
 
-void matN_get_zero(unsigned int n, matN_t ret)
+void matN_get_zero(int n, matN_t ret)
 {
-    for (unsigned int i = 0; i < (n * n); i++)
+    for (int i = 0; i < (n * n); i++)
         ret[i] = 0;
 }
 
-void matN_get_identity(unsigned int n, matN_t ret)
+void matN_get_identity(int n, matN_t ret)
 {
-    for (unsigned int i = 0; i < (n * n); i++)
+    for (int i = 0; i < (n * n); i++)
         if (!(i % (n + 1)))
             ret[i] = 1;
         else
@@ -19,17 +19,17 @@ void matN_get_identity(unsigned int n, matN_t ret)
 
 /* LOGGING */
 
-void vecN_print(vecN_t const v, unsigned int n)
+void vecN_print(vecN_t const v, int n)
 {
-    for (unsigned int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
         printf("%15.3f", v[i]);
     printf("\n");
 }
 
-void matN_print(matN_t const m, unsigned int n)
+void matN_print(matN_t const m, int n)
 {
     size_t total_size = n * n;
-    for (unsigned int i = 0; i < n; i++)
+    for (int i = 0; i < n; i++)
     {
         for (unsigned int k = i; k < total_size; k += n)
             printf("%15.3f", m[k]);
@@ -38,27 +38,27 @@ void matN_print(matN_t const m, unsigned int n)
 }
 
 /* MATRIX OPERATIONS */
-void matN_tras(matN_t const m, unsigned int n, matN_t ret)
+void matN_tras(matN_t const m, int n, matN_t ret)
 {
     size_t total_size = n * n;
-    for (unsigned int i = 0, j = 0; i < n; i++)
+    for (int i = 0, j = 0; i < n; i++)
         for (unsigned int k = i; k < total_size; k += n, j++)
             ret[k] = m[j];
 }
 
-void matN_sum_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
+void matN_sum_matN(matN_t m1, matN_t m2, int n, matN_t ret)
 {
     for (int i = 0; i < (n * n); i++)
         ret[i] = m1[i] + m2[i];
 }
 
-void matN_sub_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
+void matN_sub_matN(matN_t m1, matN_t m2, int n, matN_t ret)
 {
     for (int i = 0; i < (n * n); i++)
         ret[i] = m1[i] - m2[i];
 }
 
-void matN_mult_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
+void matN_mult_matN(matN_t m1, matN_t m2, int n, matN_t ret)
 {
     for (int i = 0; i < (n * n); i++)
     {
@@ -70,7 +70,7 @@ void matN_mult_matN(matN_t m1, matN_t m2, unsigned int n, matN_t ret)
     }
 }
 
-void matN_mult_vecN(matN_t m1, vecN_t v, unsigned int n, vecN_t ret)
+void matN_mult_vecN(matN_t m1, vecN_t v, int n, vecN_t ret)
 {
     for (int i = 0; i < n; i++)
     {

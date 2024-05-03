@@ -32,12 +32,20 @@ void mat4_get_identity(mat4_t ret)
     ret[0] = 1; ret[1] = 0; ret[2] = 0; ret[3] = 0; ret[4] = 0; ret[5] = 1; ret[6] = 0; ret[7] = 0; ret[8] = 0; ret[9] = 0; ret[10] = 1; ret[11] = 0; ret[12] = 0; ret[13] = 0; ret[14] = 0; ret[15] = 1;
 }
 
-void mat4_get_proj_ortho(float L, float R, float B, float T, float N, float F, mat4_t ret)
+void mat4_get_proj_ortho(float left, float right, float bottom, float top, float near, float far, mat4_t ret)
 {
-    ret[0] = 2/(R - L); ret[4] = 0;         ret[8] = 0;             ret[12] = -(R + L)/((R - L));
-    ret[1] = 0;         ret[5] = 2/(T - B); ret[9] = 0;             ret[13] = -(T + B)/((T - B));
-    ret[2] = 0;         ret[6] = 0;         ret[10] = 2/(F - N);    ret[14] = -(F + N)/((F - N));
-    ret[3] = 0;         ret[7] = 0;         ret[11] = 0;            ret[15] = 1;
+    ret[0] = 2.0f/(right - left);  ret[4] = 0;                 ret[8] = 0;                 ret[12] = -(right + left)/((right - left));
+    ret[1] = 0;                 ret[5] = 2.0f/(top - bottom);  ret[9] = 0;                 ret[13] = -(top + bottom)/((top - bottom));
+    ret[2] = 0;                 ret[6] = 0;                 ret[10] = 2.0f/(far - near);   ret[14] = -(far + near)/((far - near));
+    ret[3] = 0;                 ret[7] = 0;                 ret[11] = 0;                ret[15] = 1.0f;
+}
+
+void mat4_get_proj_persp(float fov, float aspect, float near, float far, mat4_t ret)
+{
+    ret[0] = 1.0f/(aspect*(float)tan(fov/2.0)); ret[4] = 0;                         ret[8] = 0;                             ret[12] = 0;
+    ret[1] = 0;                                 ret[5] = 1.0f/((float)tan(fov/2));  ret[9] = 0;                             ret[13] = 0;
+    ret[2] = 0;                                 ret[6] = 0;                         ret[10] = -(far + near)/(far - near);   ret[14] = -(2.0f * far * near)/(far - near);
+    ret[3] = 0;                                 ret[7] = 0;                         ret[11] = -1.0f;                        ret[15] = 0;
 }
 
 void mat4_get_rotX(float angle, mat4_t ret)
