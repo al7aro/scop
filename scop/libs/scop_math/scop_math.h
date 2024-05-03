@@ -76,6 +76,9 @@ void mat4_get_rotX(float angle, mat4_t ret);
 void mat4_get_rotY(float angle, mat4_t ret);
 void mat4_get_rotZ(float angle, mat4_t ret);
 
+/* TRASLATION MATRICES */
+void mat4_get_tras(float x, float y, float z, mat4_t ret);
+
 /* PROJECTION MATRICES */
 void mat4_get_proj_ortho(float left, float right, float bottom, float top, float near, float far, mat4_t ret);
 void mat4_get_proj_persp(float fov, float aspect, float near, float far, mat4_t ret);

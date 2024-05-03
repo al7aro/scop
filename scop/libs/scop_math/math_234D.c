@@ -72,6 +72,14 @@ void mat4_get_rotZ(float angle, mat4_t ret)
     ret[3] = 0;             ret[7] = 0;             ret[11] = 0;    ret[15] = 1;
 }
 
+void mat4_get_tras(float x, float y, float z, mat4_t ret)
+{
+    ret[0] = 1; ret[4] = 0; ret[8] = 0;     ret[12] = x;
+    ret[1] = 0; ret[5] = 1; ret[9] = 0;     ret[13] = y;
+    ret[2] = 0; ret[6] = 0; ret[10] = 1;    ret[14] = z;
+    ret[3] = 0; ret[7] = 0; ret[11] = 0;    ret[15] = 1;
+}
+
 /* LOGGING */
 
 void vec2_print(vec2_t const v)
