@@ -2,7 +2,7 @@
 
 void mesh_destroy(mesh_t* mesh)
 {
-    free(mesh->data->raw);
+    free(mesh->data->vertex);
     free(mesh->data->idx);
     free(mesh->data);
     free(mesh);
@@ -11,31 +11,79 @@ void mesh_destroy(mesh_t* mesh)
 mesh_t* mesh_load_cube(mesh_t** ret)
 {
     mesh_t* mesh;
-    float square_data[4 * 8] =
+    /* TODO: there are in fact repeated vertices in this array -> drawElements could be used*/
+    float cube_data[] =
     {
-        -0.5, -0.5, 0.0,	1.0, 0.0, 0.0,  1.0, 1.0,
-        0.5, -0.5, 0.0,		0.0, 1.0, 0.0,  1.0, 0.0,
-        0.5, 0.5, 0.0,		0.0, 0.0, 1.0,  0.0, 0.0,
-        -0.5, 0.5, 0.0,		1.0, 1.0, 1.0,  0.0, 1.0
+        -0.5f, -0.5f, -0.5f, 1.0, 0.0, 0.0,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f, 1.0, 0.0, 0.0,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f, 1.0, 0.0, 0.0,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f, 1.0, 0.0, 0.0,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f, 1.0, 0.0, 0.0,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 1.0, 0.0, 0.0,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f, 0.0, 1.0, 0.0,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f, 0.0, 1.0, 0.0,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f, 0.0, 1.0, 0.0,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f, 0.0, 1.0, 0.0,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f, 0.0, 1.0, 0.0,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 0.0, 1.0, 0.0,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f, 0.0, 0.0, 1.0,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, 0.0, 0.0, 1.0,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0, 0.0, 1.0,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, 0.0, 0.0, 1.0,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, 0.0, 0.0, 1.0,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, 0.0, 0.0, 1.0,  1.0f, 0.0f,
+
+        0.5f,  0.5f,  0.5f, 1.0, 0.5, 0.0,  1.0f, 0.0f,
+        0.5f,  0.5f, -0.5f, 1.0, 0.5, 0.0,  1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0, 0.5, 0.0,  0.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 1.0, 0.5, 0.0,  0.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 1.0, 0.5, 0.0,  0.0f, 0.0f,
+        0.5f,  0.5f,  0.5f, 1.0, 0.5, 0.0,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f, 0.5, 1.0, 0.0,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f, 0.5, 1.0, 0.0,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f, 0.5, 1.0, 0.0,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f, 0.5, 1.0, 0.0,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f, 0.5, 1.0, 0.0,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f, 0.5, 1.0, 0.0,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f, 0.0, 0.5, 1.0,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f, 0.0, 0.5, 1.0,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f, 0.0, 0.5, 1.0,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f, 0.0, 0.5, 1.0,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, 0.0, 0.5, 1.0,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, 0.0, 0.5, 1.0,  0.0f, 1.0f
     };
-    unsigned int square_idx[6] =
+    unsigned int cube_idx[] =
     {
         0, 1, 3,
-        1, 2, 3
+        1, 2, 3,
+        4, 5, 7,
+        5, 6, 7,
+        3, 2, 7,
+        2, 6, 7,
+        0, 1, 4,
+        1, 5, 4,
+        4, 0, 7,
+        0, 3, 7,
+        1, 5, 2,
+        5, 6, 2
     };
 
     /* Mesh Setup */
     mesh = (mesh_t*)malloc(sizeof(mesh_t));
     mesh->data = (vertex_data_t*)malloc(sizeof(vertex_data_t));
-    mesh->data->vertex_cnt = 4; /* Square vertices*/
-    mesh->data->raw_size = sizeof(square_data);
-    mesh->data->idx_size = sizeof(square_idx);
-    mesh->data->idx_cnt = 6;
-    mesh->data->raw = (unsigned char*)malloc(sizeof(square_data));
-    mesh->data->idx = (unsigned int*)malloc(sizeof(square_idx));
+    mesh->data->vertex_cnt = 6 * 6; /* cube vertices*/
+    mesh->data->vertex_size = sizeof(cube_data);
+    mesh->data->idx_size = sizeof(cube_idx);
+    mesh->data->idx_cnt = sizeof(cube_idx) / sizeof(unsigned char);
+    mesh->data->vertex = (unsigned char*)malloc(sizeof(cube_data));
+    mesh->data->idx = (unsigned int*)malloc(sizeof(cube_idx));
 
-    memcpy(mesh->data->raw, square_data, sizeof(square_data));
-    memcpy(mesh->data->idx, square_idx, sizeof(square_idx));
+    memcpy(mesh->data->vertex, cube_data, sizeof(cube_data));
+    memcpy(mesh->data->idx, cube_idx, sizeof(cube_idx));
 
     /* Attribute Format Setup */
     memset(mesh->data->att_format, 0, sizeof(mesh->data->att_format));
@@ -65,7 +113,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     glGenBuffers(1, mesh->EBO);
 
     glBindBuffer(GL_ARRAY_BUFFER, *(mesh->VBO));
-    glBufferData(GL_ARRAY_BUFFER, mesh->data->raw_size, mesh->data->raw, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, mesh->data->vertex_size, mesh->data->vertex, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, *(mesh->EBO));
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->data->idx_size, mesh->data->idx, GL_STATIC_DRAW);
@@ -90,6 +138,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
 void mesh_render(mesh_t* mesh)
 {
     glBindVertexArray(*(mesh->VAO));
-    glDrawElements(GL_TRIANGLES, mesh->data->idx_cnt, GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, mesh->data->idx_cnt, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, mesh->data->vertex_cnt);
     glBindVertexArray(0);
 }
