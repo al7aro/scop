@@ -1,7 +1,13 @@
 cmake_minimum_required(VERSION 3.25.0)
 project(scop_math)
 
-add_library(scop_math scop_math.h scop_math.c)
+file(GLOB_RECURSE source_files
+    scop_math.h
+    scop_math.c
+)
+set(SOURCES ${source_files})
+
+add_library(scop_math ${SOURCES})
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 
