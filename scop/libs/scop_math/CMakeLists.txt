@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25.0)
 project(scop_math)
 
-add_library(scop_math scop_math.h math_ND.c math_234D.c)
+add_library(scop_math scop_math.h scop_math.c)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 
