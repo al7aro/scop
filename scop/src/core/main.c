@@ -15,6 +15,7 @@
 #include "scop_math.h"
 #include "px_image.h"
 #include "basic_mesh.h"
+#include "scop_model_loader.h"
 
 float angle = 0;
 shader_t sh;
@@ -29,7 +30,7 @@ void init(GLFWwindow* window)
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
 	shader_create(&sh, "scop\\assets\\shaders\\main460.vert", "scop\\assets\\shaders\\main460.frag");
-	px_load("scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
+	// px_load("scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 #endif
 #if defined(__APPLE__) || defined(__linux__)
 	shader_create(&sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
@@ -48,26 +49,32 @@ void init(GLFWwindow* window)
 	glGenTextures(1, &texture0);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	// glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	unsigned char* data;
 	int w, h, chn;
 	glBindTexture(GL_TEXTURE_2D, texture0);
-	data = px_load("scop/assets/textures/man.pam", &w, &h, &chn);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	data = px_load("scop/assets/textures/woman.pam", &w, &h, &chn);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture0", 0);
 
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	data = px_load("scop/assets/textures/woman.pam", &w, &h, &chn);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	data = px_load("scop/assets/textures/large.pam", &w, &h, &chn);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture1", 1);
+
+	sml_load_wavefront_obj("scop/assets/models/double_cube.obj");
 }
 
 void display(GLFWwindow *window, double currentTime)

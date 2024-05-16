@@ -26,6 +26,10 @@ set(PX_IMAGE_DIR ${LIBS_DIR}/px_image)
 add_subdirectory(${PX_IMAGE_DIR})
 
 # px_image
+set(PX_IMAGE_DIR ${LIBS_DIR}/scop_model_loader)
+add_subdirectory(${PX_IMAGE_DIR})
+
+# scop_math
 set(SCOP_MATH_DIR ${LIBS_DIR}/scop_math)
 add_subdirectory(${SCOP_MATH_DIR})
 
@@ -90,6 +94,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # Libraries
 target_link_libraries(${PROJECT_NAME} glfw)
 target_link_libraries(${PROJECT_NAME} px_image)
+target_link_libraries(${PROJECT_NAME} scop_model_loader)
 target_link_libraries(${PROJECT_NAME} scop_math)
 target_link_libraries(${PROJECT_NAME} glad)
 target_link_libraries(${PROJECT_NAME} OpenGL::GL)
