@@ -78,7 +78,7 @@ mesh_t* mesh_load_cube(mesh_t** ret)
     mesh->data->vertex_cnt = 6 * 6; /* cube vertices*/
     mesh->data->vertex_size = sizeof(cube_data);
     mesh->data->idx_size = sizeof(cube_idx);
-    mesh->data->idx_cnt = sizeof(cube_idx) / sizeof(unsigned char);
+    mesh->data->idx_cnt = sizeof(cube_idx) / sizeof(unsigned int);
     mesh->data->vertex = (unsigned char*)malloc(sizeof(cube_data));
     mesh->data->idx = (unsigned int*)malloc(sizeof(cube_idx));
 

@@ -74,7 +74,7 @@ void init(GLFWwindow* window)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture1", 1);
 
-	sml_load_wavefront_obj("scop/assets/models/double_cube.obj");
+	sml_load_wavefront_obj("scop/assets/models/cube.obj");
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -98,9 +98,8 @@ void display(GLFWwindow *window, double currentTime)
 	mat4_mult_mat4(tras, model, model);
 	shader_set_mat4(&sh, "rot", model);
 	shader_set_float(&sh, "offset", (float)cos(currentTime));
-	angle += 0.005f;
+	angle += 0.002f;
 }
-
 int main(void)
 {
 	if (!glfwInit())
