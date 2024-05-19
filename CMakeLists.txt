@@ -66,9 +66,14 @@ source_group("Assets\\Shaders" FILES ${shader_files})
 
 file(GLOB_RECURSE texture_files
     "${PROJECT_DIR}/assets/textures/*.pam"
-    "${PROJECT_DIR}/assets/textures/*.pam"
 )
 source_group("Assets\\Textures" FILES ${texture_files})
+
+file(GLOB_RECURSE model_files
+    "${PROJECT_DIR}/assets/models/*.obj"
+    "${PROJECT_DIR}/assets/models/*.mtl"
+)
+source_group("Assets\\Models" FILES ${model_files})
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files} ${texture_files})
