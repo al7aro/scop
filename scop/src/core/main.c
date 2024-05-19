@@ -1,5 +1,6 @@
 #ifdef _WIN32
 	#include <Windows.h>
+	#include <crtdbg.h>
 #endif
 
 #include <glad/glad.h>
@@ -29,7 +30,7 @@ void init(GLFWwindow* window)
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
-	shader_create(&sh, "scop\\assets\\shaders\\main460.vert", "scop\\assets\\shaders\\main460.frag");
+	shader_create(&sh, "../scop\\assets\\shaders\\main460.vert", "../scop\\assets\\shaders\\main460.frag");
 	// px_load("scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 #endif
 #if defined(__APPLE__) || defined(__linux__)
@@ -63,18 +64,20 @@ void init(GLFWwindow* window)
 	unsigned char* data;
 	int w, h, chn;
 	glBindTexture(GL_TEXTURE_2D, texture0);
-	data = px_load("scop/assets/textures/woman.pam", &w, &h, &chn);
+	data = px_load("../scop/assets/textures/woman.pam", &w, &h, &chn);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture0", 0);
+	free(data);
 
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	data = px_load("scop/assets/textures/large.pam", &w, &h, &chn);
+	data = px_load("../scop/assets/textures/large.pam", &w, &h, &chn);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture1", 1);
+	free(data);
 
-	sml_load_wavefront_obj("scop/assets/models/cube.obj");
+	sml_load_wavefront_obj("../scop/assets/models/cube.obj");
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -144,5 +147,7 @@ int main(void)
 	}
 	glfwDestroyWindow(window);
     glfwTerminate();
+	mesh_destroy(mesh);
+	_CrtDumpMemoryLeaks();
 	return (0);
 }

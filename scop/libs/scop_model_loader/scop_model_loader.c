@@ -4,7 +4,6 @@
 /*TODO: THINK ABOUT USING STRTOD*/
 static void parse_line(loader_obj_data_t* obj, char* line)
 {
-    char* aux = strdup(line);
     char* line_type = strtok_r(line, " ", &line);
     char* line_data = strtok_r(NULL, "#\n", &line); (void)line_data;
     if (line_data)
@@ -34,9 +33,12 @@ static void parse_line(loader_obj_data_t* obj, char* line)
                 break;
         }
         int ret = get_line_data(line_data, f);
-        if (!*cnt) *cnt = ret;
-        for (size_t i = 0; i < *cnt; i++)
-            buff_push_back(data, ptr, max_size, ((size_t)ret >= (i + 1)) ? f[i] : 1.0f);
+        if (cnt)
+        {
+            if (!*cnt) *cnt = ret;
+            for (size_t i = 0; i < *cnt; i++)
+                buff_push_back(data, ptr, max_size, ((size_t)ret >= (i + 1)) ? f[i] : 1.0f);
+        }
     }
     else if (!strncmp("f\0", line_type, 2))
     {
@@ -44,11 +46,11 @@ static void parse_line(loader_obj_data_t* obj, char* line)
         {
             obj->data_max_size = obj->v_ptr + obj->vn_ptr + obj->vt_ptr + obj->vp_ptr;
             obj->data = (float*)malloc(sizeof(float) * obj->data_max_size);
-            memset(obj->data, 0, sizeof(float)  * obj->data_max_size);
+            if (obj->data)
+                memset(obj->data, 0, sizeof(float)  * obj->data_max_size);
         }
         printf("Creating faces\n");
     }
-    free(aux);
 }
 
 void sml_load_wavefront_obj(const char* path)
@@ -67,9 +69,10 @@ void sml_load_wavefront_obj(const char* path)
     while (fgets(line, MAX_LINE_SIZE, fp))
     {
         char aux[64];
-        if (sscanf(line, " o %s ", aux) > 0)
+        memset(name, 0, sizeof(name));
+        if (sscanf_s(line, " o %s ", aux, 64) > 0)
         {
-            strcpy(name, aux);
+            memcpy(name, aux, sizeof(char) * 64);
             printf("Working on object: %s\n", name);
         }
         if (*name)
@@ -79,7 +82,7 @@ void sml_load_wavefront_obj(const char* path)
         }
     }
     printf("Scene Size: %d\n", data_ptr + 1);
-    for (int i = 0; i < data_ptr; i++)
+    for (int i = 0; i < data_ptr + 1; i++)
     {
         free_obj_data(scene[i]);
         free(scene[i]);

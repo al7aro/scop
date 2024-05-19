@@ -26,7 +26,7 @@ void init_obj_data(loader_obj_data_t* obj, char* name)
     obj->data_ptr = 0;
     obj->data_max_size = 0;
 
-    strcpy(obj->id_name, name);
+    strcpy_s(obj->id_name, sizeof(obj->id_name), name);
 }
 
 void free_obj_data(loader_obj_data_t* obj)
@@ -51,7 +51,11 @@ loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* na
             return ((*scene)[i]);
     }
     *size += 1;
-    *scene = (loader_obj_data_t**)realloc(*scene, sizeof(loader_obj_data_t*) * (*size + 1));
+    loader_obj_data_t** tmp = (loader_obj_data_t**)realloc(*scene, sizeof(loader_obj_data_t*) * (*size + 1));
+    if (tmp)
+        *scene = tmp;
+    else
+        return NULL;
     (*scene)[*size] = (loader_obj_data_t*)malloc(sizeof(loader_obj_data_t));
     init_obj_data((*scene)[*size], name);
     return (*scene)[*size];
@@ -59,10 +63,15 @@ loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* na
 
 void buff_push_back(float **buff, size_t *ptr, size_t *max_size, float f)
 {
+    float* tmp;
     if (*ptr >= *max_size)
     {
         *max_size *= 2;
-        *buff = realloc(*buff, sizeof(float) * *max_size);
+        tmp = realloc(*buff, sizeof(float) * *max_size);
+        if (tmp)
+            *buff = tmp;
+        else
+            return;
     }
     *(*buff + *ptr) = f;
     *ptr += 1;
@@ -70,7 +79,7 @@ void buff_push_back(float **buff, size_t *ptr, size_t *max_size, float f)
 
 void trim_spaces(char* str)
 {
-    int start = 0, end = strlen(str) - 1;
+    size_t start = 0, end = strlen(str) - 1;
     while (str[start] == ' ') start++;
     while (end > start && str[end] == ' ') end--;
 
@@ -83,7 +92,7 @@ int get_line_data(char* line, float f[16])
     int i = 0;
     while (*line != '\0' && i < 16)
     {
-        f[i] = strtod(line, &line);
+        f[i] = (float)strtod(line, &line);
         i++;
     }
     return (i);
