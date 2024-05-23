@@ -76,7 +76,7 @@ file(GLOB_RECURSE model_files
 source_group("Assets\\Models" FILES ${model_files})
 
 # Executable
-add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files} ${texture_files} ${model_files})
+add_executable(${PROJECT_NAME} ${SOURCES} ${shader_files})
 
 add_compile_definitions(_CRT_SECURE_NO_DEPRECATE)
 

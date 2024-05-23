@@ -1,30 +1,46 @@
 #include "scop_model_loader.h"
 
+void init_obj_face(loader_obj_face_t* obj)
+{
+    memset(obj->v_idx, 0, MAX_FACE_SIZE);
+    memset(obj->vn_idx, 0, MAX_FACE_SIZE);
+    memset(obj->vt_idx, 0, MAX_FACE_SIZE);
+    memset(obj->vp_idx, 0, MAX_FACE_SIZE);
+
+    obj->size = 0;
+}
+
 void init_obj_data(loader_obj_data_t* obj, char* name)
 {
-    obj->v = (float*)malloc(sizeof(float) * 16);
+    obj->v = NULL;
+    obj->v_id = -1;
     obj->v_ptr = 0;
     obj->v_cnt = 0;
-    obj->v_max_size = 16;
+    obj->v_max_size = 0;
 
-    obj->vn = (float*)malloc(sizeof(float) * 16);
+    obj->vn = NULL;
+    obj->vn_id = -1;
     obj->vn_ptr = 0;
     obj->vn_cnt = 0;
-    obj->vn_max_size = 16;
+    obj->vn_max_size = 0;
 
-    obj->vt = (float*)malloc(sizeof(float) * 16);
+    obj->vt = NULL;
+    obj->vt_id = -1;
     obj->vt_ptr = 0;
     obj->vt_cnt = 0;
-    obj->vt_max_size = 16;
+    obj->vt_max_size = 0;
 
-    obj->vp = (float*)malloc(sizeof(float) * 16);
+    obj->vp = NULL;
+    obj->vp_id = -1;
     obj->vp_ptr = 0;
     obj->vp_cnt = 0;
-    obj->vp_max_size = 16;
+    obj->vp_max_size = 0;
 
-    obj->data = NULL;
-    obj->data_ptr = 0;
-    obj->data_max_size = 0;
+    obj->att_id_cnt = -1;
+
+    obj->faces = NULL;
+    obj->faces_ptr = 0;
+    obj->faces_max_size = 0;
 
     strcpy_s(obj->id_name, sizeof(obj->id_name), name);
 }
@@ -39,8 +55,8 @@ void free_obj_data(loader_obj_data_t* obj)
         free(obj->vt);
     if (obj->vp)
         free(obj->vp);
-    if (obj->data)
-        free(obj->data);
+    if (obj->faces)
+        free(obj->faces);
 }
 
 loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* name)
@@ -51,29 +67,59 @@ loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* na
             return ((*scene)[i]);
     }
     *size += 1;
-    loader_obj_data_t** tmp = (loader_obj_data_t**)realloc(*scene, sizeof(loader_obj_data_t*) * (*size + 1));
+    loader_obj_data_t** tmp = (loader_obj_data_t**)realloc(*scene, sizeof(loader_obj_data_t*) * (*size + 2));
     if (tmp)
         *scene = tmp;
     else
         return NULL;
     (*scene)[*size] = (loader_obj_data_t*)malloc(sizeof(loader_obj_data_t));
+    (*scene)[*size + 1] = NULL;
+    printf("SIZE: %d\n", *size);
     init_obj_data((*scene)[*size], name);
     return (*scene)[*size];
 }
 
-void buff_push_back(float **buff, size_t *ptr, size_t *max_size, float f)
+void buff_push_back_float(float **buff, size_t *ptr, size_t *max_size, float f)
 {
     float* tmp;
     if (*ptr >= *max_size)
     {
         *max_size *= 2;
-        tmp = realloc(*buff, sizeof(float) * *max_size);
+        if (!*buff && !*max_size)
+        {
+            *max_size = 16;
+            tmp = (float*)malloc(sizeof(float) * *max_size);
+        }
+        else
+            tmp = realloc(*buff, sizeof(float) * *max_size);
         if (tmp)
             *buff = tmp;
         else
             return;
     }
     *(*buff + *ptr) = f;
+    *ptr += 1;
+}
+
+void buff_push_back_faces(loader_obj_face_t** buff, size_t* ptr, size_t* max_size, loader_obj_face_t face)
+{
+    loader_obj_face_t* tmp;
+    if (*ptr >= *max_size)
+    {
+        *max_size *= 2;
+        if (!*buff && !*max_size)
+        {
+            *max_size = 16;
+            tmp = (loader_obj_face_t*)malloc(sizeof(loader_obj_face_t) * *max_size);
+        }
+        else
+            tmp = realloc(*buff, sizeof(loader_obj_face_t) * *max_size);
+        if (tmp)
+            *buff = tmp;
+        else
+            return;
+    }
+    *(*buff + *ptr) = face;
     *ptr += 1;
 }
 
