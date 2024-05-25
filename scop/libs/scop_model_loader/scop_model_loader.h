@@ -6,6 +6,8 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "libft_ll.h"
+
 #ifdef _WIN32
 	#define strtok_r strtok_s
 #endif
@@ -41,12 +43,6 @@ typedef struct loader_obj_data_s
 	loader_obj_face_t* faces;
 	size_t faces_ptr, faces_max_size;
 } loader_obj_data_t;
-
-typedef struct loader_scene_data_s
-{
-	void* content;
-	void* next;
-} loader_scene_data_t;
 
 loader_obj_data_t** sml_load_wavefront_obj(const char* path);
 void sml_destroy(loader_obj_data_t** scene);

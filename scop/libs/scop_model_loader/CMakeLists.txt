@@ -15,4 +15,8 @@ if(MSVC)
     target_compile_options(${PROJECT_NAME} PRIVATE /W4 /WX)
 endif()
 
+set(LIBS_DIR ../)
+set(LIBFT_LL_DIR ${LIBS_DIR}/libft_ll)
+
 target_include_directories(scop_model_loader PUBLIC ./)
+target_include_directories(scop_model_loader PUBLIC ${LIBFT_LL_DIR}/include)

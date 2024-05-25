@@ -4,4 +4,8 @@
 	branch = 3.3-stable
 [submodule "scop/vendor/glad"]
 	path = scop/vendor/glad
-	url = https://github.com/dVaGaymer/glad.git
+	url = https://github.com/al7aro/glad
+[submodule "scop/libs/libft_ll"]
+	path = scop/libs/libft_ll
+	url = https://github.com/al7aro/Libft
+	branch = ll
