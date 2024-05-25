@@ -46,6 +46,8 @@ file(GLOB_RECURSE source_files
         "${PROJECT_DIR}/include/core/main.h"
         "${PROJECT_DIR}/src/core/basic_mesh.c"
         "${PROJECT_DIR}/include/core/basic_mesh.h"
+		"${PROJECT_DIR}/src/core/basic_model.c"
+        "${PROJECT_DIR}/include/core/basic_model.h"
 
         "${PROJECT_DIR}/src/shader/shader.c"
         "${PROJECT_DIR}/include/shader/shader.h"

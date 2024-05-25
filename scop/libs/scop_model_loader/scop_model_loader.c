@@ -107,14 +107,14 @@ sml_scene_t* sml_load_wavefront_obj(const char* path)
         char mtl_name[64];
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
-            printf("Working on material: %s\n", mtl_name);
+            //printf("Working on material: %s\n", mtl_name);
             sml_mtl_group_t* mtl = (sml_mtl_group_t*)malloc(sizeof(sml_mtl_group_t));
             init_mtl_group(mtl, mtl_name);
             ft_lstadd_back(&(((sml_obj_t*)ft_lstlast(scene->obj)->content)->mtl_group), ft_lstnew(mtl));
         }
         if (sscanf_s(line, " o %s ", name, 64) > 0)
         {
-            printf("Working on object: %s\n", name);
+            //printf("Working on object: %s\n", name);
             sml_obj_t* obj = (sml_obj_t*)malloc(sizeof(sml_obj_t));
             init_obj(obj, name);
             ft_lstadd_back(&(scene->obj), ft_lstnew(obj));
@@ -122,11 +122,11 @@ sml_scene_t* sml_load_wavefront_obj(const char* path)
         if (scene->obj)
         {
             t_list* tmp = ft_lstlast(scene->obj);
-            printf("Parsing line of object: %s\n", ((sml_obj_t*)(tmp->content))->id_name);
+            //printf("Parsing line of object: %s\n", ((sml_obj_t*)(tmp->content))->id_name);
             parse_line(tmp->content, line);
         }
     }
-    printf("LST. SIZE: %d\n", ft_lstsize(scene->obj));
+    //printf("LST. SIZE: %d\n", ft_lstsize(scene->obj));
     sml_destroy(scene);
     return scene;
 }

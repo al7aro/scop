@@ -35,6 +35,15 @@ typedef struct sml_mtl_group_s
 {
 	char usemtl[64];
 	t_list* faces;		/*Content -> sml_obj_face*/
+
+	float Ns;
+	float Ka[3];
+	float Kd[3];
+	float Ks[3];
+	float Ke[3];
+	float Ni;
+	float d;
+	int illum;
 } sml_mtl_group_t;
 
 typedef struct sml_obj_s

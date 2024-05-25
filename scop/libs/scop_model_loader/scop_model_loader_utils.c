@@ -4,6 +4,15 @@ void init_mtl_group(sml_mtl_group_t* mtl, const char* mtl_name)
 {
     strcpy_s(mtl->usemtl, sizeof(mtl->usemtl), mtl_name);
     mtl->faces = NULL;
+
+    mtl->d = 1.0;
+    mtl->illum = 0;
+    mtl->Ns = 0.5;
+    mtl->Ni = 1.0;
+    mtl->Ka[0] = 1.0; mtl->Ka[1] = 1.0; mtl->Ka[2] = 1.0;
+    mtl->Kd[0] = 1.0; mtl->Kd[1] = 1.0; mtl->Kd[2] = 1.0;
+    mtl->Ks[0] = 1.0; mtl->Ks[1] = 1.0; mtl->Ks[2] = 1.0;
+    mtl->Ke[0] = 0.0; mtl->Ke[1] = 0.0; mtl->Ke[2] = 0.0;
 }
 
 void init_face(sml_face_t* obj)
@@ -101,7 +110,6 @@ int get_line_data(char* line, float f[16])
 
 void free_mlt_group(sml_mtl_group_t* mtl_group)
 {
-    printf("ERASE MTL?\n");
     ft_lstclear(&(mtl_group->faces), free);
     free(mtl_group);
 }
@@ -122,7 +130,6 @@ void free_obj(sml_obj_t* obj)
 
 void sml_destroy(sml_scene_t* scene)
 {
-    printf("YEAH?\n");
     ft_lstclear(&(scene->obj), free_obj);
     free(scene);
 }
