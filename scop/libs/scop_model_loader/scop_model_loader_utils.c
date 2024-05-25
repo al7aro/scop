@@ -1,6 +1,12 @@
 #include "scop_model_loader.h"
 
-void init_obj_face(loader_obj_face_t* obj)
+void init_mtl_group(sml_mtl_group_t* mtl, const char* mtl_name)
+{
+    strcpy_s(mtl->usemtl, sizeof(mtl->usemtl), mtl_name);
+    mtl->faces = NULL;
+}
+
+void init_face(sml_face_t* obj)
 {
     memset(obj->v_idx, 0, MAX_FACE_SIZE);
     memset(obj->vn_idx, 0, MAX_FACE_SIZE);
@@ -10,7 +16,14 @@ void init_obj_face(loader_obj_face_t* obj)
     obj->size = 0;
 }
 
-void init_obj_data(loader_obj_data_t* obj, char* name)
+void init_scene(sml_scene_t* scene)
+{
+    memset(scene->mtllib, 0, sizeof(scene->mtllib));
+    scene->mtllib;
+    scene->obj = NULL;
+}
+
+void init_obj(sml_obj_t* obj, char* name)
 {
     obj->v = NULL;
     obj->v_id = -1;
@@ -38,45 +51,9 @@ void init_obj_data(loader_obj_data_t* obj, char* name)
 
     obj->att_id_cnt = -1;
 
-    obj->faces = NULL;
-    obj->faces_ptr = 0;
-    obj->faces_max_size = 0;
+    obj->mtl_group = NULL;
 
     strcpy_s(obj->id_name, sizeof(obj->id_name), name);
-}
-
-void free_obj_data(loader_obj_data_t* obj)
-{
-    if (obj->v)
-        free(obj->v);
-    if (obj->vn)
-        free(obj->vn);
-    if (obj->vt)
-        free(obj->vt);
-    if (obj->vp)
-        free(obj->vp);
-    if (obj->faces)
-        free(obj->faces);
-}
-
-loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* name)
-{
-    for (int i = 0; i <= *size; i++)
-    {
-        if (!strncmp((*scene)[i]->id_name, name, strlen(name)))
-            return ((*scene)[i]);
-    }
-    *size += 1;
-    loader_obj_data_t** tmp = (loader_obj_data_t**)realloc(*scene, sizeof(loader_obj_data_t*) * (*size + 2));
-    if (tmp)
-        *scene = tmp;
-    else
-        return NULL;
-    (*scene)[*size] = (loader_obj_data_t*)malloc(sizeof(loader_obj_data_t));
-    (*scene)[*size + 1] = NULL;
-    printf("SIZE: %d\n", *size);
-    init_obj_data((*scene)[*size], name);
-    return (*scene)[*size];
 }
 
 void buff_push_back_float(float **buff, size_t *ptr, size_t *max_size, float f)
@@ -101,28 +78,6 @@ void buff_push_back_float(float **buff, size_t *ptr, size_t *max_size, float f)
     *ptr += 1;
 }
 
-void buff_push_back_faces(loader_obj_face_t** buff, size_t* ptr, size_t* max_size, loader_obj_face_t face)
-{
-    loader_obj_face_t* tmp;
-    if (*ptr >= *max_size)
-    {
-        *max_size *= 2;
-        if (!*buff && !*max_size)
-        {
-            *max_size = 16;
-            tmp = (loader_obj_face_t*)malloc(sizeof(loader_obj_face_t) * *max_size);
-        }
-        else
-            tmp = realloc(*buff, sizeof(loader_obj_face_t) * *max_size);
-        if (tmp)
-            *buff = tmp;
-        else
-            return;
-    }
-    *(*buff + *ptr) = face;
-    *ptr += 1;
-}
-
 void trim_spaces(char* str)
 {
     size_t start = 0, end = strlen(str) - 1;
@@ -142,4 +97,32 @@ int get_line_data(char* line, float f[16])
         i++;
     }
     return (i);
+}
+
+void free_mlt_group(sml_mtl_group_t* mtl_group)
+{
+    printf("ERASE MTL?\n");
+    ft_lstclear(&(mtl_group->faces), free);
+    free(mtl_group);
+}
+
+void free_obj(sml_obj_t* obj)
+{
+    if (obj->v)
+        free(obj->v);
+    if (obj->vn)
+        free(obj->vn);
+    if (obj->vt)
+        free(obj->vt);
+    if (obj->vp)
+        free(obj->vp);
+    ft_lstclear(&(obj->mtl_group), free_mlt_group);
+    free(obj);
+}
+
+void sml_destroy(sml_scene_t* scene)
+{
+    printf("YEAH?\n");
+    ft_lstclear(&(scene->obj), free_obj);
+    free(scene);
 }

@@ -77,7 +77,7 @@ void init(GLFWwindow* window)
 	shader_set_int(&sh, "texture1", 1);
 	free(data);
 
-	sml_load_wavefront_obj("../scop/assets/models/simple.obj");
+	sml_load_wavefront_obj("../scop/assets/models/double_cube.obj");
 }
 
 void display(GLFWwindow *window, double currentTime)

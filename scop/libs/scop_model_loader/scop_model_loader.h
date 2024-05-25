@@ -22,16 +22,22 @@
 
 #define MAX_FACE_SIZE 64
 
-typedef struct loader_obj_face_s
+typedef struct sml_face_s
 {
 	unsigned int v_idx[MAX_FACE_SIZE];
 	unsigned int vn_idx[MAX_FACE_SIZE];
 	unsigned int vt_idx[MAX_FACE_SIZE];
 	unsigned int vp_idx[MAX_FACE_SIZE];
 	unsigned int size;
-} loader_obj_face_t;
+} sml_face_t;
 
-typedef struct loader_obj_data_s
+typedef struct sml_mtl_group_s
+{
+	char usemtl[64];
+	t_list* faces;		/*Content -> sml_obj_face*/
+} sml_mtl_group_t;
+
+typedef struct sml_obj_s
 { 
 	float* v; int v_id; size_t v_ptr, v_cnt, v_max_size;
 	float* vn; int vn_id; size_t vn_ptr, vn_cnt, vn_max_size;
@@ -40,21 +46,27 @@ typedef struct loader_obj_data_s
 	int att_id_cnt;
 
 	char id_name[64];
-	loader_obj_face_t* faces;
-	size_t faces_ptr, faces_max_size;
-} loader_obj_data_t;
+	t_list* mtl_group;	/*Content -> sml_mtl_group*/
+} sml_obj_t;
 
-loader_obj_data_t** sml_load_wavefront_obj(const char* path);
-void sml_destroy(loader_obj_data_t** scene);
+typedef struct sml_scene_s
+{
+	t_list* obj;
+	char mtllib[64];
+} sml_scene_t;
+
+sml_scene_t* sml_load_wavefront_obj(const char* path);
+void sml_destroy(sml_scene_t* scene);
+
 
 # ifdef SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
 
-void init_obj_data(loader_obj_data_t* obj, char* name);
-void init_obj_face(loader_obj_face_t* obj);
-void free_obj_data(loader_obj_data_t* obj);
-loader_obj_data_t* get_obj_by_id(loader_obj_data_t*** scene, int *size, char* name);
+void init_mtl_group(sml_mtl_group_t* mtl, const char* mtl_name);
+void init_obj(sml_obj_t* obj, char* name);
+void init_face(sml_face_t* obj);
+void init_scene(sml_scene_t* scene);
+
 void buff_push_back_float(float** buff, size_t* ptr, size_t* max_size, float f);
-void buff_push_back_faces(loader_obj_face_t**buff, size_t *ptr, size_t *max_size, loader_obj_face_t f);
 void trim_spaces(char* str);
 int get_line_data(char* line, float f[16]);
 

@@ -1,21 +1,19 @@
 #define SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
 #include "scop_model_loader.h"
 
-void test_print_face(loader_obj_face_t f)
+void test_print_face(sml_face_t f)
 {
     for (unsigned int i = 0; i < f.size; i++)
         printf("%d/%d/%d ",f.v_idx[i], f.vn_idx[i], f.vt_idx[i]);
     printf("\n");
 }
 
-static void parse_line_face(loader_obj_data_t* obj, char** line)
+static void parse_line_face(sml_obj_t* obj, char** line)
 {
-    (void)obj;
-    (void)line;
     char* token = strtok_r(NULL, " ", line);
-    loader_obj_face_t face;
-    init_obj_face(&face);
-    for (; token && face.size < MAX_FACE_SIZE; token = strtok_r(NULL, " ", line), face.size += 1)
+    sml_face_t *face = (sml_face_t*)malloc(sizeof(sml_face_t));
+    init_face(face);
+    for (; token && face->size < MAX_FACE_SIZE; token = strtok_r(NULL, " ", line), face->size += 1)
     {
         char* aux = strdup(token);
         char* aux_save = NULL;
@@ -23,21 +21,25 @@ static void parse_line_face(loader_obj_data_t* obj, char** line)
         for (size_t att_id = 0; token && att_id < MAX_ATT_ID; token = strtok_r(NULL, "/", &aux_save), att_id++)
         {
             if (att_id == obj->v_id)
-                face.v_idx[face.size] = atoi(token);
+                face->v_idx[face->size] = atoi(token);
             else if (att_id == obj->vn_id)
-                face.vn_idx[face.size] = atoi(token);
+                face->vn_idx[face->size] = atoi(token);
             else if (att_id == obj->vt_id)
-                face.vt_idx[face.size] = atoi(token);
+                face->vt_idx[face->size] = atoi(token);
             else if (att_id == obj->vp_id)
-                face.vp_idx[face.size] = atoi(token);
+                face->vp_idx[face->size] = atoi(token);
         }
         free(aux);
     }
-    buff_push_back_faces(&(obj->faces), &(obj->faces_ptr), &(obj->faces_max_size), face);
+    if (obj->mtl_group)
+    {
+        sml_mtl_group_t* current_mtl_group = (sml_mtl_group_t*)(ft_lstlast(obj->mtl_group)->content);
+        ft_lstadd_back(&(current_mtl_group->faces), ft_lstnew(face));
+    }
 }
 
 /*TODO: THINK ABOUT USING STRTOD*/
-static void parse_line(loader_obj_data_t* obj, char* line)
+static void parse_line(sml_obj_t* obj, char* line)
 {
 
     char* line_type = strtok_r(line, " ", &line);
@@ -83,12 +85,11 @@ static void parse_line(loader_obj_data_t* obj, char* line)
     }
     else if (!strncmp("f\0", line_type, 2))
     {
-        //if (NULL == obj->faces)
-            parse_line_face(obj, &line_data);
+        parse_line_face(obj, &line_data);
     }
 }
 
-loader_obj_data_t** sml_load_wavefront_obj(const char* path)
+sml_scene_t* sml_load_wavefront_obj(const char* path)
 {
     FILE* fp = fopen(path, "rb");
     if (!fp)
@@ -97,41 +98,35 @@ loader_obj_data_t** sml_load_wavefront_obj(const char* path)
         return NULL;
     }
     char line[512];
-    loader_obj_data_t** scene = NULL;
-    int data_ptr = -1;
-    char name[64];
-    memset(name, 0, sizeof(name));
+    sml_scene_t* scene = (sml_scene_t*)malloc(sizeof(sml_scene_t));
+    if (!scene) return NULL;
+    init_scene(scene);
     while (fgets(line, MAX_LINE_SIZE, fp))
     {
-        char aux[64];
-        if (sscanf_s(line, " o %s ", aux, 64) > 0)
+        char name[64];
+        char mtl_name[64];
+        if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
-            memcpy(name, aux, sizeof(char) * 64);
+            printf("Working on material: %s\n", mtl_name);
+            sml_mtl_group_t* mtl = (sml_mtl_group_t*)malloc(sizeof(sml_mtl_group_t));
+            init_mtl_group(mtl, mtl_name);
+            ft_lstadd_back(&(((sml_obj_t*)ft_lstlast(scene->obj)->content)->mtl_group), ft_lstnew(mtl));
+        }
+        if (sscanf_s(line, " o %s ", name, 64) > 0)
+        {
             printf("Working on object: %s\n", name);
+            sml_obj_t* obj = (sml_obj_t*)malloc(sizeof(sml_obj_t));
+            init_obj(obj, name);
+            ft_lstadd_back(&(scene->obj), ft_lstnew(obj));
         }
-        if (*name)
+        if (scene->obj)
         {
-            loader_obj_data_t* obj = get_obj_by_id(&scene, &data_ptr, name);
-            parse_line(obj, line);
+            t_list* tmp = ft_lstlast(scene->obj);
+            printf("Parsing line of object: %s\n", ((sml_obj_t*)(tmp->content))->id_name);
+            parse_line(tmp->content, line);
         }
     }
-    if (scene)
-    {
-        printf("FACES: %zu\n", scene[0]->faces_ptr);
-        for (size_t i = 0; i < scene[0]->faces_ptr; i++)
-        {
-            test_print_face(scene[0]->faces[i]);
-        }
-    }
+    printf("LST. SIZE: %d\n", ft_lstsize(scene->obj));
+    sml_destroy(scene);
     return scene;
-}
-
-void sml_destroy(loader_obj_data_t** scene)
-{
-    for (; *scene; scene++)
-    {
-        free_obj_data(*scene);
-        free(*scene);
-    }
-    free(scene);
 }
