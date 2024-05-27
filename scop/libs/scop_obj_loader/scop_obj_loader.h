@@ -53,23 +53,23 @@ typedef struct sol_mtl_group_s
 
 typedef struct sol_obj_s
 { 
+	char id_name[64];
+	t_list* mtl_group;	/*Content -> sol_mtl_group*/
+} sol_obj_t;
+
+typedef struct sol_model_s
+{
 	float* v[MAX_ATT_ID];
 	size_t v_ptr[MAX_ATT_ID];
 	size_t v_cnt[MAX_ATT_ID];
 	size_t v_max_size[MAX_ATT_ID];
 
-	char id_name[64];
-	t_list* mtl_group;	/*Content -> sol_mtl_group*/
-} sol_obj_t;
-
-typedef struct sol_scene_s
-{
-	t_list* obj;
 	char mtllib[64];
-} sol_scene_t;
+	t_list* obj;
+} sol_model_t;
 
-sol_scene_t* sol_load_wavefront_obj(const char* path);
-void sol_destroy(sol_scene_t* scene);
+sol_model_t* sol_load_wavefront_obj(const char* path);
+void sol_destroy(sol_model_t* scene);
 
 
 # ifdef SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
@@ -77,9 +77,9 @@ void sol_destroy(sol_scene_t* scene);
 void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name);
 void init_obj(sol_obj_t* obj, char* name);
 void init_face(sol_face_t* obj);
-void init_scene(sol_scene_t* scene);
+void init_model(sol_model_t* model);
 
-void buff_push_back_float(sol_obj_t* obj, unsigned int att_id, float f);
+void buff_push_back_float(sol_model_t* obj, unsigned int att_id, float f);
 void trim_spaces(char* str);
 int get_line_data(char* line, float f[16]);
 

@@ -27,7 +27,7 @@ t_list* face_subdiv(t_list* face_lst)
 	return face_lst;
 }
 
-mesh_t* model_load_mesh(sol_obj_t* obj, sol_mtl_group_t* mtl_group)
+mesh_t* model_load_mesh(sol_model_t* model_data, sol_mtl_group_t* mtl_group)
 {
 	t_list* face_lst = mtl_group->faces;
 	mesh_t* mesh = (mesh_t*)malloc(sizeof(mesh_t));
@@ -45,28 +45,27 @@ mesh_t* model_load_mesh(sol_obj_t* obj, sol_mtl_group_t* mtl_group)
 			for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
 			{
 				size_t face_id = face->att[att_id].data[i] - 1;
-				for (size_t v_i = 0; v_i < obj->v_cnt[att_id]; v_i++)
-					f[v_i] = obj->v[att_id][(face_id * obj->v_cnt[att_id]) + v_i];
-				mesh_push_att(mesh, f, (unsigned int)obj->v_cnt[att_id]);
+				for (size_t v_i = 0; v_i < model_data->v_cnt[att_id]; v_i++)
+					f[v_i] = model_data->v[att_id][(face_id * model_data->v_cnt[att_id]) + v_i];
+				mesh_push_att(mesh, f, (unsigned int)model_data->v_cnt[att_id]);
 			}
 			mesh->data->buff_cnt++;
 		}
 		face_lst = face_lst->next;
 	}
-	mesh_set_format(mesh, obj);
+	mesh_set_format(mesh, model_data);
 	return mesh;
 }
 
 /* Loads all material groups from obj */
-void model_load_obj(model_t* model, sol_obj_t* obj)
+void model_load_obj(model_t* model, sol_model_t* model_data, sol_obj_t* obj)
 {
 	mesh_t* mesh; (void)mesh;
 	t_list* mtl_group = obj->mtl_group;
 
 	while (mtl_group)
 	{
-		(void)model;
-		mesh = model_load_mesh(obj, mtl_group->content);
+		mesh = model_load_mesh(model_data, mtl_group->content);
 		ft_lstadd_back(&(model->mesh), ft_lstnew(mesh));
 		mtl_group = mtl_group->next;
 	}
@@ -77,17 +76,17 @@ void model_load(model_t** ret, const char* file)
 	model_t* model = (model_t*)malloc(sizeof(model_t));
 	if (!model) return;
 	model->mesh = NULL;
-	sol_scene_t* scene = sol_load_wavefront_obj(file);
-	t_list* obj = scene->obj;
+	sol_model_t* model_data = sol_load_wavefront_obj(file);
+	t_list* obj = model_data->obj;
 
 	while (obj)
 	{
-		model_load_obj(model, obj->content);
+		model_load_obj(model, model_data, obj->content);
 		obj = obj->next;
 	}
 
 	*ret = model;
-	sol_destroy(scene);
+	sol_destroy(model_data);
 }
 
 void model_load_GPU(model_t* model)

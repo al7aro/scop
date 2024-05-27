@@ -22,32 +22,31 @@ void init_face(sol_face_t* obj)
     obj->size = 0;
 }
 
-void init_scene(sol_scene_t* scene)
+void init_model(sol_model_t* model)
 {
-    memset(scene->mtllib, 0, sizeof(scene->mtllib));
-    scene->mtllib;
-    scene->obj = NULL;
+    model->obj = NULL;
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+    {
+        model->v[att_id] = NULL;
+        model->v_ptr[att_id] = 0;
+        model->v_cnt[att_id] = 0;
+        model->v_max_size[att_id] = 0;
+    }
+    memset(model->mtllib, 0, sizeof(model->mtllib));
 }
 
 void init_obj(sol_obj_t* obj, char* name)
 {
-    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
-    {
-        obj->v[att_id] = NULL;
-        obj->v_ptr[att_id] = 0;
-        obj->v_cnt[att_id] = 0;
-        obj->v_max_size[att_id] = 0;
-    }
     obj->mtl_group = NULL;
     strcpy_s(obj->id_name, sizeof(obj->id_name), name);
 }
 
-void buff_push_back_float(sol_obj_t* obj, unsigned int att_id, float f)
+void buff_push_back_float(sol_model_t* model, unsigned int att_id, float f)
 {
     float* tmp;
-    float** buff = &(obj->v[att_id]);
-    size_t* ptr = &(obj->v_ptr[att_id]);
-    size_t* max_size = &(obj->v_max_size[att_id]);
+    float** buff = &(model->v[att_id]);
+    size_t* ptr = &(model->v_ptr[att_id]);
+    size_t* max_size = &(model->v_max_size[att_id]);
 
     if (*ptr >= *max_size)
     {
@@ -99,17 +98,17 @@ void free_mlt_group(sol_mtl_group_t* mtl_group)
 
 void free_obj(sol_obj_t* obj)
 {
-    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
-    {
-        if (obj->v[att_id])
-            free(obj->v[att_id]);
-    }
     ft_lstclear(&(obj->mtl_group), free_mlt_group);
     free(obj);
 }
 
-void sol_destroy(sol_scene_t* scene)
+void sol_destroy(sol_model_t* model)
 {
-    ft_lstclear(&(scene->obj), free_obj);
-    free(scene);
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+    {
+        if (model->v[att_id])
+            free(model->v[att_id]);
+    }
+    ft_lstclear(&(model->obj), free_obj);
+    free(model);
 }

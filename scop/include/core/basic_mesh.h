@@ -58,7 +58,7 @@ typedef struct mesh_s
 } mesh_t;
 
 void mesh_load_GPU(mesh_t* mesh);
-void  mesh_set_format(mesh_t* mesh, sol_obj_t* obj);
+void  mesh_set_format(mesh_t* mesh, sol_model_t* model);
 void mesh_render(mesh_t* mesh);
 void mesh_destroy(mesh_t* mesh);
 void mesh_init(mesh_t* mesh, const char* usemtl);

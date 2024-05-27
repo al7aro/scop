@@ -80,11 +80,11 @@ void mesh_push_att(mesh_t* mesh, float* f, unsigned int n) /* n is MAX 16 */
 #define MAX_ATT_ID 4
 */
 /* TODO; MAKE THIS MORE GENERAL (LOL) */
-void  mesh_set_format(mesh_t* mesh, sol_obj_t* obj)
+void  mesh_set_format(mesh_t* mesh, sol_model_t* model)
 {
     unsigned int stride = 0;
     for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
-        stride += (unsigned int)obj->v_cnt[att_id];
+        stride += (unsigned int)model->v_cnt[att_id];
     stride *= sizeof(float);
     
     unsigned int offset = 0;
@@ -93,11 +93,11 @@ void  mesh_set_format(mesh_t* mesh, sol_obj_t* obj)
         mesh->data->att_format[att_id].stride = stride;
         mesh->data->att_format[att_id].type = GL_FLOAT;
         mesh->data->att_format[att_id].normaliced = GL_FALSE;
-        mesh->data->att_format[att_id].count = (char)obj->v_cnt[att_id];
-        mesh->data->att_format[att_id].enabled = !!(obj->v_cnt[att_id]);
-        if (obj->v_cnt[att_id])
+        mesh->data->att_format[att_id].count = (char)model->v_cnt[att_id];
+        mesh->data->att_format[att_id].enabled = !!(model->v_cnt[att_id]);
+        if (model->v_cnt[att_id])
             mesh->data->att_format[att_id].offset = (const void*)(offset * sizeof(float));
-        offset += (unsigned int)obj->v_cnt[att_id];
+        offset += (unsigned int)model->v_cnt[att_id];
     }
     mesh->data->buff_bytes = sizeof(float) * mesh->data->buff_size;
 }

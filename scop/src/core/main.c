@@ -39,7 +39,7 @@ void init(GLFWwindow* window)
 {
 	(void)window;
 	model_load(&toy_model, "../scop/assets/models/cube_color.obj");
-	model_load(&light_model, "../scop/assets/models/hexagon.obj");
+	model_load(&light_model, "../scop/assets/models/backpack.obj");
 	model_load_GPU(toy_model);
 	model_load_GPU(light_model);
 

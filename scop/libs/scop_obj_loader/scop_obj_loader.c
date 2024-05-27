@@ -47,7 +47,7 @@ static void parse_line_face(sol_obj_t* obj, char** line)
 }
 
 /*TODO: THINK ABOUT USING STRTOD*/
-static void parse_line(sol_obj_t* obj, char* line)
+static void parse_line(sol_model_t* model, sol_obj_t* obj, char* line)
 {
     char* line_data = NULL;
     char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
@@ -80,19 +80,19 @@ static void parse_line(sol_obj_t* obj, char* line)
         if (ret)
         {
             /* TODO: THINK OF A BETTER WAY TO ADD COLOR TO .OBJ */
-            if (!obj->v_cnt[att_id]) obj->v_cnt[att_id] = ret;
+            if (!model->v_cnt[att_id]) model->v_cnt[att_id] = ret;
             if (att_id == V_ATT_ID && ret == 6)
             {
-                obj->v_cnt[V_ATT_ID] = 3;
-                obj->v_cnt[VC_ATT_ID] = 3;
+                model->v_cnt[V_ATT_ID] = 3;
+                model->v_cnt[VC_ATT_ID] = 3;
                 for (size_t i = 0; i < 3; i++)
-                    buff_push_back_float(obj, V_ATT_ID, f[i]);
+                    buff_push_back_float(model, V_ATT_ID, f[i]);
                 for (size_t i = 0; i < 3; i++)
-                    buff_push_back_float(obj, VC_ATT_ID, f[i + 3]);
+                    buff_push_back_float(model, VC_ATT_ID, f[i + 3]);
             }
             else
-                for (size_t i = 0; i < obj->v_cnt[att_id]; i++)
-                    buff_push_back_float(obj, att_id, ((size_t)ret >= (i + 1)) ? f[i] : 1.0f);
+                for (size_t i = 0; i < model->v_cnt[att_id]; i++)
+                    buff_push_back_float(model, att_id, ((size_t)ret >= (i + 1)) ? f[i] : 1.0f);
         }
     }
     else if (!strncmp("f\0", line_type, 2) && line_data)
@@ -102,7 +102,7 @@ static void parse_line(sol_obj_t* obj, char* line)
     }
 }
 
-sol_scene_t* sol_load_wavefront_obj(const char* path)
+sol_model_t* sol_load_wavefront_obj(const char* path)
 {
     FILE* fp = fopen(path, "rb");
     if (!fp)
@@ -111,9 +111,9 @@ sol_scene_t* sol_load_wavefront_obj(const char* path)
         return NULL;
     }
     char line[512]; memset(line, 0, sizeof(line));
-    sol_scene_t* scene = (sol_scene_t*)malloc(sizeof(sol_scene_t));
-    if (!scene) return NULL;
-    init_scene(scene);
+    sol_model_t* model = (sol_model_t*)malloc(sizeof(sol_model_t));
+    if (!model) return NULL;
+    init_model(model);
     while (fgets(line, MAX_LINE_SIZE, fp))
     {
         char name[64];
@@ -123,22 +123,22 @@ sol_scene_t* sol_load_wavefront_obj(const char* path)
             //printf("Working on material: %s\n", mtl_name);
             sol_mtl_group_t* mtl = (sol_mtl_group_t*)malloc(sizeof(sol_mtl_group_t));
             init_mtl_group(mtl, mtl_name);
-            ft_lstadd_back(&(((sol_obj_t*)ft_lstlast(scene->obj)->content)->mtl_group), ft_lstnew(mtl));
+            ft_lstadd_back(&(((sol_obj_t*)ft_lstlast(model->obj)->content)->mtl_group), ft_lstnew(mtl));
         }
         if (sscanf_s(line, " o %s ", name, 64) > 0)
         {
             //printf("Working on object: %s\n", name);
             sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
             init_obj(obj, name);
-            ft_lstadd_back(&(scene->obj), ft_lstnew(obj));
+            ft_lstadd_back(&(model->obj), ft_lstnew(obj));
         }
-        if (scene->obj)
+        if (model->obj)
         {
-            t_list* tmp = ft_lstlast(scene->obj);
+            t_list* tmp = ft_lstlast(model->obj);
             //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
-            parse_line(tmp->content, line);
+            parse_line(model, tmp->content, line);
         }
     }
-    //printf("SCENE SIZE: %d\n", ft_lstsize(scene->obj));
-    return scene;
+    //printf("SCENE SIZE: %d\n", ft_lstsize(model->obj));
+    return model;
 }
