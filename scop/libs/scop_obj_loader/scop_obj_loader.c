@@ -47,7 +47,7 @@ static void parse_line_face(sol_obj_t* obj, char** line)
 }
 
 /*TODO: THINK ABOUT USING STRTOD*/
-static void parse_line(sol_model_t* model, sol_obj_t* obj, char* line)
+static void parse_obj_line(sol_model_t* model, sol_obj_t* obj, char* line)
 {
     char* line_data = NULL;
     char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
@@ -76,7 +76,7 @@ static void parse_line(sol_model_t* model, sol_obj_t* obj, char* line)
                 printf("unrecogniced\n");
                 break;
         }
-        int ret = get_line_data(line_data, f);
+        int ret = get_line_data(line_data, f, 16);
         if (ret)
         {
             /* TODO: THINK OF A BETTER WAY TO ADD COLOR TO .OBJ */
@@ -118,9 +118,12 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
     {
         char name[64];
         char mtl_name[64];
+        char mtllib[64];
+        if (sscanf_s(line, " mtllib %s ", mtllib, (unsigned int)sizeof(mtllib)) > 0)
+            strcpy_s(model->mtllib, (unsigned int)sizeof(model->mtllib), mtllib);
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
-            //printf("Working on material: %s\n", mtl_name);
+            printf("Working on material: %s\n", mtl_name);
             if (!model->obj)
             {
                 sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
@@ -148,9 +151,10 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
                 ft_lstadd_back(&(model->obj), ft_lstnew(obj));
             }
             //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
-            parse_line(model, tmp->content, line);
+            parse_obj_line(model, tmp->content, line);
         }
     }
     //printf("SCENE SIZE: %d\n", ft_lstsize(model->obj));
+    sol_load_wavefront_mtl(model, path);
     return model;
 }

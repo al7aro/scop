@@ -4,13 +4,14 @@ void mesh_destroy(mesh_t* mesh)
 {
     free(mesh->data->buff);
     free(mesh->data);
+    free(mesh->mtl);
     free(mesh);
 }
 
-void mesh_init(mesh_t* mesh, const char* usemtl)
+void mesh_init(mesh_t* mesh)
 {
+    mesh->mtl = (mtl_t*)malloc(sizeof(mtl_t));
     mesh->data = (vertex_data_t*)malloc(sizeof(vertex_data_t));
-    strcpy_s(mesh->usemtl, sizeof(mesh->usemtl), usemtl);
     if (mesh->data)
     {
         mesh->data->buff = NULL;
@@ -108,4 +109,15 @@ void mesh_render(mesh_t* mesh)
     // glDrawElements(GL_TRIANGLES, mesh->data->idx_cnt, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, mesh->data->buff_cnt);
     glBindVertexArray(0);
+}
+
+void mesh_set_mtl(mesh_t* mesh, sol_mtl_group_t* sol_mtl_group)
+{
+    memcpy(mesh->mtl->Ka, sol_mtl_group->Ka, sizeof(float) * 3);
+    memcpy(mesh->mtl->Kd, sol_mtl_group->Kd, sizeof(float) * 3);
+    memcpy(mesh->mtl->Ks, sol_mtl_group->Ks, sizeof(float) * 3);
+    memcpy(mesh->mtl->Ke, sol_mtl_group->Ke, sizeof(float) * 3);
+    mesh->mtl->Ns = sol_mtl_group->Ns;
+    mesh->mtl->Ni = sol_mtl_group->Ni;
+    mesh->mtl->d = sol_mtl_group->d;
 }

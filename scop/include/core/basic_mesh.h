@@ -16,6 +16,20 @@
 
 #define MESH_MAX_ATT 8
 
+typedef struct mtl_s
+{
+    float Ns;
+    float Ka[3];
+    float Kd[3];
+    float Ks[3];
+    float Ke[3];
+    float Ni;
+    float d;
+    int illum;
+
+    char* textures[128]; /* Diffuse, Normal, Bump, etc MAPS */
+} mtl_t;
+
 typedef struct attrib_format_s
 {
     GLenum type;
@@ -53,15 +67,16 @@ typedef struct mesh_s
 {
     unsigned int VAO[1];
     unsigned int VBO[1];
-    char usemtl[64];
+    mtl_t* mtl;
     vertex_data_t* data;    /* TODO: should I check the ownership of data? */
 } mesh_t;
 
 void mesh_load_GPU(mesh_t* mesh);
-void  mesh_set_format(mesh_t* mesh, sol_model_t* model);
+void mesh_set_format(mesh_t* mesh, sol_model_t* model);
 void mesh_render(mesh_t* mesh);
 void mesh_destroy(mesh_t* mesh);
-void mesh_init(mesh_t* mesh, const char* usemtl);
+void mesh_init(mesh_t* mesh);
 void mesh_push_att(mesh_t* mesh, float* f, unsigned int n); /* n is MAX 16 */
+void mesh_set_mtl(mesh_t* mesh, sol_mtl_group_t* sol_mtl_group);
 
 #endif

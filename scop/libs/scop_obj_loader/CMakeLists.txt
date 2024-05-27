@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25.0)
 project(scop_obj_loader)
 
-add_library(scop_obj_loader scop_obj_loader.h scop_obj_loader.c scop_obj_loader_utils.c)
+add_library(scop_obj_loader scop_obj_loader.h scop_obj_loader.c scop_mtl_loader.c scop_obj_loader_utils.c)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 

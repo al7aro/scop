@@ -33,7 +33,8 @@ mesh_t* model_load_mesh(sol_model_t* model_data, sol_mtl_group_t* mtl_group)
 	mesh_t* mesh = (mesh_t*)malloc(sizeof(mesh_t));
 	if (!mesh) return NULL;
 
-	mesh_init(mesh, mtl_group->usemtl);
+	mesh_init(mesh);
+	mesh_set_mtl(mesh, mtl_group);
 	while (face_lst)
 	{
 		sol_face_t* face = face_lst->content;

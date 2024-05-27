@@ -74,6 +74,8 @@ void sol_destroy(sol_model_t* scene);
 
 # ifdef SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
 
+void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path);
+
 void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name);
 void init_obj(sol_obj_t* obj, char* name);
 void init_face(sol_face_t* obj);
@@ -81,7 +83,7 @@ void init_model(sol_model_t* model);
 
 void buff_push_back_float(sol_model_t* obj, unsigned int att_id, float f);
 void trim_spaces(char* str);
-int get_line_data(char* line, float f[16]);
+int get_line_data(char* line, float* f, int max_size);
 
 # endif
 

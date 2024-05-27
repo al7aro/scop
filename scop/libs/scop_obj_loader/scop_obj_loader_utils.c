@@ -79,10 +79,10 @@ void trim_spaces(char* str)
     str[end - start + 1] = '\0';
 }
 
-int get_line_data(char* line, float f[16])
+int get_line_data(char* line, float *f, int max_size)
 {
     int i = 0;
-    while (*line != '\0' && i < 16)
+    while (*line != '\0' && i < max_size)
     {
         f[i] = (float)strtod(line, &line);
         i++;
