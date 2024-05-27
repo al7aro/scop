@@ -91,3 +91,11 @@ void shader_set_mat4(const shader_t* sh, const char* name, mat4_t value)
 	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, value);
 }
+
+void shader_set_vec3(const shader_t* sh, const char* name, vec3_t value)
+{
+	if (!name)
+		return ;
+	GLuint loc = glGetUniformLocation(sh->id, name);
+	glUniform3fv(loc, 1, value);
+}
