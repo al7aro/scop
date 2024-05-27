@@ -6,13 +6,18 @@ layout (location = 4) in vec3 col;
 
 uniform mat4 proj;
 uniform mat4 rot;
+uniform vec3 light_src_pos;
 
 out vec3 varying_col;
+out vec3 varying_norm;
+out vec3 frag_pos;
 out vec2 var_tex;
 
 void main()
 {
     varying_col = col;
+    varying_norm = norm;
     var_tex = tex;
     gl_Position = proj * rot * vec4(pos, 1.0);
+    frag_pos = vec3(gl_Position);
 }

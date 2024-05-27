@@ -38,8 +38,8 @@ vec3_t cam_pos = {0.0, 0.0, 5.0};
 void init(GLFWwindow* window)
 {
 	(void)window;
-	model_load(&toy_model, "../scop/assets/models/cube_color.obj");
-	model_load(&light_model, "../scop/assets/models/backpack.obj");
+	model_load(&toy_model, "../scop/assets/models/backpack.obj");
+	model_load(&light_model, "../scop/assets/models/sphere.obj");
 	model_load_GPU(toy_model);
 	model_load_GPU(light_model);
 
@@ -105,21 +105,9 @@ void display(GLFWwindow *window, double currentTime)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
-	/* TOY CUBE */
-	mat4_t rot1, rot2, tras, model_mat, view; (void)view;
-	mat4_get_tras(toy_pos[0], toy_pos[1], toy_pos[2], tras);
+	/* MODELS */
+	mat4_t view;
 	mat4_get_tras(-cam_pos[0], -cam_pos[1], -cam_pos[2], view);
-
-	mat4_get_rotY(angle, rot1);
-	mat4_get_rotX(angle, rot2);
-	mat4_mult_mat4(rot1, rot2, model_mat);
-	mat4_mult_mat4(tras, model_mat, model_mat);
-	mat4_mult_mat4(view, model_mat, model_mat);
-	shader_set_mat4(&toy_sh, "rot", model_mat);
-	//shader_set_float(&toy_sh, "offset", (float)cos(currentTime));
-	angle += 0.002f;
-	shader_use(&toy_sh);
-	model_render(toy_model);
 
 	/* LIGHT CUBE */
 	mat4_t lmod, ltras, lscale, lrot;
@@ -135,6 +123,26 @@ void display(GLFWwindow *window, double currentTime)
 	shader_set_mat4(&light_sh, "rot", lmod);
 	shader_use(&light_sh);
 	model_render(light_model);
+
+	/* TOY CUBE */
+	mat4_t rot1, rot2, tras, model_mat;
+	mat4_get_tras(toy_pos[0], toy_pos[1], toy_pos[2], tras);
+
+	mat4_get_rotY(angle/4, rot1);
+	mat4_get_rotX(angle/2, rot2);
+	mat4_mult_mat4(rot1, rot2, model_mat);
+	mat4_mult_mat4(tras, model_mat, model_mat);
+	mat4_mult_mat4(view, model_mat, model_mat);
+	shader_set_mat4(&toy_sh, "rot", model_mat);
+	//shader_set_float(&toy_sh, "offset", (float)cos(currentTime));
+	angle += 0.002f;
+
+	vec4_t lpos = {light_pos[0], light_pos[1], light_pos[2], 1.0};
+	mat4_mult_vec4(lmod, lpos, lpos);
+	shader_set_vec3(&toy_sh, "light_src_pos", lpos);
+
+	shader_use(&toy_sh);
+	model_render(toy_model);
 }
 int main(void)
 {
