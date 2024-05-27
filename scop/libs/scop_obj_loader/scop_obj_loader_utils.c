@@ -1,6 +1,6 @@
-#include "scop_model_loader.h"
+#include "scop_obj_loader.h"
 
-void init_mtl_group(sml_mtl_group_t* mtl, const char* mtl_name)
+void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name)
 {
     strcpy_s(mtl->usemtl, sizeof(mtl->usemtl), mtl_name);
     mtl->faces = NULL;
@@ -15,53 +15,40 @@ void init_mtl_group(sml_mtl_group_t* mtl, const char* mtl_name)
     mtl->Ke[0] = 0.0; mtl->Ke[1] = 0.0; mtl->Ke[2] = 0.0;
 }
 
-void init_face(sml_face_t* obj)
+void init_face(sol_face_t* obj)
 {
-    memset(obj->v_idx, 0, MAX_FACE_SIZE);
-    memset(obj->vn_idx, 0, MAX_FACE_SIZE);
-    memset(obj->vt_idx, 0, MAX_FACE_SIZE);
-    memset(obj->vp_idx, 0, MAX_FACE_SIZE);
-
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+        memset(obj->att[att_id].data, 0, MAX_FACE_SIZE);
     obj->size = 0;
 }
 
-void init_scene(sml_scene_t* scene)
+void init_scene(sol_scene_t* scene)
 {
     memset(scene->mtllib, 0, sizeof(scene->mtllib));
     scene->mtllib;
     scene->obj = NULL;
 }
 
-void init_obj(sml_obj_t* obj, char* name)
+void init_obj(sol_obj_t* obj, char* name)
 {
-    obj->v = NULL;
-    obj->v_ptr = 0;
-    obj->v_cnt = 0;
-    obj->v_max_size = 0;
-
-    obj->vn = NULL;
-    obj->vn_ptr = 0;
-    obj->vn_cnt = 0;
-    obj->vn_max_size = 0;
-
-    obj->vt = NULL;
-    obj->vt_ptr = 0;
-    obj->vt_cnt = 0;
-    obj->vt_max_size = 0;
-
-    obj->vp = NULL;
-    obj->vp_ptr = 0;
-    obj->vp_cnt = 0;
-    obj->vp_max_size = 0;
-
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+    {
+        obj->v[att_id] = NULL;
+        obj->v_ptr[att_id] = 0;
+        obj->v_cnt[att_id] = 0;
+        obj->v_max_size[att_id] = 0;
+    }
     obj->mtl_group = NULL;
-
     strcpy_s(obj->id_name, sizeof(obj->id_name), name);
 }
 
-void buff_push_back_float(float **buff, size_t *ptr, size_t *max_size, float f)
+void buff_push_back_float(sol_obj_t* obj, unsigned int att_id, float f)
 {
     float* tmp;
+    float** buff = &(obj->v[att_id]);
+    size_t* ptr = &(obj->v_ptr[att_id]);
+    size_t* max_size = &(obj->v_max_size[att_id]);
+
     if (*ptr >= *max_size)
     {
         *max_size *= 2;
@@ -104,27 +91,24 @@ int get_line_data(char* line, float f[16])
     return (i);
 }
 
-void free_mlt_group(sml_mtl_group_t* mtl_group)
+void free_mlt_group(sol_mtl_group_t* mtl_group)
 {
     ft_lstclear(&(mtl_group->faces), free);
     free(mtl_group);
 }
 
-void free_obj(sml_obj_t* obj)
+void free_obj(sol_obj_t* obj)
 {
-    if (obj->v)
-        free(obj->v);
-    if (obj->vn)
-        free(obj->vn);
-    if (obj->vt)
-        free(obj->vt);
-    if (obj->vp)
-        free(obj->vp);
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+    {
+        if (obj->v[att_id])
+            free(obj->v[att_id]);
+    }
     ft_lstclear(&(obj->mtl_group), free_mlt_group);
     free(obj);
 }
 
-void sml_destroy(sml_scene_t* scene)
+void sol_destroy(sol_scene_t* scene)
 {
     ft_lstclear(&(scene->obj), free_obj);
     free(scene);

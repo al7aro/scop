@@ -7,7 +7,7 @@
 
 #include "glad/glad.h"
 #include "basic_mesh.h"
-#include "scop_model_loader.h"
+#include "scop_obj_loader.h"
 
 typedef struct model_s
 {
@@ -16,6 +16,7 @@ typedef struct model_s
 
 void model_load(model_t** ret, const char* file);
 void model_load_GPU(model_t* model);
-void model_render(model_t* ret);
+void model_render(model_t* model);
+void model_destroy(model_t* model);
 
 #endif

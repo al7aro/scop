@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.25.0)
-project(scop_model_loader)
+project(scop_obj_loader)
 
-add_library(scop_model_loader scop_model_loader.h scop_model_loader.c scop_model_loader_utils.c)
+add_library(scop_obj_loader scop_obj_loader.h scop_obj_loader.c scop_obj_loader_utils.c)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 
@@ -18,5 +18,5 @@ endif()
 set(LIBS_DIR ../)
 set(LIBFT_LL_DIR ${LIBS_DIR}/libft_ll)
 
-target_include_directories(scop_model_loader PUBLIC ./)
-target_include_directories(scop_model_loader PUBLIC ${LIBFT_LL_DIR}/include)
+target_include_directories(scop_obj_loader PUBLIC ./)
+target_include_directories(scop_obj_loader PUBLIC ${LIBFT_LL_DIR}/include)

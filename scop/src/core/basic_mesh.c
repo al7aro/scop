@@ -76,40 +76,29 @@ void mesh_push_att(mesh_t* mesh, float* f, unsigned int n) /* n is MAX 16 */
 #define VT_ATT_ID 1
 #define VN_ATT_ID 2
 #define VP_ATT_ID 3
+#define VC_ATT_ID 3
 #define MAX_ATT_ID 4
 */
 /* TODO; MAKE THIS MORE GENERAL (LOL) */
-void  mesh_set_format(mesh_t* mesh, sml_obj_t* obj)
+void  mesh_set_format(mesh_t* mesh, sol_obj_t* obj)
 {
-    unsigned int stride = sizeof(float) * (unsigned int)(obj->v_cnt + obj->vt_cnt + obj->vn_cnt + obj->vp_cnt);
-    /* POS */
-    mesh->data->att_format[0].stride = stride;
-    mesh->data->att_format[0].type = GL_FLOAT;
-    mesh->data->att_format[0].normaliced = GL_FALSE;
-    mesh->data->att_format[0].count = (char)obj->v_cnt;
-    mesh->data->att_format[0].enabled = !!(obj->v_cnt);
-    if (obj->v_cnt)
-        mesh->data->att_format[0].offset = (const void*)(0 * sizeof(float));
-
-    /* TEX */
-    mesh->data->att_format[1].stride = stride;
-    mesh->data->att_format[1].type = GL_FLOAT;
-    mesh->data->att_format[1].normaliced = GL_FALSE;
-    mesh->data->att_format[1].count = (char)obj->vt_cnt;
-    mesh->data->att_format[1].enabled = !!(obj->vt_cnt);
-    if (obj->vt_cnt)
-        mesh->data->att_format[1].offset = (const void*)(obj->v_cnt * sizeof(float));
-
-    /* NORM */
-    mesh->data->att_format[2].stride = stride;
-    mesh->data->att_format[2].type = GL_FLOAT;
-    mesh->data->att_format[2].normaliced = GL_FALSE;
-    mesh->data->att_format[2].count = (char)obj->vn_cnt;
-    mesh->data->att_format[2].enabled = !!(obj->vn_cnt);
-    mesh->data->att_format[2].offset = (const void*)(5 * sizeof(float));
-    if (obj->vn_cnt)
-        mesh->data->att_format[2].offset = (const void*)((obj->v_cnt + obj->vt_cnt) * sizeof(float));
-
+    unsigned int stride = 0;
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+        stride += (unsigned int)obj->v_cnt[att_id];
+    stride *= sizeof(float);
+    
+    unsigned int offset = 0;
+    for (unsigned int att_id = 0; att_id < MAX_ATT_ID; att_id++)
+    {
+        mesh->data->att_format[att_id].stride = stride;
+        mesh->data->att_format[att_id].type = GL_FLOAT;
+        mesh->data->att_format[att_id].normaliced = GL_FALSE;
+        mesh->data->att_format[att_id].count = (char)obj->v_cnt[att_id];
+        mesh->data->att_format[att_id].enabled = !!(obj->v_cnt[att_id]);
+        if (obj->v_cnt[att_id])
+            mesh->data->att_format[att_id].offset = (const void*)(offset * sizeof(float));
+        offset += (unsigned int)obj->v_cnt[att_id];
+    }
     mesh->data->buff_bytes = sizeof(float) * mesh->data->buff_size;
 }
 

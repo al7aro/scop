@@ -6,7 +6,7 @@
 #include <stdio.h>
 
 #include "glad/glad.h"
-#include "scop_model_loader.h"
+#include "scop_obj_loader.h"
 
 #define SCOP_POS_ATTRIBUTE_ID 0
 #define SCOP_TEX_ATTRIBUTE_ID 1
@@ -58,7 +58,7 @@ typedef struct mesh_s
 } mesh_t;
 
 void mesh_load_GPU(mesh_t* mesh);
-void  mesh_set_format(mesh_t* mesh, sml_obj_t* obj);
+void  mesh_set_format(mesh_t* mesh, sol_obj_t* obj);
 void mesh_render(mesh_t* mesh);
 void mesh_destroy(mesh_t* mesh);
 void mesh_init(mesh_t* mesh, const char* usemtl);
