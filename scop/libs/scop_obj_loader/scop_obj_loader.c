@@ -121,6 +121,12 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
             //printf("Working on material: %s\n", mtl_name);
+            if (!model->obj)
+            {
+                sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+                init_obj(obj, "noname");
+                ft_lstadd_back(&(model->obj), ft_lstnew(obj));
+            }
             sol_mtl_group_t* mtl = (sol_mtl_group_t*)malloc(sizeof(sol_mtl_group_t));
             init_mtl_group(mtl, mtl_name);
             ft_lstadd_back(&(((sol_obj_t*)ft_lstlast(model->obj)->content)->mtl_group), ft_lstnew(mtl));
@@ -135,6 +141,12 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
         if (model->obj)
         {
             t_list* tmp = ft_lstlast(model->obj);
+            if (!model->obj)
+            {
+                sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+                init_obj(obj, "noname");
+                ft_lstadd_back(&(model->obj), ft_lstnew(obj));
+            }
             //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
             parse_line(model, tmp->content, line);
         }
