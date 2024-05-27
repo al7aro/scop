@@ -111,6 +111,6 @@ void model_render(model_t* model)
 
 void model_destroy(model_t* model)
 {
-	ft_lstclear(&(model->mesh), mesh_destroy);
+	ft_lstclear(&(model->mesh), (void (*)(void *))mesh_destroy);
 	free(model);
 }
