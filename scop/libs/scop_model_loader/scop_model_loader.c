@@ -15,21 +15,26 @@ static void parse_line_face(sml_obj_t* obj, char** line)
     init_face(face);
     for (; token && face->size < MAX_FACE_SIZE; token = strtok_r(NULL, " ", line), face->size += 1)
     {
-        char* aux = strdup(token);
-        char* aux_save = NULL;
-        token = strtok_r(aux, "/", &aux_save);
-        for (size_t att_id = 0; token && att_id < MAX_ATT_ID; token = strtok_r(NULL, "/", &aux_save), att_id++)
-        {
-            if (att_id == obj->v_id)
-                face->v_idx[face->size] = atoi(token);
-            else if (att_id == obj->vn_id)
-                face->vn_idx[face->size] = atoi(token);
-            else if (att_id == obj->vt_id)
-                face->vt_idx[face->size] = atoi(token);
-            else if (att_id == obj->vp_id)
-                face->vp_idx[face->size] = atoi(token);
-        }
-        free(aux);
+        if (isdigit(*token))
+            face->v_idx[face->size] = atoi(token);
+        token = strchr(token, '/');
+        if (!token++) continue;
+        if (isdigit(*token))
+            face->vt_idx[face->size] = atoi(token);
+        token = strchr(token, '/');
+        if (!token++) continue;
+        if (isdigit(*token))
+            face->vn_idx[face->size] = atoi(token);
+        token = strchr(token, '/');
+        if (!token++) continue;
+        if (isdigit(*token))
+            face->vp_idx[face->size] = atoi(token);
+    }
+    if (!(obj->mtl_group))
+    {
+        sml_mtl_group_t* mtl = (sml_mtl_group_t*)malloc(sizeof(sml_mtl_group_t));
+        init_mtl_group(mtl, "nomaterial");
+        ft_lstadd_back(&(obj->mtl_group), ft_lstnew(mtl));
     }
     if (obj->mtl_group)
     {
@@ -41,34 +46,28 @@ static void parse_line_face(sml_obj_t* obj, char** line)
 /*TODO: THINK ABOUT USING STRTOD*/
 static void parse_line(sml_obj_t* obj, char* line)
 {
-
-    char* line_type = strtok_r(line, " ", &line);
-    char* line_data = strtok_r(NULL, "#\n", &line); (void)line_data;
-    if (line_data)
-        trim_spaces(line_data);
+    char* line_data = NULL;
+    char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
 
     /* VERTEX ATTRIBUTES */
-    if ('v' == *line_type)
+    if ('v' == *line_type && line_data)
     {
+        trim_spaces(line_data);
         float f[16];
         float** data = NULL;
         size_t* cnt = NULL; size_t* ptr = NULL; size_t* max_size = NULL;
         switch (*(line_type + 1))
         {
             case '\0':  /* v */
-                if (obj->v_id == -1) obj->v_id = ++(obj->att_id_cnt);
                 data = &(obj->v); cnt = &(obj->v_cnt); ptr = &(obj->v_ptr); max_size = &(obj->v_max_size);
                 break;
             case 'n':   /* vn */
-                if (obj->vn_id == -1) obj->vn_id = ++(obj->att_id_cnt);
                 data = &(obj->vn); cnt = &(obj->vn_cnt); ptr = &(obj->vn_ptr); max_size = &(obj->vn_max_size);
                 break;
             case 't':   /* vt */
-                if (obj->vt_id == -1) obj->vt_id = ++(obj->att_id_cnt);
                 data = &(obj->vt); cnt = &(obj->vt_cnt); ptr = &(obj->vt_ptr); max_size = &(obj->vt_max_size);
                 break;
             case 'p':   /* vp */
-                if (obj->vp_id == -1) obj->vp_id = ++(obj->att_id_cnt);
                 data = &(obj->vp); cnt = &(obj->vp_cnt); ptr = &(obj->vp_ptr); max_size = &(obj->vp_max_size);
                 break;
             default:
@@ -83,8 +82,9 @@ static void parse_line(sml_obj_t* obj, char* line)
                 buff_push_back_float(data, ptr, max_size, ((size_t)ret >= (i + 1)) ? f[i] : 1.0f);
         }
     }
-    else if (!strncmp("f\0", line_type, 2))
+    else if (!strncmp("f\0", line_type, 2) && line_data)
     {
+        trim_spaces(line_data);
         parse_line_face(obj, &line_data);
     }
 }
@@ -97,7 +97,7 @@ sml_scene_t* sml_load_wavefront_obj(const char* path)
         printf("File not found.\n");
         return NULL;
     }
-    char line[512];
+    char line[512]; memset(line, 0, sizeof(line));
     sml_scene_t* scene = (sml_scene_t*)malloc(sizeof(sml_scene_t));
     if (!scene) return NULL;
     init_scene(scene);
@@ -127,6 +127,5 @@ sml_scene_t* sml_load_wavefront_obj(const char* path)
         }
     }
     //printf("LST. SIZE: %d\n", ft_lstsize(scene->obj));
-    sml_destroy(scene);
     return scene;
 }

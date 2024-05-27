@@ -35,30 +35,24 @@ void init_scene(sml_scene_t* scene)
 void init_obj(sml_obj_t* obj, char* name)
 {
     obj->v = NULL;
-    obj->v_id = -1;
     obj->v_ptr = 0;
     obj->v_cnt = 0;
     obj->v_max_size = 0;
 
     obj->vn = NULL;
-    obj->vn_id = -1;
     obj->vn_ptr = 0;
     obj->vn_cnt = 0;
     obj->vn_max_size = 0;
 
     obj->vt = NULL;
-    obj->vt_id = -1;
     obj->vt_ptr = 0;
     obj->vt_cnt = 0;
     obj->vt_max_size = 0;
 
     obj->vp = NULL;
-    obj->vp_id = -1;
     obj->vp_ptr = 0;
     obj->vp_cnt = 0;
     obj->vp_max_size = 0;
-
-    obj->att_id_cnt = -1;
 
     obj->mtl_group = NULL;
 
@@ -89,9 +83,11 @@ void buff_push_back_float(float **buff, size_t *ptr, size_t *max_size, float f)
 
 void trim_spaces(char* str)
 {
-    size_t start = 0, end = strlen(str) - 1;
-    while (str[start] == ' ') start++;
-    while (end > start && str[end] == ' ') end--;
+    char* comment_ptr = strrchr(str, '#');
+    if (comment_ptr > str) comment_ptr -= 1;
+    size_t start = 0, end = (comment_ptr) ? comment_ptr - str : strlen(str) - 1;
+    while (isspace(str[start])) start++;
+    while (end > start && isspace(str[end])) end--;
 
     memmove(str, str + start, end - start + 1);
     str[end - start + 1] = '\0';

@@ -15,13 +15,14 @@
 #define MAX_LINE_SIZE 512
 
 #define V_ATT_ID 0
-#define VN_ATT_ID 1
-#define VT_ATT_ID 2
+#define VT_ATT_ID 1
+#define VN_ATT_ID 2
 #define VP_ATT_ID 3
 #define MAX_ATT_ID 4
 
 #define MAX_FACE_SIZE 64
 
+/* MAKE THIS MORE GENERAL (LOL) */
 typedef struct sml_face_s
 {
 	unsigned int v_idx[MAX_FACE_SIZE];
@@ -48,11 +49,10 @@ typedef struct sml_mtl_group_s
 
 typedef struct sml_obj_s
 { 
-	float* v; int v_id; size_t v_ptr, v_cnt, v_max_size;
-	float* vn; int vn_id; size_t vn_ptr, vn_cnt, vn_max_size;
-	float* vt; int vt_id; size_t vt_ptr, vt_cnt, vt_max_size;
-	float* vp; int vp_id; size_t vp_ptr, vp_cnt, vp_max_size;
-	int att_id_cnt;
+	float* v; size_t v_ptr, v_cnt, v_max_size;
+	float* vn; size_t vn_ptr, vn_cnt, vn_max_size;
+	float* vt; size_t vt_ptr, vt_cnt, vt_max_size;
+	float* vp; size_t vp_ptr, vp_cnt, vp_max_size;
 
 	char id_name[64];
 	t_list* mtl_group;	/*Content -> sml_mtl_group*/

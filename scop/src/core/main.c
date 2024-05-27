@@ -16,17 +16,19 @@
 #include "scop_math.h"
 #include "px_image.h"
 #include "basic_mesh.h"
+#include "basic_model.h"
 #include "scop_model_loader.h"
 
 float angle = 0;
 shader_t sh;
-mesh_t* mesh;
+model_t* model;
 unsigned int texture0, texture1;
 
 void init(GLFWwindow* window)
 {
 	(void)window;
-	mesh_load_cube(&mesh);
+	model_load(&model, "../scop/assets/models/trig_42_material.obj");
+	model_load_GPU(model);
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
@@ -76,8 +78,6 @@ void init(GLFWwindow* window)
 	glGenerateMipmap(GL_TEXTURE_2D);
 	shader_set_int(&sh, "texture1", 1);
 	free(data);
-
-	sml_load_wavefront_obj("../scop/assets/models/double_cube.obj");
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -90,16 +90,16 @@ void display(GLFWwindow *window, double currentTime)
 	glBindTexture(GL_TEXTURE_2D, texture0);
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	mesh_render(mesh);
+	model_render(model);
 
-	mat4_t rot1, rot2, tras, model;
-	mat4_get_tras(0.0f, 0.0f, -2.0f, tras);
+	mat4_t rot1, rot2, tras, model_mat;
+	mat4_get_tras(0.0f, 0.0f, -3.0f, tras);
 	mat4_get_rotY(angle, rot1);
 	mat4_get_rotX(angle, rot2);
 	
-	mat4_mult_mat4(rot1, rot2, model);
-	mat4_mult_mat4(tras, model, model);
-	shader_set_mat4(&sh, "rot", model);
+	mat4_mult_mat4(rot1, rot2, model_mat);
+	mat4_mult_mat4(tras, model_mat, model_mat);
+	shader_set_mat4(&sh, "rot", model_mat);
 	shader_set_float(&sh, "offset", (float)cos(currentTime));
 	angle += 0.002f;
 }
@@ -147,7 +147,7 @@ int main(void)
 	}
 	glfwDestroyWindow(window);
     glfwTerminate();
-	mesh_destroy(mesh);
+	//mesh_destroy(mesh);
 	_CrtDumpMemoryLeaks();
 	return (0);
 }
