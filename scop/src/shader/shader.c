@@ -45,7 +45,7 @@ GLuint shader_compile_(GLuint type, const char* path)
 	return (id);
 }
 
-void shader_create(shader_t* toy_sh, const char* vert_path, const char* frag_path)
+void shader_create(shader_t* sh, const char* vert_path, const char* frag_path)
 {
 	GLuint vert_id, frag_id, program;
 
@@ -60,38 +60,38 @@ void shader_create(shader_t* toy_sh, const char* vert_path, const char* frag_pat
 	glDeleteShader(vert_id);
 	glDeleteShader(frag_id);
 
-	toy_sh->id = program;
+	sh->id = program;
 }
 
-void shader_use(const shader_t* toy_sh)
+void shader_use(const shader_t* sh)
 {
-	glUseProgram(toy_sh->id);
+	glUseProgram(sh->id);
 }
 
-void shader_set_int(const shader_t* toy_sh, const char* name, int value)
+void shader_set_int(const shader_t* sh, const char* name, int value)
 {
 	if (!name)
 		return ;
-	shader_use(toy_sh);
-	GLuint loc = glGetUniformLocation(toy_sh->id, name);
+	shader_use(sh);
+	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniform1i(loc, value);
 }
 
-void shader_set_float(const shader_t* toy_sh, const char* name, float value)
+void shader_set_float(const shader_t* sh, const char* name, float value)
 {
 	if (!name)
 		return ;
-	shader_use(toy_sh);
-	GLuint loc = glGetUniformLocation(toy_sh->id, name);
+	shader_use(sh);
+	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniform1f(loc, value);
 }
 
-void shader_set_mat4(const shader_t* toy_sh, const char* name, mat4_t value)
+void shader_set_mat4(const shader_t* sh, const char* name, mat4_t value)
 {
 	if (!name)
 		return ;
-	shader_use(toy_sh);
-	GLuint loc = glGetUniformLocation(toy_sh->id, name);
+	shader_use(sh);
+	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniformMatrix4fv(loc, 1, GL_FALSE, value);
 }
 
@@ -99,6 +99,7 @@ void shader_set_vec3(const shader_t* sh, const char* name, vec3_t value)
 {
 	if (!name)
 		return ;
+	shader_use(sh);
 	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniform3fv(loc, 1, value);
 }

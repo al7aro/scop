@@ -103,10 +103,30 @@ void  mesh_set_format(mesh_t* mesh, sol_model_t* model)
     mesh->data->buff_bytes = sizeof(float) * mesh->data->buff_size;
 }
 
-void mesh_render(mesh_t* mesh)
+void mesh_render(mesh_t* mesh, unsigned int sh_id)
 {
+    if (sh_id)
+    {
+        unsigned int loc;
+        loc = glGetUniformLocation(sh_id, "mat.Ka");
+        glUniform3fv(loc, 1, mesh->mtl->Ka);
+        loc = glGetUniformLocation(sh_id, "mat.Kd");
+        glUniform3fv(loc, 1, mesh->mtl->Kd);
+        loc = glGetUniformLocation(sh_id, "mat.Ks");
+        glUniform3fv(loc, 1, mesh->mtl->Ks);
+        loc = glGetUniformLocation(sh_id, "mat.Ke");
+        glUniform3fv(loc, 1, mesh->mtl->Ke);
+        loc = glGetUniformLocation(sh_id, "mat.Ns");
+        glUniform1f(loc, mesh->mtl->Ns);
+        loc = glGetUniformLocation(sh_id, "mat.Ni");
+        glUniform1f(loc, mesh->mtl->Ni);
+        loc = glGetUniformLocation(sh_id, "mat.d");
+        glUniform1f(loc, mesh->mtl->d);
+
+        /* HANDLE TEXTURES */
+    }
+
     glBindVertexArray(*(mesh->VAO));
-    // glDrawElements(GL_TRIANGLES, mesh->data->idx_cnt, GL_UNSIGNED_INT, 0);
     glDrawArrays(GL_TRIANGLES, 0, mesh->data->buff_cnt);
     glBindVertexArray(0);
 }

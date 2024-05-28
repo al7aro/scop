@@ -123,7 +123,7 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
             strcpy_s(model->mtllib, (unsigned int)sizeof(model->mtllib), mtllib);
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
-            printf("Working on material: %s\n", mtl_name);
+            //printf("Working on material: %s\n", mtl_name);
             if (!model->obj)
             {
                 sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));

@@ -44,10 +44,19 @@ find_package(OpenGL REQUIRED)
 file(GLOB_RECURSE source_files
         "${PROJECT_DIR}/src/core/main.c"
         "${PROJECT_DIR}/include/core/main.h"
+
         "${PROJECT_DIR}/src/core/basic_mesh.c"
         "${PROJECT_DIR}/include/core/basic_mesh.h"
+
 		"${PROJECT_DIR}/src/core/basic_model.c"
         "${PROJECT_DIR}/include/core/basic_model.h"
+		
+		"${PROJECT_DIR}/src/core/renderer/renderer.c"
+		"${PROJECT_DIR}/src/core/renderer/renderer_camera.c"
+		"${PROJECT_DIR}/src/core/renderer/renderer_light.c"
+		"${PROJECT_DIR}/src/core/renderer/renderer_empty.c"
+		"${PROJECT_DIR}/src/core/renderer/renderer_entity.c"
+        "${PROJECT_DIR}/include/core/renderer/renderer.h"
 
         "${PROJECT_DIR}/src/shader/shader.c"
         "${PROJECT_DIR}/include/shader/shader.h"
@@ -113,6 +122,7 @@ target_link_libraries(${PROJECT_NAME} OpenGL::GL)
 
 # Headers
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/core")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/core/renderer")
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/math")
 target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/shader")
 

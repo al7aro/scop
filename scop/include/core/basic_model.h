@@ -16,7 +16,7 @@ typedef struct model_s
 
 void model_load(model_t** ret, const char* file);
 void model_load_GPU(model_t* model);
-void model_render(model_t* model);
+void model_render(model_t* model, unsigned int sh_id);
 void model_destroy(model_t* model);
 
 #endif

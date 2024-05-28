@@ -1,5 +1,25 @@
 #version 460 core
 
+#define MAX_POINT_LIGHTS 64
+struct point_light
+{
+    vec3 pos;
+    vec3 col;
+    float intensity;
+};
+
+struct material
+{
+    float Ns;
+    vec3 Ka;
+    vec3 Kd;
+    vec3 Ks;
+    vec3 Ke;
+    float Ni;
+    float d;
+    int illum;
+};
+
 out vec4 frag_color;
 
 in vec2 var_tex;
@@ -12,17 +32,18 @@ uniform vec3 light_src_pos;
 
 uniform sampler2D texture0;
 uniform sampler2D texture1;
+uniform point_light lights[MAX_POINT_LIGHTS];
+uniform material mat;
+uniform int point_light_cnt;
 
 void main()
 {
     vec3 norm = normalize(varying_norm);
     vec3 dir = normalize(light_src_pos - frag_pos);
-    vec3 ambient = vec3(0.2, 0.0, 0.0);
 
     float diff = max(dot(norm, dir), 0.0);
     vec3 diffuse = diff * vec3(1.0);
-    //float inter = smoothstep(-1.0f, 1.0f, offset);
-    //frag_color = mix(texture(texture0, var_tex), texture(texture1, var_tex), inter);
-    //frag_color = frag_color * (vec4(varying_col, 1.0));
-    frag_color = vec4(diffuse + ambient, 1.0) * vec4(1.0, 0.0, 0.0, 1.0);
-} 
+
+    frag_color = vec4(diffuse + mat.Ka, 1.0) * vec4(1.0, 0.0, 0.0, 1.0);
+    frag_color = vec4(mat.Kd, 1.0);
+}

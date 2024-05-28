@@ -18,80 +18,114 @@
 #include "basic_mesh.h"
 #include "basic_model.h"
 #include "scop_obj_loader.h"
+#include "renderer.h"
 
 float angle = 0;
 unsigned int texture0, texture1;
 
-/* LIGHT CUBE */
-shader_t light_sh;
-model_t* light_model;
+/* LIGHT */
 vec3_t light_pos = { 2.0, 2.0, 0.0 };
+vec3_t light_col = { 1.0, 1.0, 1.0 };
 
-/* TOY CUBE */
 shader_t toy_sh;
-model_t* toy_model;
-vec3_t toy_pos = { 0.0, 0.0, 0.0 };
+/* CUBE */
+model_t* cube;
+vec3_t cube_pos = { 0.0, 0.0, 0.0 };
+/* HEXAGON */
+model_t* hexagon;
+vec3_t hexagon_pos = { 2.0, 0.0, 0.0 };
+/* SPHERE */
+model_t* sphere;
+vec3_t sphere_pos = { 0.0, 2.0, 0.0 };
 
 /* CAMERA */
-vec3_t cam_pos = {0.0, 0.0, 5.0};
+vec3_t cam_pos = {0.0, 0.0, 10.0};
+
+scene_t* scene;
+cam_t* cam;
+light_t* light;
+entity_t* e1; entity_t* e2; entity_t* e3;
+
+void test_callback(cam_t* test, int key, int action)
+{
+	(void)test; (void)key; (void)action;
+	if (key == GLFW_KEY_W)
+		test->empty->pos[2]--;
+	if (key == GLFW_KEY_S)
+		test->empty->pos[2]++;
+	if (key == GLFW_KEY_A)
+		test->empty->pos[0]--;
+	if (key == GLFW_KEY_D)
+		test->empty->pos[0]++;
+	if (key == GLFW_KEY_E)
+		test->empty->pos[1]--;
+	if (key == GLFW_KEY_Q)
+		test->empty->pos[1]++;
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	(void)window; (void)scancode; (void)action; (void)mods;
+	scene_manage_input_callbacks(scene, key, action);
+}
 
 void init(GLFWwindow* window)
 {
-	(void)window;
-	model_load(&toy_model, "../scop/assets/models/backpack.obj");
-	model_load(&light_model, "../scop/assets/models/sphere.obj");
-	model_load_GPU(toy_model);
-	model_load_GPU(light_model);
+	glfwSetKeyCallback(window, key_callback);
+
+	model_load(&cube, "../scop/assets/models/cube_material.obj");
+	model_load(&hexagon, "../scop/assets/models/hexagon.obj");
+	model_load(&sphere , "../scop/assets/models/multi_sphere.obj");
+	model_load_GPU(cube);
+	model_load_GPU(hexagon);
+	model_load_GPU(sphere);
+
+	cam = cam_create();
+	cam_set_pos(cam, cam_pos);
+	cam_set_input_handler(cam, test_callback);
+
+	light = light_create();
+	light_set_pos(light, light_pos);
+	light_set_col(light, light_col);
+
+	vec3_t test; light_get_pos_world(light, test);
+	vec3_print(test);
+
+	e1 = entity_create();
+	entity_set_model(e1, cube);
+	entity_set_pos(e1, cube_pos);
+	entity_set_shader(e1, &toy_sh);
+
+	e2 = entity_create();
+	entity_set_model(e2, hexagon);
+	entity_set_pos(e2, hexagon_pos);
+	entity_set_shader(e2, &toy_sh);
+	entity_set_parent(e2, e1);
+
+	e3 = entity_create();
+	entity_set_model(e3, sphere);
+	entity_set_pos(e3, sphere_pos);
+	entity_set_shader(e3, &toy_sh);
+	entity_set_scale(e3, (vec3_t){0.1f, 0.1f, 0.1f});
+	entity_set_parent(e3, e2);
+
+	scene = scene_create();
+	scene_set_shader(scene, &toy_sh);
+	scene_set_cam(scene, cam);
+	scene_add_light(scene, light);
+	scene_add_entity(scene, e1);
+	scene_add_entity(scene, e2);
+	scene_add_entity(scene, e3);
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
 	shader_create(&toy_sh, "../scop\\assets\\shaders\\main460.vert", "../scop\\assets\\shaders\\main460.frag");
-	shader_create(&light_sh, "../scop\\assets\\shaders\\main460.vert", "../scop\\assets\\shaders\\main460_light.frag");
 	// px_load("scop\\assets\\textures\\rgb.pam", NULL, NULL, NULL);
 #endif
 #if defined(__APPLE__) || defined(__linux__)
 	shader_create(&toy_sh, "scop/assets/shaders/main410.vert", "scop/assets/shaders/main410.frag");
 	// px_load("scop/assets/textures/rgb.pam", NULL, NULL, NULL);
 #endif
-
-	/* TOY & LIGHT CUBE */
-	mat4_t ortho, persp;
-	mat4_get_proj_ortho(-1, 1, -1, 1, -1, 10, ortho);
-	mat4_get_proj_persp(90.0f*3.14f/180.0f, 1, 0.1f, 10, persp);
-	mat4_print(persp);
-	shader_set_mat4(&toy_sh, "proj", persp);
-	shader_set_mat4(&light_sh, "proj", persp);
-
-	/* Textures */
-	/*glGenTextures(1, &texture0);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture0);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);	
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	unsigned char* data;
-	int w, h, chn;
-	glBindTexture(GL_TEXTURE_2D, texture0);
-	data = px_load("../scop/assets/textures/woman.pam", &w, &h, &chn);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	shader_set_int(&toy_sh, "texture0", 0);
-	free(data);
-
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	data = px_load("../scop/assets/textures/large.pam", &w, &h, &chn);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-	glGenerateMipmap(GL_TEXTURE_2D);
-	shader_set_int(&toy_sh, "texture1", 1);
-	free(data);*/
 }
 
 void display(GLFWwindow *window, double currentTime)
@@ -105,45 +139,15 @@ void display(GLFWwindow *window, double currentTime)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
-	/* MODELS */
-	mat4_t view;
-	mat4_get_tras(-cam_pos[0], -cam_pos[1], -cam_pos[2], view);
+	e1->empty->rot[0] += 0.002f;
+	e1->empty->rot[1] += 0.002f;
+	e1->empty->rot[2] += 0.002f;
 
-	/* LIGHT CUBE */
-	mat4_t lmod, ltras, lscale, lrot;
-	mat4_get_tras(light_pos[0], light_pos[1], light_pos[2], ltras);
-	mat4_get_identity(lscale); lscale[0] = 0.2f; lscale[5] = 0.2f; lscale[10] = 0.2f;
-	mat4_get_rotX(angle, lrot);
-	mat4_mult_mat4(lrot, lscale, lmod);
-	mat4_mult_mat4(ltras, lmod, lmod);
-	mat4_mult_mat4(lrot, lmod, lmod);
-
-	mat4_mult_mat4(view, lmod, lmod);
-
-	shader_set_mat4(&light_sh, "rot", lmod);
-	shader_use(&light_sh);
-	model_render(light_model);
-
-	/* TOY CUBE */
-	mat4_t rot1, rot2, tras, model_mat;
-	mat4_get_tras(toy_pos[0], toy_pos[1], toy_pos[2], tras);
-
-	mat4_get_rotY(angle/4, rot1);
-	mat4_get_rotX(angle/2, rot2);
-	mat4_mult_mat4(rot1, rot2, model_mat);
-	mat4_mult_mat4(tras, model_mat, model_mat);
-	mat4_mult_mat4(view, model_mat, model_mat);
-	shader_set_mat4(&toy_sh, "rot", model_mat);
-	//shader_set_float(&toy_sh, "offset", (float)cos(currentTime));
-	angle += 0.002f;
-
-	vec4_t lpos = {light_pos[0], light_pos[1], light_pos[2], 1.0};
-	mat4_mult_vec4(lmod, lpos, lpos);
-	shader_set_vec3(&toy_sh, "light_src_pos", lpos);
-
-	shader_use(&toy_sh);
-	model_render(toy_model);
+	e2->empty->rot[0] += 0.002f;
+	shader_set_vec3(&toy_sh, "light_src_pos", light_pos);
+	scene_render(scene);
 }
+
 int main(void)
 {
 	if (!glfwInit())
@@ -190,8 +194,7 @@ int main(void)
 	}
 	glfwDestroyWindow(window);
     glfwTerminate();
-	model_destroy(toy_model);
-	model_destroy(light_model);
+	scene_destroy(scene);
 	_CrtDumpMemoryLeaks();
 	return (0);
 }

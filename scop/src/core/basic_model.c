@@ -100,18 +100,19 @@ void model_load_GPU(model_t* model)
 	}
 }
 
-void model_render(model_t* model)
+void model_render(model_t* model, unsigned int sh_id)
 {
 	t_list* mesh = model->mesh;
 	while (mesh)
 	{
-		mesh_render(mesh->content);
+		mesh_render(mesh->content, sh_id);
 		mesh = mesh->next;
 	}
 }
 
 void model_destroy(model_t* model)
 {
+	/*TODO: DESTROY FROM GPU */
 	ft_lstclear(&(model->mesh), (void (*)(void *))mesh_destroy);
 	free(model);
 }
