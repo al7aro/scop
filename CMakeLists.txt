@@ -47,10 +47,13 @@ file(GLOB_RECURSE source_files
 
         "${PROJECT_DIR}/src/core/basic_mesh.c"
         "${PROJECT_DIR}/include/core/basic_mesh.h"
-
+        
 		"${PROJECT_DIR}/src/core/basic_model.c"
         "${PROJECT_DIR}/include/core/basic_model.h"
 		
+        "${PROJECT_DIR}/include/core/scop_engine.h"
+        "${PROJECT_DIR}/src/core/scop_engine.c"
+
 		"${PROJECT_DIR}/src/core/renderer/renderer.c"
 		"${PROJECT_DIR}/src/core/renderer/renderer_camera.c"
 		"${PROJECT_DIR}/src/core/renderer/renderer_light.c"

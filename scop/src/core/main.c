@@ -20,6 +20,8 @@
 #include "scop_obj_loader.h"
 #include "renderer.h"
 
+#include "scop_engine.h"
+
 float angle = 0;
 unsigned int texture0, texture1;
 
@@ -72,18 +74,12 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	scene_manage_input_callbacks(scene, key, action);
 }
 
-void init(GLFWwindow* window)
+void init()
 {
-	glfwSetKeyCallback(window, key_callback);
-
 	model_load(&cube, "C:/Users/al7ar/Desktop/woman_cube.obj");
 	model_load(&hexagon, "../scop/assets/models/hexagon.obj");
 	model_load(&sphere, "../scop/assets/models/multi_sphere.obj");
 	model_load(&guitar , "../scop/assets/models/guitar.obj");
-	model_load_GPU(cube);
-	model_load_GPU(hexagon);
-	model_load_GPU(sphere);
-	model_load_GPU(guitar);
 
 	cam = cam_create();
 	cam_set_pos(cam, cam_pos);
@@ -138,17 +134,8 @@ void init(GLFWwindow* window)
 #endif
 }
 
-void display(GLFWwindow *window, double currentTime)
+void update()
 {
-	(void)window;
-	(void)currentTime;
-	glClearColor(0.32f, 0.32f, 0.32f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture0);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-
 	e1->empty->rot[0] += 0.003f;
 	e1->empty->rot[1] += 0.001f;
 	e1->empty->rot[2] += 0.003f;
@@ -158,56 +145,21 @@ void display(GLFWwindow *window, double currentTime)
 	e3->empty->rot[0] -= 0.005f;
 	e3->empty->rot[1] += 0.01f;
 	e3->empty->rot[2] -= 0.002f;
-
-	scene_render(scene);
 }
 
 int main(void)
 {
-	if (!glfwInit())
-    {
-		printf("GLFW initialization failed\n");
-		return(1);
-    }
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-#ifdef _WIN32
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-#endif
-#if defined(__APPLE__) || defined(__linux__)
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
-#endif
-	glfwWindowHint(GLFW_SAMPLES, 4);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	GLFWwindow* window = glfwCreateWindow(800, 800, "Getting Started with OpenGL", (void *)0, (void *)0);
-	glfwMakeContextCurrent(window);
+	scop_engine_t* engine = scop_engine_create();
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+	init();
+	scop_engine_set_active_scene(engine, scene);
+	scop_engine_set_input_callback(engine, key_callback);
+	scop_engine_set_clear_color(engine, (vec3_t){0.3f, 0.3f, 0.3f});
+	while (!glfwWindowShouldClose(engine->window))
 	{
-		printf("Failed to initialize OpenGL context\n");
-		return(1);
+		update();
+		scop_engine_render(engine);
 	}
-	printf("OGL Version: %s\n", glGetString(GL_VERSION));
-	printf("Renderer: %s\n", glGetString(GL_RENDERER));
-#ifdef _WIN32
-	char buff[128]; GetCurrentDirectory(sizeof(buff), buff); printf("WD: %s\n", buff);
-#endif
-#if defined(__APPLE__) || defined(__linux__)
-	char buff[128]; getcwd(buff, sizeof(buff)); printf("WD: %s\n", buff);
-#endif
-
-	glfwSwapInterval(1);
-	glEnable(GL_DEPTH_TEST);
-	glEnable(GL_MULTISAMPLE);
-	init(window);
-	while (!glfwWindowShouldClose(window))
-	{
-    	display(window, glfwGetTime());
-    	glfwSwapBuffers(window);
-    	glfwPollEvents();
-	}
-	glfwDestroyWindow(window);
-    glfwTerminate();
 	scene_destroy(scene);
 	_CrtDumpMemoryLeaks();
 	return (0);
