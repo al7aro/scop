@@ -70,5 +70,7 @@ void cam_manage_input_callbacks(cam_t* cam, int key, int action)
 
 void cam_destroy(cam_t* cam)
 {
-	(void)cam;
+	if (!cam) return;
+	empty_destroy(cam->empty);
+	free(cam);
 }

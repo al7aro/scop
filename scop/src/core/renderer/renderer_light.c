@@ -74,5 +74,7 @@ void light_manage_input_callbacks(light_t* light, int key, int action)
 
 void light_destroy(light_t* light)
 {
-	(void)light;
+	if (!light) return;
+	empty_destroy(light->empty);
+	free(light);
 }

@@ -7,6 +7,7 @@
 
 #include "glad/glad.h"
 #include "scop_obj_loader.h"
+#include "px_image.h"
 
 #define SCOP_POS_ATTRIBUTE_ID 0
 #define SCOP_TEX_ATTRIBUTE_ID 1
@@ -15,6 +16,22 @@
 #define SCOP_COL_ATTRIBUTE_ID 4
 
 #define MESH_MAX_ATT 8
+
+#define SCOP_TEXTURE_ID_KD 0
+#define SCOP_TEXTURE_ID_KS 1
+#define SCOP_TEXTURE_ID_BUMP 2
+#define SCOP_TEXTURE_ID_MAX 3
+
+typedef struct tex_s
+{
+    char path[128];
+    unsigned char* data;
+    int w;
+    int h;
+    int chn;
+
+    unsigned int id;
+} tex_t;
 
 typedef struct mtl_s
 {
@@ -27,7 +44,7 @@ typedef struct mtl_s
     float d;
     int illum;
 
-    char* textures[128]; /* Diffuse, Normal, Bump, etc MAPS */
+    tex_t textures[3];
 } mtl_t;
 
 typedef struct attrib_format_s

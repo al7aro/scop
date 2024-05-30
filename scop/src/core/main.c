@@ -37,6 +37,9 @@ vec3_t hexagon_pos = { 2.0, 0.0, 0.0 };
 /* SPHERE */
 model_t* sphere;
 vec3_t sphere_pos = { 0.0, 2.0, 0.0 };
+/* SPHERE */
+model_t* guitar;
+vec3_t guitar_pos = { 0.0, 2.0, 0.0 };
 
 /* CAMERA */
 vec3_t cam_pos = {0.0, 0.0, 10.0};
@@ -44,7 +47,7 @@ vec3_t cam_pos = {0.0, 0.0, 10.0};
 scene_t* scene;
 cam_t* cam;
 light_t* light;
-entity_t* e1; entity_t* e2; entity_t* e3;
+entity_t* e1; entity_t* e2; entity_t* e3; entity_t* e4;
 
 void test_callback(cam_t* test, int key, int action)
 {
@@ -73,12 +76,14 @@ void init(GLFWwindow* window)
 {
 	glfwSetKeyCallback(window, key_callback);
 
-	model_load(&cube, "../scop/assets/models/cube_material.obj");
+	model_load(&cube, "C:/Users/al7ar/Desktop/woman_cube.obj");
 	model_load(&hexagon, "../scop/assets/models/hexagon.obj");
-	model_load(&sphere , "../scop/assets/models/multi_sphere.obj");
+	model_load(&sphere, "../scop/assets/models/multi_sphere.obj");
+	model_load(&guitar , "../scop/assets/models/guitar.obj");
 	model_load_GPU(cube);
 	model_load_GPU(hexagon);
 	model_load_GPU(sphere);
+	model_load_GPU(guitar);
 
 	cam = cam_create();
 	cam_set_pos(cam, cam_pos);
@@ -87,9 +92,6 @@ void init(GLFWwindow* window)
 	light = light_create();
 	light_set_pos(light, light_pos);
 	light_set_col(light, light_col);
-
-	vec3_t test; light_get_pos_world(light, test);
-	vec3_print(test);
 
 	e1 = entity_create();
 	entity_set_model(e1, cube);
@@ -106,8 +108,15 @@ void init(GLFWwindow* window)
 	entity_set_model(e3, sphere);
 	entity_set_pos(e3, sphere_pos);
 	entity_set_shader(e3, &toy_sh);
-	entity_set_scale(e3, (vec3_t){0.1f, 0.1f, 0.1f});
+	entity_set_scale(e3, (vec3_t) { 0.1f, 0.1f, 0.1f });
 	entity_set_parent(e3, e2);
+
+	e4 = entity_create();
+	entity_set_model(e4, guitar);
+	entity_set_pos(e4, guitar_pos);
+	entity_set_shader(e4, &toy_sh);
+	entity_set_scale(e4, (vec3_t){10.0f, 10.0f, 10.0f});
+	entity_set_parent(e4, e3);
 
 	scene = scene_create();
 	scene_set_shader(scene, &toy_sh);
@@ -116,6 +125,7 @@ void init(GLFWwindow* window)
 	scene_add_entity(scene, e1);
 	scene_add_entity(scene, e2);
 	scene_add_entity(scene, e3);
+	scene_add_entity(scene, e4);
 
 	/* TODO: Study how to make the path more portable */
 #ifdef _WIN32
@@ -139,12 +149,16 @@ void display(GLFWwindow *window, double currentTime)
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
-	e1->empty->rot[0] += 0.002f;
-	e1->empty->rot[1] += 0.002f;
-	e1->empty->rot[2] += 0.002f;
+	e1->empty->rot[0] += 0.003f;
+	e1->empty->rot[1] += 0.001f;
+	e1->empty->rot[2] += 0.003f;
 
-	e2->empty->rot[0] += 0.002f;
-	shader_set_vec3(&toy_sh, "light_src_pos", light_pos);
+	e2->empty->rot[0] += 0.004f;
+
+	e3->empty->rot[0] -= 0.005f;
+	e3->empty->rot[1] += 0.01f;
+	e3->empty->rot[2] -= 0.002f;
+
 	scene_render(scene);
 }
 

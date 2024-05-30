@@ -49,6 +49,10 @@ typedef struct sol_mtl_group_s
 	float Ni;
 	float d;
 	int illum;
+
+	char map_Ks[128];
+	char map_Kd[128];
+	char map_Bump[128];
 } sol_mtl_group_t;
 
 typedef struct sol_obj_s

@@ -103,3 +103,8 @@ void shader_set_vec3(const shader_t* sh, const char* name, vec3_t value)
 	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniform3fv(loc, 1, value);
 }
+
+void shader_destroy(shader_t* sh)
+{
+	glDeleteProgram(sh->id);
+}

@@ -14,6 +14,7 @@ typedef struct shader_s
 } shader_t;
 
 void shader_create(shader_t* sh, const char* vert_path, const char* frag_path);
+void shader_destroy(shader_t* sh);
 void shader_use(const shader_t* sh);
 void shader_set_int(const shader_t* sh, const char* name, int value);
 void shader_set_float(const shader_t* sh, const char* name, float value);

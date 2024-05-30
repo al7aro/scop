@@ -13,6 +13,9 @@ void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name)
     mtl->Kd[0] = 1.0; mtl->Kd[1] = 1.0; mtl->Kd[2] = 1.0;
     mtl->Ks[0] = 1.0; mtl->Ks[1] = 1.0; mtl->Ks[2] = 1.0;
     mtl->Ke[0] = 0.0; mtl->Ke[1] = 0.0; mtl->Ke[2] = 0.0;
+    memset(mtl->map_Ks, 0, sizeof(mtl->map_Ks));
+    memset(mtl->map_Kd, 0, sizeof(mtl->map_Kd));
+    memset(mtl->map_Bump, 0, sizeof(mtl->map_Bump));
 }
 
 void init_face(sol_face_t* obj)

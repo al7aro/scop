@@ -62,5 +62,9 @@ void entity_manage_input_callbacks(entity_t* entity, int key, int action)
 
 void entity_destroy(entity_t* entity)
 {
-	(void)entity;
+	if (!entity) return;
+	empty_destroy(entity->empty);
+	if (entity->model)
+		model_destroy(entity->model);
+	free(entity);
 }

@@ -18,6 +18,10 @@ struct material
     float Ni;
     float d;
     int illum;
+
+    sampler2D diffuse_map;
+    sampler2D bump_map;
+    sampler2D specular_map;
 };
 
 out vec4 frag_color;
@@ -30,8 +34,6 @@ in vec3 frag_pos;
 uniform float offset;
 uniform vec3 light_src_pos;
 
-uniform sampler2D texture0;
-uniform sampler2D texture1;
 uniform point_light lights[MAX_POINT_LIGHTS];
 uniform material mat;
 uniform int point_light_cnt;
@@ -46,4 +48,6 @@ void main()
 
     frag_color = vec4(diffuse + mat.Ka, 1.0) * vec4(1.0, 0.0, 0.0, 1.0);
     frag_color = vec4(mat.Kd, 1.0);
+
+    frag_color = texture(mat.diffuse_map, var_tex);
 }

@@ -112,6 +112,7 @@ void model_render(model_t* model, unsigned int sh_id)
 
 void model_destroy(model_t* model)
 {
+	if (!model) return;
 	/*TODO: DESTROY FROM GPU */
 	ft_lstclear(&(model->mesh), (void (*)(void *))mesh_destroy);
 	free(model);

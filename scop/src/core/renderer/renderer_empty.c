@@ -45,5 +45,6 @@ void empty_set_parent(empty_t* empty, empty_t* parent)
 
 void empty_destroy(empty_t* empty)
 {
-	(void)empty;
+	if (!empty) return;
+	free(empty);
 }

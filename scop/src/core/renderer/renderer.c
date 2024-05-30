@@ -140,5 +140,11 @@ void scene_manage_input_callbacks(scene_t* scene, int key, int action)
 
 void scene_destroy(scene_t* scene)
 {
-	(void)scene;
+	if (!scene) return;
+	ft_lstclear(&(scene->light_lst), light_destroy);
+	ft_lstclear(&(scene->entity_lst), entity_destroy);
+	cam_destroy(scene->cam);
+	if (scene->default_shader)
+		shader_destroy(scene->default_shader);
+	free(scene);
 }

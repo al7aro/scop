@@ -2,8 +2,12 @@
 
 void mesh_destroy(mesh_t* mesh)
 {
+    if (!mesh) return;
     free(mesh->data->buff);
     free(mesh->data);
+    for (int i = 0; i < 3; i++)
+        if (mesh->mtl->textures[i].data)
+            free(mesh->mtl->textures[i].data);
     free(mesh->mtl);
     free(mesh);
 }
@@ -11,6 +15,7 @@ void mesh_destroy(mesh_t* mesh)
 void mesh_init(mesh_t* mesh)
 {
     mesh->mtl = (mtl_t*)malloc(sizeof(mtl_t));
+    if (!mesh->mtl) return;
     mesh->data = (vertex_data_t*)malloc(sizeof(vertex_data_t));
     if (mesh->data)
     {
@@ -20,6 +25,15 @@ void mesh_init(mesh_t* mesh)
         mesh->data->buff_cnt = 0;
         for (int i = 0; i < MESH_MAX_ATT; i++)
             mesh->data->att_format[i].enabled = 0;
+    }
+    for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
+    {
+        memset(mesh->mtl->textures[i].path, 0, sizeof(mesh->mtl->textures[i].path));
+        mesh->mtl->textures[i].data = NULL;
+        mesh->mtl->textures[i].w = 0;
+        mesh->mtl->textures[i].h = 0;
+        mesh->mtl->textures[i].chn = 0;
+        mesh->mtl->textures[i].id = 0;
     }
 }
 
@@ -46,6 +60,32 @@ void mesh_load_GPU(mesh_t* mesh)
                 mesh->data->att_format[i].offset);
             glEnableVertexAttribArray(i);
         }
+    }
+
+    /* Mesh Load Textures*/
+    for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
+    {
+        if (!mesh->mtl->textures[i].data) continue;
+        glGenTextures(1, &(mesh->mtl->textures[i].id));
+
+        glActiveTexture(GL_TEXTURE0 + i);
+
+        glBindTexture(GL_TEXTURE_2D, mesh->mtl->textures[i].id);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        int width = mesh->mtl->textures[i].w;
+        int height = mesh->mtl->textures[i].h;
+        int chn = mesh->mtl->textures[i].chn;
+        unsigned char* data = mesh->mtl->textures[i].data;
+        if (chn == 4)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        else
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
     }
 }
 
@@ -80,7 +120,6 @@ void mesh_push_att(mesh_t* mesh, float* f, unsigned int n) /* n is MAX 16 */
 #define VC_ATT_ID 3
 #define MAX_ATT_ID 4
 */
-/* TODO; MAKE THIS MORE GENERAL (LOL) */
 void  mesh_set_format(mesh_t* mesh, sol_model_t* model)
 {
     unsigned int stride = 0;
@@ -105,8 +144,11 @@ void  mesh_set_format(mesh_t* mesh, sol_model_t* model)
 
 void mesh_render(mesh_t* mesh, unsigned int sh_id)
 {
+    glBindVertexArray(*(mesh->VAO));
+
     if (sh_id)
     {
+        glUseProgram(sh_id);
         unsigned int loc;
         loc = glGetUniformLocation(sh_id, "mat.Ka");
         glUniform3fv(loc, 1, mesh->mtl->Ka);
@@ -124,11 +166,20 @@ void mesh_render(mesh_t* mesh, unsigned int sh_id)
         glUniform1f(loc, mesh->mtl->d);
 
         /* HANDLE TEXTURES */
+        for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
+        {
+            char tex_name[64]; memset(tex_name, 0, sizeof(tex_name));
+            if (SCOP_TEXTURE_ID_KD == i) strcpy_s(tex_name, 64, "mat.diffuse_map");
+            if (SCOP_TEXTURE_ID_KS == i) strcpy_s(tex_name, 64, "mat.specular_map");
+            if (SCOP_TEXTURE_ID_BUMP == i) strcpy_s(tex_name, 64, "mat.bump_map");
+            if (!tex_name) continue;
+            loc = glGetUniformLocation(sh_id, tex_name);
+            glUniform1i(loc, i);
+            glActiveTexture(GL_TEXTURE0 + i);
+            glBindTexture(GL_TEXTURE_2D, mesh->mtl->textures[i].id);
+        }
     }
-
-    glBindVertexArray(*(mesh->VAO));
     glDrawArrays(GL_TRIANGLES, 0, mesh->data->buff_cnt);
-    glBindVertexArray(0);
 }
 
 void mesh_set_mtl(mesh_t* mesh, sol_mtl_group_t* sol_mtl_group)
@@ -140,4 +191,21 @@ void mesh_set_mtl(mesh_t* mesh, sol_mtl_group_t* sol_mtl_group)
     mesh->mtl->Ns = sol_mtl_group->Ns;
     mesh->mtl->Ni = sol_mtl_group->Ni;
     mesh->mtl->d = sol_mtl_group->d;
+
+    /* Load texture data */
+    memcpy(mesh->mtl->textures[SCOP_TEXTURE_ID_KS].path, sol_mtl_group->map_Ks, sizeof(sol_mtl_group->map_Ks));
+    memcpy(mesh->mtl->textures[SCOP_TEXTURE_ID_KD].path, sol_mtl_group->map_Kd, sizeof(sol_mtl_group->map_Kd));
+    memcpy(mesh->mtl->textures[SCOP_TEXTURE_ID_BUMP].path, sol_mtl_group->map_Bump, sizeof(sol_mtl_group->map_Bump));
+    for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
+    {
+        unsigned char* data;
+
+        if (!mesh->mtl->textures[i].path[i]) continue;
+        data = px_load(mesh->mtl->textures[i].path,
+            &(mesh->mtl->textures[i].w),
+            &(mesh->mtl->textures[i].h),
+            &(mesh->mtl->textures[i].chn));
+        if (data)
+            mesh->mtl->textures[i].data = data;
+    }
 }
