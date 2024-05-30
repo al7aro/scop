@@ -6,70 +6,25 @@ set(CMAKE_C_STANDARD 17)
 set(CMAKE_C_STANDARD_REQUIRED True)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR/bin})
 
-set(PROJECT_DIR ${CMAKE_SOURCE_DIR}/${PROJECT_NAME})
+set(PROJECT_DIR ${CMAKE_SOURCE_DIR})
 set(VENDOR_DIR ${PROJECT_DIR}/vendor)
 set(LIBS_DIR ${PROJECT_DIR}/libs)
 
-# GLFW
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_DIR ${VENDOR_DIR}/glfw)
-add_subdirectory(${GLFW_DIR})
-
-# GLAD
-set(GLAD_DIR ${VENDOR_DIR}/glad)
-add_subdirectory(${GLAD_DIR})
-
-# px_image
-set(PX_IMAGE_DIR ${LIBS_DIR}/px_image)
-add_subdirectory(${PX_IMAGE_DIR})
-
-# scop_obj_loader
-set(SCOP_OBJ_LOADER_DIR ${LIBS_DIR}/scop_obj_loader)
-add_subdirectory(${SCOP_OBJ_LOADER_DIR})
-
 # scop_math
-set(SCOP_MATH_DIR ${LIBS_DIR}/scop_math)
-add_subdirectory(${SCOP_MATH_DIR})
-
-# libft_ll
-set(LIBFT_LL_DIR ${LIBS_DIR}/libft_ll)
-add_subdirectory(${LIBFT_LL_DIR})
-
-# OpenGL
-find_package(OpenGL REQUIRED)
+set(SCOP_ENGINE_DIR ${LIBS_DIR}/scop_engine)
+add_subdirectory(${SCOP_ENGINE_DIR})
 
 # Project Sources
 file(GLOB_RECURSE source_files
-        "${PROJECT_DIR}/src/core/main.c"
-        "${PROJECT_DIR}/include/core/main.h"
-
-        "${PROJECT_DIR}/src/core/basic_mesh.c"
-        "${PROJECT_DIR}/include/core/basic_mesh.h"
-        
-		"${PROJECT_DIR}/src/core/basic_model.c"
-        "${PROJECT_DIR}/include/core/basic_model.h"
-		
-        "${PROJECT_DIR}/include/core/scop_engine.h"
-        "${PROJECT_DIR}/src/core/scop_engine.c"
-
-		"${PROJECT_DIR}/src/core/renderer/renderer.c"
-		"${PROJECT_DIR}/src/core/renderer/renderer_camera.c"
-		"${PROJECT_DIR}/src/core/renderer/renderer_light.c"
-		"${PROJECT_DIR}/src/core/renderer/renderer_empty.c"
-		"${PROJECT_DIR}/src/core/renderer/renderer_entity.c"
-        "${PROJECT_DIR}/include/core/renderer/renderer.h"
-
-        "${PROJECT_DIR}/src/shader/shader.c"
-        "${PROJECT_DIR}/include/shader/shader.h"
+        "${PROJECT_DIR}/src/main.c"
 )
 
 foreach (src ${source_files})
     get_filename_component(dir ${src} DIRECTORY)
-    string(REGEX MATCH "scop/scop/(.*)" CMAKE_MATCH_1 ${dir})
-    string(REPLACE "scop/scop/" "" desired_portion ${CMAKE_MATCH_1})
-    string(REGEX REPLACE "^(scop\/scop\/)(.*)" "\\2" desired_portion ${CMAKE_MATCH_1})
+    string(REGEX MATCH "scop/(.*)" CMAKE_MATCH_1 ${dir})
+    string(REPLACE "scop/" "" desired_portion ${CMAKE_MATCH_1})
+    string(REGEX REPLACE "^(scop\/)(.*)" "\\2" desired_portion ${CMAKE_MATCH_1})
+    message(${src})
     source_group(${desired_portion} FILES ${src})
 endforeach()
 
@@ -115,23 +70,11 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Libraries
-target_link_libraries(${PROJECT_NAME} glfw)
-target_link_libraries(${PROJECT_NAME} px_image)
-target_link_libraries(${PROJECT_NAME} scop_obj_loader)
-target_link_libraries(${PROJECT_NAME} scop_math)
-target_link_libraries(${PROJECT_NAME} libft_ll)
-target_link_libraries(${PROJECT_NAME} glad)
-target_link_libraries(${PROJECT_NAME} OpenGL::GL)
+target_link_libraries(${PROJECT_NAME} scop_engine)
 
 # Headers
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/core")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/core/renderer")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/math")
-target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include/shader")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/include")
+target_include_directories(${PROJECT_NAME} PUBLIC "${PROJECT_DIR}/libs/scop_engine/include")
 
-target_include_directories(${PROJECT_NAME} PUBLIC "${GLFW_DIR}/include")
-target_include_directories(${PROJECT_NAME} PUBLIC "${GLAD_DIR}/include")
-
-# target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 
 install(TARGETS ${PROJECT_NAME})
