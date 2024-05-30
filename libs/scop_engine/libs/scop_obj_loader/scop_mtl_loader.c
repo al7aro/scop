@@ -103,7 +103,7 @@ void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path)
     free(path);
     if (!fp)
     {
-        printf("File not found.\n");
+        printf("File not found [%s]\n", path);
         return ;
     }
     char line[512]; memset(line, 0, sizeof(line));

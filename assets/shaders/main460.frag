@@ -20,8 +20,13 @@ struct material
     int illum;
 
     sampler2D diffuse_map;
+    bool diffuse_map_enabled;
+
     sampler2D bump_map;
+    bool bump_map_enabled;
+
     sampler2D specular_map;
+    bool specular_map_enabled;
 };
 
 out vec4 frag_color;
@@ -49,5 +54,6 @@ void main()
     frag_color = vec4(diffuse + mat.Ka, 1.0) * vec4(1.0, 0.0, 0.0, 1.0);
     frag_color = vec4(mat.Kd, 1.0);
 
-    frag_color = texture(mat.diffuse_map, var_tex);
+    if (mat.diffuse_map_enabled)
+        frag_color = texture(mat.diffuse_map, var_tex);
 }

@@ -169,10 +169,27 @@ void mesh_render(mesh_t* mesh, unsigned int sh_id)
         for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
         {
             char tex_name[64]; memset(tex_name, 0, sizeof(tex_name));
-            if (SCOP_TEXTURE_ID_KD == i) strcpy_s(tex_name, 64, "mat.diffuse_map");
-            if (SCOP_TEXTURE_ID_KS == i) strcpy_s(tex_name, 64, "mat.specular_map");
-            if (SCOP_TEXTURE_ID_BUMP == i) strcpy_s(tex_name, 64, "mat.bump_map");
+            char enabled_tex_name[64]; memset(enabled_tex_name, 0, sizeof(enabled_tex_name));
+            if (SCOP_TEXTURE_ID_KD == i)
+            {
+                strcpy_s(tex_name, 64, "mat.diffuse_map");
+                strcpy_s(enabled_tex_name, 64, "mat.diffuse_map_enabled");
+            }
+            if (SCOP_TEXTURE_ID_KS == i)
+            {
+                strcpy_s(tex_name, 64, "mat.specular_map");
+                strcpy_s(enabled_tex_name, 64, "mat.specular_map_enabled");
+            }
+            if (SCOP_TEXTURE_ID_BUMP == i)
+            {
+                strcpy_s(tex_name, 64, "mat.bump_map");
+                strcpy_s(enabled_tex_name, 64, "mat.bump_map_enabled");
+            }
             if (!tex_name) continue;
+            
+            loc = glGetUniformLocation(sh_id, enabled_tex_name);
+            glUniform1i(loc, !!(mesh->mtl->textures[i].id));
+
             loc = glGetUniformLocation(sh_id, tex_name);
             glUniform1i(loc, i);
             glActiveTexture(GL_TEXTURE0 + i);

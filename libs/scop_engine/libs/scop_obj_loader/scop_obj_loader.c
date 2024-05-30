@@ -51,6 +51,7 @@ static void parse_obj_line(sol_model_t* model, sol_obj_t* obj, char* line)
 {
     char* line_data = NULL;
     char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
+    if (!line_type) return;
     unsigned int att_id = 0;
 
     /* VERTEX ATTRIBUTES */
@@ -97,6 +98,12 @@ static void parse_obj_line(sol_model_t* model, sol_obj_t* obj, char* line)
     }
     else if (!strncmp("f\0", line_type, 2) && line_data)
     {
+        if (!obj)
+        {
+            obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+            init_obj(obj, "noname");
+            ft_lstadd_back(&(model->obj), ft_lstnew(obj));
+        }
         trim_spaces(line_data);
         parse_line_face(obj, &line_data);
     }
@@ -116,9 +123,9 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
     init_model(model);
     while (fgets(line, MAX_LINE_SIZE, fp))
     {
-        char name[64];
-        char mtl_name[64];
-        char mtllib[64];
+        char name[64]; memset(name, 0, sizeof(name));
+        char mtl_name[64]; memset(mtl_name, 0, sizeof(mtl_name));
+        char mtllib[64]; memset(mtllib, 0, sizeof(mtllib));
         if (sscanf_s(line, " mtllib %s ", mtllib, (unsigned int)sizeof(mtllib)) > 0)
             strcpy_s(model->mtllib, (unsigned int)sizeof(model->mtllib), mtllib);
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
@@ -141,20 +148,15 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
             init_obj(obj, name);
             ft_lstadd_back(&(model->obj), ft_lstnew(obj));
         }
-        if (model->obj)
-        {
-            t_list* tmp = ft_lstlast(model->obj);
-            if (!model->obj)
-            {
-                sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
-                init_obj(obj, "noname");
-                ft_lstadd_back(&(model->obj), ft_lstnew(obj));
-            }
-            //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
+        //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
+        t_list* tmp = ft_lstlast(model->obj);
+        if (tmp)
             parse_obj_line(model, tmp->content, line);
-        }
+        else
+            parse_obj_line(model, NULL, line);
     }
     //printf("SCENE SIZE: %d\n", ft_lstsize(model->obj));
-    sol_load_wavefront_mtl(model, path);
+    if (strlen(model->mtllib) > 0)
+        sol_load_wavefront_mtl(model, path);
     return model;
 }
