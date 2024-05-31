@@ -50,7 +50,7 @@ cmake ..
 
 ![progress](https://progress-bar.dev/80/)
 
-![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/scop.gif)
+![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/square_scop.gif)
 
 ---
 
