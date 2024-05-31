@@ -2,17 +2,7 @@
 
 #include "scop_engine.h"
 
-/* INPUT CALLBACKS */
-
-void engine_input_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
-{
-	(void)window; (void)key; (void)scancode; (void)action; (void)mods;
-	scop_engine_t* engine_ptr = glfwGetWindowUserPointer(window);
-	scene_t* scene_ptr = engine_ptr->ative_scene;
-	scene_manage_input_callbacks(scene_ptr, key, action);
-}
-
-void camera_callback(cam_t* cam, int key, int action)
+void common_camera_callback(cam_t* cam, int key, int action)
 {
 	(void)cam;  (void)key; (void)action;
 	if (key == GLFW_KEY_W)
@@ -55,6 +45,26 @@ void camera_callback(cam_t* cam, int key, int action)
 		if (action == GLFW_RELEASE)
 			cam->empty->input_motion.right = 0;
 	}
+	if (key == GLFW_KEY_E)
+	{
+		if (action == GLFW_PRESS)
+		{
+			cam->empty->input_motion.up = 0;
+			cam->empty->input_motion.down = 1;
+		}
+		if (action == GLFW_RELEASE)
+			cam->empty->input_motion.down = 0;
+	}
+	if (key == GLFW_KEY_Q)
+	{
+		if (action == GLFW_PRESS)
+		{
+			cam->empty->input_motion.up = 1;
+			cam->empty->input_motion.down = 0;
+		}
+		if (action == GLFW_RELEASE)
+			cam->empty->input_motion.up = 0;
+	}
 	if (key == GLFW_KEY_L)
 	{
 		if (action == GLFW_PRESS)
@@ -79,7 +89,7 @@ void camera_callback(cam_t* cam, int key, int action)
 
 /* UPDATE CALLBACKS */
 
-void update_camera(cam_t* cam)
+void common_update_camera(cam_t* cam)
 {
 	float move_speed = 0.08f;
 	float rot_speed = 0.015f;
@@ -106,6 +116,18 @@ void update_camera(cam_t* cam)
 		vec3_t right;
 		vec3_times_float(cam->right, -move_speed, right);
 		vec3_minus_vec3(cam->empty->pos, right, cam->empty->pos);
+	}
+	if (cam->empty->input_motion.up)
+	{
+		vec3_t up;
+		vec3_times_float(cam->up, -move_speed, up);
+		vec3_plus_vec3(cam->empty->pos, up, cam->empty->pos);
+	}
+	if (cam->empty->input_motion.down)
+	{
+		vec3_t down;
+		vec3_times_float(cam->up, -move_speed, down);
+		vec3_minus_vec3(cam->empty->pos, down, cam->empty->pos);
 	}
 	if (cam->empty->input_motion.rot_right)
 	{
@@ -143,16 +165,4 @@ void update_camera(cam_t* cam)
 		cam->lookat[2] = lookat4[2];
 
 	}
-}
-
-void update_rotating_cube(entity_t* e)
-{
-	e->empty->rot[0] += 0.003f;
-	e->empty->rot[1] += 0.001f;
-	e->empty->rot[2] += 0.003f;
-}
-
-void update_orbiting_light(entity_t* e)
-{
-	e->empty->rot[1] += 0.002f;
 }

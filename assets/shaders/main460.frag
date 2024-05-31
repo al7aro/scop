@@ -69,7 +69,10 @@ vec4 compute_point_lights()
         vec3 light_dir = normalize(light.pos - frag_pos);
         vec3 norm = normalize(material_bump);
         float diff = max(dot(norm, light_dir), 0.0);
-        diffuse = light.diffuse * diff * material_diffuse;
+        if (length(material_bump) <= 0)
+            diffuse = light.diffuse * material_diffuse;
+        else
+            diffuse = light.diffuse * diff * material_diffuse;
         // SPECULAR TODO: SOMETHING WEIRD HAPPENS TO THE SPECULAR COMPONENT OF LIGHT
         vec3 view_dir = normalize(view_pos - frag_pos);
         vec3 reflec_dir = reflect(-light_dir, norm);

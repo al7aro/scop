@@ -1,7 +1,7 @@
 #include "renderer.h"
 
 /* SCENE */
-scene_t* scene_create(void)
+scene_t* scene_create(const char* name_id)
 {
 	scene_t* scene;
 	scene = (scene_t*)malloc(sizeof(scene_t));
@@ -14,6 +14,7 @@ scene_t* scene_create(void)
 	scene->light_lst = NULL;
 	scene->input_handler = NULL;
 	scene->update_handler = NULL;
+	strcpy_s(scene->name_id, sizeof(scene->name_id), name_id);
 
 	return scene;
 }

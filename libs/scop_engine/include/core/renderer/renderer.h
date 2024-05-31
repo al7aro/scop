@@ -62,6 +62,7 @@ typedef struct light_s
 
 typedef struct scene_s
 {
+	char name_id[128];
 	shader_t* default_shader;
 	vec3_t ambient;
 	cam_t* cam;
@@ -72,7 +73,7 @@ typedef struct scene_s
 } scene_t;
 
 /* SCENE */
-scene_t* scene_create(void);
+scene_t* scene_create(const char* name_id);
 void scene_render(scene_t* scene);
 /* update_scene(?) */
 

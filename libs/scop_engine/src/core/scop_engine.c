@@ -10,6 +10,7 @@ scop_engine_t* scop_engine_create()
     scop_engine->window_width = 900;
     scop_engine->current_time = 0;
     scop_engine->ative_scene = NULL;
+    scop_engine->scenes = NULL;
 
     if (!glfwInit())
     {
@@ -70,9 +71,48 @@ void scop_engine_update(scop_engine_t* scop_engine)
     scene_update(scop_engine->ative_scene);
 }
 
-void scop_engine_set_active_scene(scop_engine_t* scop_engine, scene_t* scene)
+void scop_engine_set_active_scene(scop_engine_t* scop_engine, const char* name_id)
 {
-    scop_engine->ative_scene = scene;
+    t_list* scene_lst = scop_engine->scenes;
+    
+    while (scene_lst)
+    {
+        scene_t* scene;
+        scene = scene_lst->content;
+        if (!strcmp(scene->name_id, name_id))
+        {
+            scop_engine->ative_scene = scene;
+            return;
+        }
+        scene_lst = scene_lst->next;
+    }
+    scop_engine->ative_scene = scop_engine->scenes->content;
+}
+
+void scop_engine_set_active_scene_next(scop_engine_t* scop_engine)
+{
+    t_list* scene_lst = scop_engine->scenes;
+
+    while (scene_lst)
+    {
+        scene_t* scene;
+        scene = scene_lst->content;
+        if (!strcmp(scene->name_id, scop_engine->ative_scene->name_id))
+        {
+            if (scene_lst->next == NULL)
+                scop_engine->ative_scene = scop_engine->scenes->content;
+            else
+                scop_engine->ative_scene = scene_lst->next->content;
+            return;
+        }
+        scene_lst = scene_lst->next;
+    }
+    scop_engine->ative_scene = scop_engine->scenes->content;
+}
+
+void scop_engine_add_scene(scop_engine_t* scop_engine, scene_t* scene)
+{
+    ft_lstadd_back(&(scop_engine->scenes), ft_lstnew(scene));
 }
 
 void scop_engine_destroy(scop_engine_t* scop_engine)
