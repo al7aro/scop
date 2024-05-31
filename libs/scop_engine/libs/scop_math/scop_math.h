@@ -103,6 +103,7 @@ void mat4_get_identity(mat4_t ret);
 void mat4_get_rotX(float angle, mat4_t ret);
 void mat4_get_rotY(float angle, mat4_t ret);
 void mat4_get_rotZ(float angle, mat4_t ret);
+void mat4_get_rotU(float angle, vec4_t dir, mat4_t ret);
 
 /* TRASLATION MATRICES */
 void mat4_get_tras(float x, float y, float z, mat4_t ret);

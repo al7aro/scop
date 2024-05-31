@@ -1,6 +1,9 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+
 #include "basic_model.h"
 #include "scop_math.h"
 #include "shader.h"
@@ -11,9 +14,9 @@ typedef struct motion_state_s
 	char move_y_local;
 	char move_z_local;
 
-	char rot_x_world;
-	char rot_y_world;
-	char rot_z_world;
+	float rot_x_world;
+	float rot_y_world;
+	float rot_z_world;
 } motion_state_t;
 
 typedef struct empty_s
@@ -34,7 +37,8 @@ typedef struct entity_s
 	shader_t* shader;
 	model_t* model;
 	/* Maybe the shader_id(?) | use a default one if it doesn't have any*/
-	void (*input_handler)(struct entity_s*, int, int);
+	void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int);
+	void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double);
 	void (*update_handler)(struct entity_s*);
 } entity_t;
 
@@ -47,7 +51,8 @@ typedef struct cam_s
 
 	float fov;
 	/* Common Camera Settings */
-	void (*input_handler)(struct cam_s*, int, int);
+	void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int);
+	void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double);
 	void (*update_handler)(struct cam_s*);
 } cam_t;
 
@@ -61,7 +66,8 @@ typedef struct light_s
 	vec3_t ambient;
 	/* spot, point, sun, etc. */
 
-	void (*input_handler)(struct light_s*, int, int);
+	void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int);
+	void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double);
 	void (*update_handler)(struct light_s*);
 } light_t;
 
@@ -73,7 +79,8 @@ typedef struct scene_s
 	cam_t* cam;
 	t_list* entity_lst;
 	t_list* light_lst;
-	void (*input_handler)(struct scene_s*, int, int);
+	void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int);
+	void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double);
 	void (*update_handler)(struct scene_s*);
 } scene_t;
 
@@ -91,13 +98,15 @@ void scene_cam_uniform(shader_t* sh, scene_t* scene);
 void scene_set_shader(scene_t* scene, shader_t* shader);
 void scene_set_ambient(scene_t* scene, vec3_t col);
 void scene_set_cam(scene_t* scene, cam_t* cam);
-void scene_set_input_handler(scene_t* scene, void (*input_handler)(struct scene_s*, int, int));
+void scene_set_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int));
+void scene_set_mouse_input_handler(scene_t* scene, void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double));
 void scene_set_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*));
 
 void scene_add_entity(scene_t* scene, entity_t* entity);
 void scene_add_light(scene_t* scene, light_t* light);
 
-void scene_manage_input_callbacks(scene_t* scene, int key, int action);
+void scene_manage_keyboard_input_callbacks(scene_t* scene, GLFWwindow*, int key, int action);
+void scene_manage_mouse_input_callbacks(scene_t* scene, GLFWwindow*, double xpos, double ypos);
 void scene_update(scene_t* scene);
 void scene_destroy(scene_t* scene);
 
@@ -113,10 +122,12 @@ void cam_set_fov(cam_t* cam, float fov);
 void cam_set_lookat(cam_t* cam, vec3_t lookat);
 void cam_set_up(cam_t* cam, vec3_t up);
 void cam_set_right(cam_t* cam, vec3_t right);
-void cam_set_input_handler(cam_t* cam, void (*input_handler)(struct cam_s*, int, int));
+void cam_set_keyboard_input_handler(cam_t* cam, void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int));
+void cam_set_mouse_input_handler(cam_t* cam, void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double));
 void cam_set_update_handler(cam_t* cam, void (*update_handler)(struct cam_s*));
 
-void cam_manage_input_callbacks(cam_t* cam, int key, int action);
+void cam_manage_keyboard_input_callbacks(cam_t* cam, GLFWwindow* window, int key, int action);
+void cam_manage_mouse_input_callbacks(cam_t* cam, GLFWwindow* window, double xpos, double ypos);
 void cam_update(cam_t* cam);
 void cam_destroy(cam_t* cam);
 
@@ -129,10 +140,12 @@ void entity_set_model(entity_t* entity, model_t* model);
 void entity_set_parent(entity_t* entity, entity_t* parent);
 void entity_set_pos(entity_t* entity, vec3_t pos);
 void entity_set_scale(entity_t* entity, vec3_t scale);
-void entity_set_input_handler(entity_t* entity, void (*input_handler)(struct entity_s*, int, int));
+void entity_set_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int));
+void entity_set_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double));
 void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*));
 
-void entity_manage_input_callbacks(entity_t* entity, int key, int action);
+void entity_manage_keyboard_input_callbacks(entity_t* entity, GLFWwindow* window, int key, int action);
+void entity_manage_mouse_input_callbacks(entity_t* entity, GLFWwindow* window, double xpos, double ypos);
 void entity_update(entity_t* entity);
 void entity_destroy(entity_t* entity);
 
@@ -150,10 +163,12 @@ void light_set_ambient(light_t* light, vec3_t ambient);
 void light_set_specular(light_t* light, vec3_t specular);
 void light_set_parent_entity(light_t* light, entity_t* parent);
 void light_set_pos(light_t* light, vec3_t pos);
-void light_set_input_handler(light_t* light, void (*input_handler)(struct light_s*, int, int));
+void light_set_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int));
+void light_set_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double));
 void light_set_update_handler(light_t* light, void (*update_handler)(struct light_s*));
 
-void light_manage_input_callbacks(light_t* light, int key, int action);
+void light_manage_keyboard_input_callbacks(light_t* light, GLFWwindow* window, int key, int action);
+void light_manage_mouse_input_callbacks(light_t* light, GLFWwindow* window, double xpos, double ypos);
 void light_update(light_t* light);
 void light_destroy(light_t* light);
 

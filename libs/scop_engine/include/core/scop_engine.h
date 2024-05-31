@@ -1,9 +1,6 @@
 #ifndef SCOP_ENGINE_H
 #define SCOP_ENGINE_H
 
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
-
 #include "renderer.h"
 #include "scop_math.h"
 
@@ -23,7 +20,8 @@ typedef struct scop_engine_s
 scop_engine_t* scop_engine_create();
 void scop_engine_destroy(scop_engine_t* scop_engine);
 
-void scop_engine_set_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int));
+void scop_engine_set_keyboard_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int));
+void scop_engine_set_mouse_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, double, double));
 void scop_engine_set_active_scene(scop_engine_t* scop_engine, const char* name_id);
 void scop_engine_set_active_scene_next(scop_engine_t* scop_engine);
 void scop_engine_add_scene(scop_engine_t* scop_engine, scene_t* scene);

@@ -261,6 +261,18 @@ void mat4_get_rotZ(float angle, mat4_t ret)
     ret[3] = 0;                 ret[7] = 0;                     ret[11] = 0;    ret[15] = 1;
 }
 
+void mat4_get_rotU(float angle, vec4_t dir, mat4_t ret)
+{
+    float ux = dir[0], uy = dir[1], uz = dir[2];
+    float ux2 = ux * ux, uy2 = uy * uy, uz2 = uz * uz;
+    float uxuy = ux * uy, uxuz = ux * uz, uyuz = uy * uz;
+
+    ret[0] = (float)(cos(angle) + ux2*(1.0-cos(angle)));      ret[4] = (float)(uxuy*(1.0-cos(angle)) - uz*sin(angle));  ret[8] = (float)(uxuz*(1.0-cos(angle)) + uy*sin(angle));    ret[12] = 0;
+    ret[1] = (float)(uxuy*(1.0-cos(angle)) + uz*sin(angle));  ret[5] = (float)(cos(angle) + uy2*(1.0-cos(angle)));      ret[9] = (float)(uyuz*(1.0-cos(angle)) - ux*sin(angle));    ret[13] = 0;
+    ret[2] = (float)(uxuz*(1.0-cos(angle)) - uy*sin(angle));  ret[6] = (float)(uyuz*(1.0-cos(angle)) + ux*sin(angle));  ret[10] = (float)(cos(angle) + uz2*(1.0-cos(angle)));       ret[14] = 0;
+    ret[3] = 0;                                             ret[7] = 0;                                                 ret[11] = 0;                                                ret[15] = 1.0;
+}
+
 void mat4_get_tras(float x, float y, float z, mat4_t ret)
 {
     ret[0] = 1; ret[4] = 0; ret[8] = 0;     ret[12] = x;

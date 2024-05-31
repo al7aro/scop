@@ -13,7 +13,8 @@ cam_t* cam_create(void)
 	cam->lookat[0] = 0.0; cam->lookat[1] = 0.0; cam->lookat[2] = 1.0;
 	cam->right[0] = 1.0; cam->right[1] = 0.0; cam->right[2] = 0.0;
 	cam->fov = 60.0f * 3.14f / 180.0f;
-	cam->input_handler = NULL;
+	cam->keyboard_input_handler = NULL;
+	cam->mouse_input_handler = NULL;
 	cam->update_handler = NULL;
 	return cam;
 }
@@ -63,9 +64,14 @@ void cam_set_right(cam_t* cam, vec3_t right)
 		cam->right[i] = right[i];
 }
 
-void cam_set_input_handler(cam_t* cam, void (*input_handler)(struct cam_s*, int, int))
+void cam_set_keyboard_input_handler(cam_t* cam, void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int))
 {
-	cam->input_handler = input_handler;
+	cam->keyboard_input_handler = keyboard_input_handler;
+}
+
+void cam_set_mouse_input_handler(cam_t* cam, void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double))
+{
+	cam->mouse_input_handler = mouse_input_handler;
 }
 
 void cam_set_update_handler(cam_t* cam, void (*update_handler)(struct cam_s*))
@@ -73,10 +79,16 @@ void cam_set_update_handler(cam_t* cam, void (*update_handler)(struct cam_s*))
 	cam->update_handler = update_handler;
 }
 
-void cam_manage_input_callbacks(cam_t* cam, int key, int action)
+void cam_manage_keyboard_input_callbacks(cam_t* cam, GLFWwindow* window, int key, int action)
 {
-	if (cam->input_handler)
-		cam->input_handler(cam, key, action);
+	if (cam->keyboard_input_handler)
+		cam->keyboard_input_handler(cam, window, key, action);
+}
+
+void cam_manage_mouse_input_callbacks(cam_t* cam, GLFWwindow* window, double xpos, double ypos)
+{
+	if (cam->mouse_input_handler)
+		cam->mouse_input_handler(cam, window, xpos, ypos);
 }
 
 void cam_update(cam_t* cam)

@@ -12,7 +12,8 @@ scene_t* scene_create(const char* name_id)
 	scene->cam = NULL;
 	scene->entity_lst = NULL;
 	scene->light_lst = NULL;
-	scene->input_handler = NULL;
+	scene->keyboard_input_handler = NULL;
+	scene->mouse_input_handler = NULL;
 	scene->update_handler = NULL;
 	strcpy_s(scene->name_id, sizeof(scene->name_id), name_id);
 
@@ -92,9 +93,14 @@ void scene_set_cam(scene_t* scene, cam_t* cam)
 	scene->cam = cam;
 }
 
-void scene_set_input_handler(scene_t* scene, void (*input_handler)(struct scene_s*, int, int))
+void scene_set_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int))
 {
-	scene->input_handler = input_handler;
+	scene->keyboard_input_handler = keyboard_input_handler;
+}
+
+void scene_set_mouse_input_handler(scene_t* scene, void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double))
+{
+	scene->mouse_input_handler = mouse_input_handler;
 }
 
 void scene_set_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*))
@@ -164,23 +170,44 @@ void scene_cam_uniform(shader_t* sh, scene_t* scene)
 	shader_set_vec3(sh, "view_pos", view_pos);
 }
 
-void scene_manage_input_callbacks(scene_t* scene, int key, int action)
+void scene_manage_keyboard_input_callbacks(scene_t* scene, GLFWwindow* window, int key, int action)
 {
-	cam_manage_input_callbacks(scene->cam, key, action);
+	cam_manage_keyboard_input_callbacks(scene->cam, window, key, action);
+
 	t_list* entity_lst = scene->entity_lst;
 	while (entity_lst)
 	{
-		entity_manage_input_callbacks(entity_lst->content, key, action);
+		entity_manage_keyboard_input_callbacks(entity_lst->content, window, key, action);
 		entity_lst = entity_lst->next;
 	}
 	t_list* light_lst = scene->light_lst;
 	while (light_lst)
 	{
-		light_manage_input_callbacks(light_lst->content, key, action);
+		light_manage_keyboard_input_callbacks(light_lst->content, window, key, action);
 		light_lst = light_lst->next;
 	}
-	if (scene->input_handler)
-		scene->input_handler(scene, key, action);
+	if (scene->keyboard_input_handler)
+		scene->keyboard_input_handler(scene, window, key, action);
+}
+
+void scene_manage_mouse_input_callbacks(scene_t* scene, GLFWwindow* window, double xpos, double ypos)
+{
+	cam_manage_mouse_input_callbacks(scene->cam, window, xpos, ypos);
+
+	t_list* entity_lst = scene->entity_lst;
+	while (entity_lst)
+	{
+		entity_manage_mouse_input_callbacks(entity_lst->content, window, xpos, ypos);
+		entity_lst = entity_lst->next;
+	}
+	t_list* light_lst = scene->light_lst;
+	while (light_lst)
+	{
+		light_manage_mouse_input_callbacks(light_lst->content, window, xpos, ypos);
+		light_lst = light_lst->next;
+	}
+	if (scene->mouse_input_handler)
+		scene->mouse_input_handler(scene, window, xpos, ypos);
 }
 
 void scene_update(scene_t* scene)

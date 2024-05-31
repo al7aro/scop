@@ -51,7 +51,8 @@ scene_t* guitar_scene_create(const char* scene_name)
 
 	cam = cam_create();
 	cam_set_pos(cam, cam_pos);
-	cam_set_input_handler(cam, common_camera_callback);
+	cam_set_keyboard_input_handler(cam, common_camera_keyboard_callback);
+	cam_set_mouse_input_handler(cam, common_camera_mouse_callback);
 	cam_set_update_handler(cam, common_update_camera);
 
 	light = light_create("light");

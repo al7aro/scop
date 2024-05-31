@@ -12,8 +12,9 @@ entity_t* entity_create(const char* name_id)
 
 	entity->model = NULL;
 	entity->shader = NULL;
-	entity->input_handler = NULL;
+	entity->keyboard_input_handler = NULL;
 	entity->update_handler = NULL;
+	entity->mouse_input_handler = NULL;
 	return entity;
 }
 
@@ -51,9 +52,14 @@ void entity_set_scale(entity_t* entity, vec3_t scale)
 		entity->empty->scale[i] = scale[i];
 }
 
-void entity_set_input_handler(entity_t* entity, void (*input_handler)(struct entity_s*, int, int))
+void entity_set_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int))
 {
-	entity->input_handler = input_handler;
+	entity->keyboard_input_handler = keyboard_input_handler;
+}
+
+void entity_set_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double))
+{
+	entity->mouse_input_handler = mouse_input_handler;
 }
 
 void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*))
@@ -61,10 +67,16 @@ void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct e
 	entity->update_handler = update_handler;
 }
 
-void entity_manage_input_callbacks(entity_t* entity, int key, int action)
+void entity_manage_keyboard_input_callbacks(entity_t* entity, GLFWwindow* window, int key, int action)
 {
-	if (entity->input_handler)
-		entity->input_handler(entity, key, action);
+	if (entity->keyboard_input_handler)
+		entity->keyboard_input_handler(entity, window, key, action);
+}
+
+void entity_manage_mouse_input_callbacks(entity_t* entity, GLFWwindow* window, double xpos, double ypos)
+{
+	if (entity->mouse_input_handler)
+		entity->mouse_input_handler(entity, window, xpos, ypos);
 }
 
 void entity_update(entity_t* entity)

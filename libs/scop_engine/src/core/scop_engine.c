@@ -43,10 +43,17 @@ scop_engine_t* scop_engine_create()
     return scop_engine;
 }
 
-void scop_engine_set_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int))
+void scop_engine_set_keyboard_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int))
 {
     glfwSetWindowUserPointer(scop_engine->window, scop_engine);
 	glfwSetKeyCallback(scop_engine->window, input_callback);
+}
+
+void scop_engine_set_mouse_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, double, double))
+{
+    glfwSetInputMode(scop_engine->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetWindowUserPointer(scop_engine->window, scop_engine);
+    glfwSetCursorPosCallback(scop_engine->window, input_callback);
 }
 
 void scop_engine_set_clear_color(scop_engine_t* scop_engine, vec3_t col)

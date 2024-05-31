@@ -16,7 +16,8 @@ light_t* light_create(const char* name_id)
 		light->ambient[i] = 0.25;
 	for (int i = 0; i < 3; i++)
 		light->specular[i] = 0.25;
-	light->input_handler = NULL;
+	light->keyboard_input_handler = NULL;
+	light->mouse_input_handler = NULL;
 	light->update_handler = NULL;
 	return light;
 }
@@ -79,9 +80,14 @@ void light_set_pos(light_t* light, vec3_t pos)
 		light->empty->pos[i] = pos[i];
 }
 
-void light_set_input_handler(light_t* light, void (*input_handler)(struct light_s*, int, int))
+void light_set_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int))
 {
-	light->input_handler = input_handler;
+	light->keyboard_input_handler = keyboard_input_handler;
+}
+
+void light_set_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double))
+{
+	light->mouse_input_handler = mouse_input_handler;
 }
 
 void light_set_update_handler(light_t* light, void (*update_handler)(struct light_s*))
@@ -89,10 +95,16 @@ void light_set_update_handler(light_t* light, void (*update_handler)(struct ligh
 	light->update_handler = update_handler;
 }
 
-void light_manage_input_callbacks(light_t* light, int key, int action)
+void light_manage_keyboard_input_callbacks(light_t* light, GLFWwindow* window, int key, int action)
 {
-	if (light->input_handler)
-		light->input_handler(light, key, action);
+	if (light->keyboard_input_handler)
+		light->keyboard_input_handler(light, window, key, action);
+}
+
+void light_manage_mouse_input_callbacks(light_t* light, GLFWwindow* window, double xpos, double ypos)
+{
+	if (light->mouse_input_handler)
+		light->mouse_input_handler(light, window, xpos, ypos);
 }
 
 void light_update(light_t* light)
