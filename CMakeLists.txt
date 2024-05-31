@@ -16,7 +16,9 @@ add_subdirectory(${SCOP_ENGINE_DIR})
 
 # Project Sources
 file(GLOB_RECURSE source_files
-        "${PROJECT_DIR}/src/main.c"
+        "${PROJECT_DIR}/src/scop_main.c"
+        "${PROJECT_DIR}/include/scop_main.h"
+        "${PROJECT_DIR}/src/input.c"
 )
 
 foreach (src ${source_files})

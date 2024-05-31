@@ -6,8 +6,8 @@ scop_engine_t* scop_engine_create()
     if (!scop_engine) return NULL;
     memset(scop_engine->clear_color, 0, sizeof(vec3_t));
     strcpy_s(scop_engine->window_title, sizeof(scop_engine->window_title), "Hello World!");
-    scop_engine->window_height = 500;
-    scop_engine->window_width = 500;
+    scop_engine->window_height = 900;
+    scop_engine->window_width = 900;
     scop_engine->current_time = 0;
     scop_engine->ative_scene = NULL;
 
@@ -44,6 +44,7 @@ scop_engine_t* scop_engine_create()
 
 void scop_engine_set_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int))
 {
+    glfwSetWindowUserPointer(scop_engine->window, scop_engine);
 	glfwSetKeyCallback(scop_engine->window, input_callback);
 }
 
@@ -62,6 +63,11 @@ void scop_engine_render(scop_engine_t* scop_engine)
 
     glfwSwapBuffers(scop_engine->window);
     glfwPollEvents();
+}
+
+void scop_engine_update(scop_engine_t* scop_engine)
+{
+    scene_update(scop_engine->ative_scene);
 }
 
 void scop_engine_set_active_scene(scop_engine_t* scop_engine, scene_t* scene)

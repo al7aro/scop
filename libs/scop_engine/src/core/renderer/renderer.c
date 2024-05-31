@@ -13,6 +13,7 @@ scene_t* scene_create(void)
 	scene->entity_lst = NULL;
 	scene->light_lst = NULL;
 	scene->input_handler = NULL;
+	scene->update_handler = NULL;
 
 	return scene;
 }
@@ -24,6 +25,11 @@ void scene_render(scene_t* scene)
 	while (ent_lst)
 	{
 		entity_t* entity = ent_lst->content;
+		if (!entity->model)
+		{
+			ent_lst = ent_lst->next;
+			continue;
+		}
 		shader_t* active_shader = 0;
 		if (entity->shader)
 			active_shader = entity->shader;
@@ -41,6 +47,32 @@ void scene_render(scene_t* scene)
 		entity_render(entity, active_shader->id);
 		ent_lst = ent_lst->next;
 	}
+}
+
+entity_t* scene_get_entity_by_name(scene_t* scene, const char* name_id)
+{
+	t_list* entity_lst = scene->entity_lst;
+	while (entity_lst)
+	{
+		entity_t* entity = entity_lst->content;
+		if (!strcmp(entity->name_id, name_id))
+			return entity;
+		entity_lst = entity_lst->next;
+	}
+	return NULL;
+}
+
+light_t* scene_get_light_by_name(scene_t* scene, const char* name_id)
+{
+	t_list* light_lst = scene->light_lst;
+	while (light_lst)
+	{
+		light_t* light = light_lst->content;
+		if (!strcmp(light->name_id, name_id))
+			return light;
+		light_lst = light_lst->next;
+	}
+	return NULL;
 }
 
 void scene_set_shader(scene_t* scene, shader_t* shader)
@@ -62,6 +94,11 @@ void scene_set_cam(scene_t* scene, cam_t* cam)
 void scene_set_input_handler(scene_t* scene, void (*input_handler)(struct scene_s*, int, int))
 {
 	scene->input_handler = input_handler;
+}
+
+void scene_set_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*))
+{
+	scene->update_handler = update_handler;
 }
 
 void scene_add_entity(scene_t* scene, entity_t* entity)
@@ -96,16 +133,20 @@ void scene_light_uniform(shader_t* sh, scene_t* scene)
 		sprintf(loc_str, "lights[%d].pos", cnt);
 		shader_set_vec3(sh, loc_str, pos);
 
-		vec3_t col;
-		light_get_col(light->content, col);
-		sprintf(loc_str, "lights[%d].col", cnt);
-		shader_set_vec3(sh, loc_str, col);
+		vec3_t diffuse, specular, ambient;
+		light_get_diffuse(light->content, diffuse);
+		sprintf(loc_str, "lights[%d].diffuse", cnt);
+		shader_set_vec3(sh, loc_str, diffuse);
 
-		float intensity;
-		light_get_intensity(light->content, &intensity);
-		sprintf(loc_str, "lights[%d].intensity", cnt);
-		shader_set_float(sh, loc_str, intensity);
+		light_get_specular(light->content, specular);
+		sprintf(loc_str, "lights[%d].specular", cnt);
+		shader_set_vec3(sh, loc_str, specular);
 
+		light_get_ambient(light->content, ambient);
+		sprintf(loc_str, "lights[%d].ambient", cnt);
+		shader_set_vec3(sh, loc_str, ambient);
+
+		cnt++;
 		light = light->next;
 	}
 }
@@ -113,10 +154,13 @@ void scene_light_uniform(shader_t* sh, scene_t* scene)
 void scene_cam_uniform(shader_t* sh, scene_t* scene)
 {
 	mat4_t proj, view;
+	vec3_t view_pos;
 	cam_get_mat_view(scene->cam, view);
 	shader_set_mat4(sh, "view", view);
 	cam_get_mat_proj(scene->cam, proj);
 	shader_set_mat4(sh, "proj", proj);
+	cam_get_pos(scene->cam, view_pos);
+	shader_set_vec3(sh, "view_pos", view_pos);
 }
 
 void scene_manage_input_callbacks(scene_t* scene, int key, int action)
@@ -136,6 +180,25 @@ void scene_manage_input_callbacks(scene_t* scene, int key, int action)
 	}
 	if (scene->input_handler)
 		scene->input_handler(scene, key, action);
+}
+
+void scene_update(scene_t* scene)
+{
+	cam_update(scene->cam);
+	t_list* entity_lst = scene->entity_lst;
+	while (entity_lst)
+	{
+		entity_update(entity_lst->content);
+		entity_lst = entity_lst->next;
+	}
+	t_list* light_lst = scene->light_lst;
+	while (light_lst)
+	{
+		light_update(light_lst->content);
+		light_lst = light_lst->next;
+	}
+	if (scene->update_handler)
+		scene->update_handler(scene);
 }
 
 void scene_destroy(scene_t* scene)

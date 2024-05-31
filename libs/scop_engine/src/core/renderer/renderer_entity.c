@@ -1,17 +1,19 @@
 #include "renderer.h"
 
 /* ENTITIES */
-entity_t* entity_create(void)
+entity_t* entity_create(const char* name_id)
 {
 	entity_t* entity;
 	entity = (entity_t*)malloc(sizeof(entity_t));
 	if (!entity) return NULL;
 	entity->empty = empty_create();
 	if (!entity->empty) return NULL;
+	strcpy_s(entity->name_id, sizeof(entity->name_id), name_id);
 
 	entity->model = NULL;
 	entity->shader = NULL;
 	entity->input_handler = NULL;
+	entity->update_handler = NULL;
 	return entity;
 }
 
@@ -54,10 +56,21 @@ void entity_set_input_handler(entity_t* entity, void (*input_handler)(struct ent
 	entity->input_handler = input_handler;
 }
 
+void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*))
+{
+	entity->update_handler = update_handler;
+}
+
 void entity_manage_input_callbacks(entity_t* entity, int key, int action)
 {
 	if (entity->input_handler)
 		entity->input_handler(entity, key, action);
+}
+
+void entity_update(entity_t* entity)
+{
+	if (entity->update_handler)
+		entity->update_handler(entity);
 }
 
 void entity_destroy(entity_t* entity)

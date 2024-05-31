@@ -17,8 +17,9 @@ out vec2 var_tex;
 void main()
 {
     varying_col = col;
-    varying_norm = norm;
-    var_tex = tex;
+    varying_norm = mat3(transpose(inverse(model))) * norm;
+    //Texture coordinates are flipped in the Y coordinate because px_image loads them inverted
+    var_tex = vec2(tex.x, -tex.y); 
     gl_Position = proj * view * model * vec4(pos, 1.0);
-    frag_pos = vec3(gl_Position);
+    frag_pos = vec3(model * vec4(pos, 1.0));
 }

@@ -14,6 +14,7 @@ empty_t* empty_create(void)
 		empty->rot[i] = 0.0;
 	for (int i = 0; i < 3; i++)
 		empty->scale[i] = 1.0;
+	memset(&(empty->input_motion), 0, sizeof(empty->input_motion));
 	mat4_get_identity(empty->model);
 	return empty;
 }

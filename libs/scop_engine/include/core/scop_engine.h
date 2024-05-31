@@ -27,6 +27,7 @@ void scop_engine_set_active_scene(scop_engine_t* scop_engine, scene_t* scene);
 void scop_engine_set_clear_color(scop_engine_t* scop_engine, vec3_t col);
 
 void scop_engine_render(scop_engine_t* scop_engine);
+void scop_engine_update(scop_engine_t* scop_engine);
 
 
 #endif

@@ -37,6 +37,43 @@ void mat2_print(mat2_t const m);
 void mat3_print(mat3_t const m);
 void mat4_print(mat4_t const m);
 
+/* SCALAR TIMES VECTOR */
+void vec2_times_float(vec2_t v, float scalar, vec2_t ret);
+void vec3_times_float(vec3_t v, float scalar, vec3_t ret);
+void vec4_times_float(vec4_t v, float scalar, vec4_t ret);
+
+/* DOT VECTORS */
+float vec2_dot_vec2(vec2_t v1, vec2_t v2);
+float vec3_dot_vec3(vec3_t v1, vec3_t v2);
+float vec4_dot_vec4(vec4_t v1, vec4_t v2);
+
+/* SUB VECTORS */
+void vec2_minus_vec2(vec2_t v1, vec2_t v2, vec2_t ret);
+void vec3_minus_vec3(vec3_t v1, vec3_t v2, vec3_t ret);
+void vec4_minus_vec4(vec4_t v1, vec4_t v2, vec4_t ret);
+
+/* ADD VECTORS */
+void vec2_plus_vec2(vec2_t v1, vec2_t v2, vec2_t ret);
+void vec3_plus_vec3(vec3_t v1, vec3_t v2, vec3_t ret);
+void vec4_plus_vec4(vec4_t v1, vec4_t v2, vec4_t ret);
+
+/* CROSS VECTORS */
+void vec3_cross_vec3(vec3_t v1, vec3_t v2, vec3_t ret);
+
+/* LEGNTH VECTORS */
+float vec2_length(vec2_t v);
+float vec3_length(vec3_t v);
+float vec4_length(vec4_t v);
+
+/* NORMALIZE VECTOR */
+void vec2_normal(vec2_t v, vec2_t ret);
+void vec3_normal(vec3_t v, vec3_t ret);
+void vec4_normal(vec4_t v, vec4_t ret);
+
+/* CAST */
+void vec2_to_vec3(vec2_t v1, vec3_t ret);
+void vec3_to_vec4(vec3_t v1, vec4_t ret);
+
 /* MATRIX DETERMINANT */
 float mat2_det(mat2_t const m);
 float mat3_det(mat3_t const m);
@@ -72,6 +109,9 @@ void mat4_get_tras(float x, float y, float z, mat4_t ret);
 
 /* SCALE MATRICES */
 void mat4_get_scale(float x, float y, float z, mat4_t ret);
+
+/* LOOK AT */
+void mat4_get_lookat(vec3_t pos, vec3_t up, vec3_t right, vec3_t lookat, mat4_t ret);
 
 /* PROJECTION MATRICES */
 void mat4_get_proj_ortho(float left, float right, float bottom, float top, float near, float far, mat4_t ret);

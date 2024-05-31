@@ -1,5 +1,194 @@
 #include "scop_math.h"
 
+/* VECTORS */
+void vec2_times_float(vec2_t v, float scalar, vec2_t ret)
+{
+    vec2_t v_aux;
+    memcpy(v_aux, v, sizeof(vec2_t));
+    ret[0] = scalar * v_aux[0];
+    ret[1] = scalar * v_aux[1];
+}
+
+void vec3_times_float(vec3_t v, float scalar, vec3_t ret)
+{
+    vec3_t v_aux;
+    memcpy(v_aux, v, sizeof(vec3_t));
+    ret[0] = scalar * v_aux[0];
+    ret[1] = scalar * v_aux[1];
+    ret[2] = scalar * v_aux[2];
+}
+
+void vec4_times_float(vec4_t v, float scalar, vec4_t ret)
+{
+    vec4_t v_aux;
+    memcpy(v_aux, v, sizeof(vec4_t));
+    ret[0] = scalar * v_aux[0];
+    ret[1] = scalar * v_aux[1];
+    ret[2] = scalar * v_aux[2];
+    ret[3] = scalar * v_aux[3];
+}
+
+
+float vec2_dot_vec2(vec2_t v1, vec2_t v2)
+{
+    return (v1[0] * v2[0] + v1[1] * v2[1]);
+}
+
+float vec3_dot_vec3(vec3_t v1, vec3_t v2)
+{
+    return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2]);
+}
+
+float vec4_dot_vec4(vec4_t v1, vec4_t v2)
+{
+    return (v1[0] * v2[0] + v1[1] * v2[1] + v1[2] * v2[2] + v1[3] * v2[3]);
+}
+
+float vec2_length(vec2_t v)
+{
+    return (float)(sqrt(pow(v[0], 2.0) + pow(v[1], 2)));
+}
+
+float vec3_length(vec3_t v)
+{
+    return (float)(sqrt(pow(v[0], 2.0) + pow(v[1], 2) + pow(v[2], 2)));
+}
+
+float vec4_length(vec4_t v)
+{
+    return (float)(sqrt(pow(v[0], 2.0) + pow(v[1], 2) + pow(v[2], 2) + pow(v[3], 2)));
+}
+
+void vec2_normal(vec2_t v, vec2_t ret)
+{
+    vec2_t v_aux;
+    memcpy(v_aux, v, sizeof(vec2_t));
+    float length = vec2_length(v_aux);
+    ret[0] = v_aux[0] / length;
+    ret[1] = v_aux[1] / length;
+}
+
+void vec3_normal(vec3_t v, vec3_t ret)
+{
+    vec3_t v_aux;
+    memcpy(v_aux, v, sizeof(vec3_t));
+    float length = vec3_length(v_aux);
+    ret[0] = v_aux[0] / length;
+    ret[1] = v_aux[1] / length;
+    ret[2] = v_aux[2] / length;
+}
+
+void vec4_normal(vec4_t v, vec4_t ret)
+{
+    vec4_t v_aux;
+    memcpy(v_aux, v, sizeof(vec4_t));
+    float length = vec4_length(v_aux);
+    ret[0] = v_aux[0] / length;
+    ret[1] = v_aux[1] / length;
+    ret[2] = v_aux[2] / length;
+    ret[3] = v_aux[3] / length;
+}
+
+void vec2_to_vec3(vec2_t v1, vec3_t ret)
+{
+    ret[0] = v1[0];
+    ret[1] = v1[1];
+    ret[2] = 1.0;
+}
+
+void vec3_to_vec4(vec3_t v1, vec4_t ret)
+{
+    ret[0] = v1[0];
+    ret[1] = v1[1];
+    ret[2] = v1[2];
+    ret[3] = 1.0;
+}
+
+void vec2_minus_vec2(vec2_t v1, vec2_t v2, vec2_t ret)
+{
+    vec2_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec2_t));
+    vec2_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec2_t));
+
+    ret[0] = v1_aux[0] - v2_aux[0];
+    ret[1] = v1_aux[1] - v2_aux[1];
+}
+
+void vec3_minus_vec3(vec3_t v1, vec3_t v2, vec3_t ret)
+{
+    vec3_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec3_t));
+    vec3_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec3_t));
+
+    ret[0] = v1_aux[0] - v2_aux[0];
+    ret[1] = v1_aux[1] - v2_aux[1];
+    ret[2] = v1_aux[2] - v2_aux[2];
+}
+
+void vec4_minus_vec4(vec4_t v1, vec4_t v2, vec4_t ret)
+{
+    vec4_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec4_t));
+    vec4_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec4_t));
+
+    ret[0] = v1_aux[0] - v2_aux[0];
+    ret[1] = v1_aux[1] - v2_aux[1];
+    ret[2] = v1_aux[2] - v2_aux[2];
+    ret[3] = v1_aux[3] - v2_aux[3];
+}
+
+void vec2_plus_vec2(vec2_t v1, vec2_t v2, vec2_t ret)
+{
+    vec2_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec2_t));
+    vec2_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec2_t));
+
+    ret[0] = v1_aux[0] + v2_aux[0];
+    ret[1] = v1_aux[1] + v2_aux[1];
+}
+
+void vec3_plus_vec3(vec3_t v1, vec3_t v2, vec3_t ret)
+{
+    vec3_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec3_t));
+    vec3_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec3_t));
+
+    ret[0] = v1_aux[0] + v2_aux[0];
+    ret[1] = v1_aux[1] + v2_aux[1];
+    ret[2] = v1_aux[2] + v2_aux[2];
+}
+
+void vec4_plus_vec4(vec4_t v1, vec4_t v2, vec4_t ret)
+{
+    vec4_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec4_t));
+    vec4_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec4_t));
+
+    ret[0] = v1_aux[0] + v2_aux[0];
+    ret[1] = v1_aux[1] + v2_aux[1];
+    ret[2] = v1_aux[2] + v2_aux[2];
+    ret[3] = v1_aux[3] + v2_aux[3];
+}
+
+void vec3_cross_vec3(vec3_t v1, vec3_t v2, vec3_t ret)
+{
+    vec3_t v1_aux;
+    memcpy(v1_aux, v1, sizeof(vec3_t));
+    vec3_t v2_aux;
+    memcpy(v2_aux, v2, sizeof(vec3_t));
+
+    ret[0] = (v1_aux[1] * v2_aux[2]) - (v1_aux[2] * v2_aux[1]);
+    ret[1] = -(v1_aux[0] * v2_aux[2]) - (v1_aux[2] * v2_aux[0]);
+    ret[2] = (v1_aux[0] * v2_aux[1])- (v1_aux[1] * v2_aux[0]);
+    vec3_normal(ret, ret);
+}
+
 /* USEFUL MATRICES */
 
 void mat2_get_zero(mat2_t ret)
@@ -86,6 +275,18 @@ void mat4_get_scale(float x, float y, float z, mat4_t ret)
     ret[1] = 0; ret[5] = y; ret[9] = 0;     ret[13] = 0;
     ret[2] = 0; ret[6] = 0; ret[10] = z;    ret[14] = 0;
     ret[3] = 0; ret[7] = 0; ret[11] = 0;    ret[15] = 1;
+}
+
+void mat4_get_lookat(vec3_t pos, vec3_t up, vec3_t right, vec3_t lookat, mat4_t ret)
+{
+    mat4_t tras;
+    mat4_t dir;
+    mat4_get_tras(-pos[0], -pos[1], -pos[2], tras);
+    dir[0] = right[0];  dir[4] = right[1];  dir[8] = right[2];      dir[12] = 0;
+    dir[1] = up[0];     dir[5] = up[1];     dir[9] = up[2];         dir[13] = 0;
+    dir[2] = lookat[0]; dir[6] = lookat[1]; dir[10] = lookat[2];    dir[14] = 0;
+    dir[3] = 0;         dir[7] = 0;         dir[11] = 0;            dir[15] = 1;
+    mat4_mult_mat4(dir, tras, ret);
 }
 
 /* LOGGING */
