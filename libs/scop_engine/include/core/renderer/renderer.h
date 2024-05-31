@@ -7,8 +7,13 @@
 
 typedef struct motion_state_s
 {
-	char up, down, left, right, front, back;
-	char rot_left, rot_right;
+	char move_x_local;
+	char move_y_local;
+	char move_z_local;
+
+	char rot_x_world;
+	char rot_y_world;
+	char rot_z_world;
 } motion_state_t;
 
 typedef struct empty_s
