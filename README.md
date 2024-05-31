@@ -50,7 +50,7 @@ cmake ..
 
 ![progress](https://progress-bar.dev/80/)
 
-![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/square_scop.gif)
+<a href="https://github.com/al7aro/scop/wiki"><img src="[https://raw.githubusercontent.com/wiki/al7aro/scop/images/square_scop.gif](https://raw.githubusercontent.com/wiki/al7aro/scop/images/square_scop.gif)" width=250/><a/>
 
 ---
 
