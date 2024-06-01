@@ -13,8 +13,8 @@ scene_t* default_scene_create(const char* scene_name)
 
 	cam_t* cam = cam_create();
 	cam_set_pos(cam, (vec3_t) { 0.0, 0.0, 7.0 });
-	cam_set_keyboard_input_handler(cam, common_camera_keyboard_callback);
-	cam_set_update_handler(cam, common_update_camera);
+	cam_add_keyboard_input_handler(cam, common_camera_keyboard_callback);
+	cam_add_update_handler(cam, common_update_camera);
 
 	entity_t* teapot = entity_create("teapot");
 	model_t* teapot_model; model_load(&teapot_model, "C:/Users/al7ar/DEV/scop/assets/models/42_resources/teapot.obj");

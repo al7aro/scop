@@ -16,9 +16,10 @@ light_t* light_create(const char* name_id)
 		light->ambient[i] = 0.25;
 	for (int i = 0; i < 3; i++)
 		light->specular[i] = 0.25;
-	light->keyboard_input_handler = NULL;
-	light->mouse_input_handler = NULL;
-	light->update_handler = NULL;
+
+	light->keyboard_input_handlers = NULL;
+	light->mouse_input_handlers = NULL;
+	light->update_handlers = NULL;
 	return light;
 }
 
@@ -80,37 +81,58 @@ void light_set_pos(light_t* light, vec3_t pos)
 		light->empty->pos[i] = pos[i];
 }
 
-void light_set_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int))
+void light_add_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int))
 {
-	light->keyboard_input_handler = keyboard_input_handler;
+	ft_lstadd_back(&(light->keyboard_input_handlers), ft_lstnew((void*)keyboard_input_handler));
 }
 
-void light_set_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double))
+void light_add_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double))
 {
-	light->mouse_input_handler = mouse_input_handler;
+	ft_lstadd_back(&(light->mouse_input_handlers), ft_lstnew((void*)mouse_input_handler));
 }
 
-void light_set_update_handler(light_t* light, void (*update_handler)(struct light_s*))
+void light_add_update_handler(light_t* light, void (*update_handler)(struct light_s*))
 {
-	light->update_handler = update_handler;
+	ft_lstadd_back(&(light->update_handlers), ft_lstnew((void*)update_handler));
 }
 
 void light_manage_keyboard_input_callbacks(light_t* light, GLFWwindow* window, int key, int action)
 {
-	if (light->keyboard_input_handler)
-		light->keyboard_input_handler(light, window, key, action);
+	t_list* keyboard_input_handlers_lst = light->keyboard_input_handlers;
+	while (keyboard_input_handlers_lst)
+	{
+		void (*keyboard_input_handler)(light_t*, GLFWwindow*, int, int);
+		keyboard_input_handler = (void (*)(light_t*, GLFWwindow*, int, int))keyboard_input_handlers_lst->content;
+		keyboard_input_handler(light, window, key, action);
+
+		keyboard_input_handlers_lst = keyboard_input_handlers_lst->next;
+	}
 }
 
 void light_manage_mouse_input_callbacks(light_t* light, GLFWwindow* window, double xpos, double ypos)
 {
-	if (light->mouse_input_handler)
-		light->mouse_input_handler(light, window, xpos, ypos);
+	t_list* keyboard_mouse_handlers_lst = light->mouse_input_handlers;
+	while (keyboard_mouse_handlers_lst)
+	{
+		void (*keyboard_mouse_handler)(light_t*, GLFWwindow*, double, double);
+		keyboard_mouse_handler = (void (*)(light_t*, GLFWwindow*, double, double))keyboard_mouse_handlers_lst->content;
+		keyboard_mouse_handler(light, window, xpos, ypos);
+
+		keyboard_mouse_handlers_lst = keyboard_mouse_handlers_lst->next;
+	}
 }
 
 void light_update(light_t* light)
 {
-	if (light->update_handler)
-		light->update_handler(light);
+	t_list* update_handlers_lst = light->update_handlers;
+	while (update_handlers_lst)
+	{
+		void (*update_handler)(light_t*);
+		update_handler = (void (*)(light_t*))update_handlers_lst->content;
+		update_handler(light);
+
+		update_handlers_lst = update_handlers_lst->next;
+	}
 }
 
 void light_destroy(light_t* light)

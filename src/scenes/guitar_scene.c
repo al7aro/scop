@@ -3,7 +3,7 @@
 #include "scop_engine.h"
 #include "scop_main.h"
 
-void rotating_cube_input_callback(entity_t* e, GLFWwindow* window, int key, int action)
+void common_trigger_input_callback(entity_t* e, GLFWwindow* window, int key, int action)
 {
 	(void)window;
 	if (key == GLFW_KEY_C && action == GLFW_PRESS)
@@ -15,12 +15,8 @@ void rotating_cube_input_callback(entity_t* e, GLFWwindow* window, int key, int 
 	}
 }
 
-void guitar_scene_update_rotating_cube(entity_t* e)
+void common_trigger_update(entity_t* e)
 {
-	e->empty->rot[0] += 0.003f;
-	e->empty->rot[1] += 0.001f;
-	e->empty->rot[2] += 0.003f;
-
 	if (e->empty->input_motion.trigger_flag != 0.0)
 	{
 		float change_speed = 0.0025f;
@@ -29,6 +25,13 @@ void guitar_scene_update_rotating_cube(entity_t* e)
 			e->empty->input_motion.trigger_flag = 0;
 	}
 	shader_set_float(e->shader, "trigger", e->empty->input_motion.trigger);
+}
+
+void guitar_scene_update_rotating_cube(entity_t* e)
+{
+	e->empty->rot[0] += 0.003f;
+	e->empty->rot[1] += 0.001f;
+	e->empty->rot[2] += 0.003f;
 }
 
 void guitar_scene_update_orbiting_light(entity_t* e)
@@ -72,9 +75,9 @@ scene_t* guitar_scene_create(const char* scene_name)
 
 	cam = cam_create();
 	cam_set_pos(cam, cam_pos);
-	cam_set_keyboard_input_handler(cam, common_camera_keyboard_callback);
-	cam_set_mouse_input_handler(cam, common_camera_mouse_callback);
-	cam_set_update_handler(cam, common_update_camera);
+	cam_add_keyboard_input_handler(cam, common_camera_keyboard_callback);
+	cam_add_mouse_input_handler(cam, common_camera_mouse_callback);
+	cam_add_update_handler(cam, common_update_camera);
 
 	light = light_create("light");
 	light_set_pos(light, light_pos);
@@ -86,8 +89,9 @@ scene_t* guitar_scene_create(const char* scene_name)
 	entity_set_model(e_cube, cube);
 	entity_set_scale(e_cube, (vec3_t) { 0.5f, 0.5f, 0.5f });
 	entity_set_pos(e_cube, cube_pos);
-	entity_set_update_handler(e_cube, guitar_scene_update_rotating_cube);
-	entity_set_keyboard_input_handler(e_cube, rotating_cube_input_callback);
+	entity_add_keyboard_input_handler(e_cube, common_trigger_input_callback);
+	entity_add_update_handler(e_cube, guitar_scene_update_rotating_cube);
+	entity_add_update_handler(e_cube, common_trigger_update);
 	e_cube->empty->rot[1] = 3.14f;
 
 	e_bulb = entity_create("e_bulb");
@@ -100,7 +104,7 @@ scene_t* guitar_scene_create(const char* scene_name)
 	e_orbit = entity_create("e_orbit");
 	entity_set_pos(e_orbit, orbit_pos);
 	entity_set_parent(e_bulb, e_orbit);
-	entity_set_update_handler(e_orbit, guitar_scene_update_orbiting_light);
+	entity_add_update_handler(e_orbit, guitar_scene_update_orbiting_light);
 
 	scene = scene_create(scene_name);
 	scene_set_shader(scene, sh);

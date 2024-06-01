@@ -40,9 +40,9 @@ typedef struct entity_s
 	shader_t* shader;
 	model_t* model;
 	/* Maybe the shader_id(?) | use a default one if it doesn't have any*/
-	void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int);
-	void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double);
-	void (*update_handler)(struct entity_s*);
+	t_list* keyboard_input_handlers;
+	t_list* mouse_input_handlers;
+	t_list* update_handlers;
 } entity_t;
 
 typedef struct cam_s
@@ -53,10 +53,9 @@ typedef struct cam_s
 	vec3_t right;
 
 	float fov;
-	/* Common Camera Settings */
-	void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int);
-	void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double);
-	void (*update_handler)(struct cam_s*);
+	t_list* keyboard_input_handlers;
+	t_list* mouse_input_handlers;
+	t_list* update_handlers;
 } cam_t;
 
 typedef struct light_s
@@ -68,10 +67,9 @@ typedef struct light_s
 	vec3_t specular;
 	vec3_t ambient;
 	/* spot, point, sun, etc. */
-
-	void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int);
-	void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double);
-	void (*update_handler)(struct light_s*);
+	t_list* keyboard_input_handlers;
+	t_list* mouse_input_handlers;
+	t_list* update_handlers;
 } light_t;
 
 typedef struct scene_s
@@ -82,9 +80,9 @@ typedef struct scene_s
 	cam_t* cam;
 	t_list* entity_lst;
 	t_list* light_lst;
-	void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int);
-	void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double);
-	void (*update_handler)(struct scene_s*);
+	t_list* keyboard_input_handlers;
+	t_list* mouse_input_handlers;
+	t_list* update_handlers;
 } scene_t;
 
 /* SCENE */
@@ -101,9 +99,9 @@ void scene_cam_uniform(shader_t* sh, scene_t* scene);
 void scene_set_shader(scene_t* scene, shader_t* shader);
 void scene_set_ambient(scene_t* scene, vec3_t col);
 void scene_set_cam(scene_t* scene, cam_t* cam);
-void scene_set_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int));
-void scene_set_mouse_input_handler(scene_t* scene, void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double));
-void scene_set_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*));
+void scene_add_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int));
+void scene_add_mouse_input_handler(scene_t* scene, void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double));
+void scene_add_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*));
 
 void scene_add_entity(scene_t* scene, entity_t* entity);
 void scene_add_light(scene_t* scene, light_t* light);
@@ -125,9 +123,9 @@ void cam_set_fov(cam_t* cam, float fov);
 void cam_set_lookat(cam_t* cam, vec3_t lookat);
 void cam_set_up(cam_t* cam, vec3_t up);
 void cam_set_right(cam_t* cam, vec3_t right);
-void cam_set_keyboard_input_handler(cam_t* cam, void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int));
-void cam_set_mouse_input_handler(cam_t* cam, void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double));
-void cam_set_update_handler(cam_t* cam, void (*update_handler)(struct cam_s*));
+void cam_add_keyboard_input_handler(cam_t* cam, void (*keyboard_input_handler)(struct cam_s*, GLFWwindow*, int, int));
+void cam_add_mouse_input_handler(cam_t* cam, void (*mouse_input_handler)(struct cam_s*, GLFWwindow*, double, double));
+void cam_add_update_handler(cam_t* cam, void (*update_handler)(struct cam_s*));
 
 void cam_manage_keyboard_input_callbacks(cam_t* cam, GLFWwindow* window, int key, int action);
 void cam_manage_mouse_input_callbacks(cam_t* cam, GLFWwindow* window, double xpos, double ypos);
@@ -143,9 +141,9 @@ void entity_set_model(entity_t* entity, model_t* model);
 void entity_set_parent(entity_t* entity, entity_t* parent);
 void entity_set_pos(entity_t* entity, vec3_t pos);
 void entity_set_scale(entity_t* entity, vec3_t scale);
-void entity_set_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int));
-void entity_set_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double));
-void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*));
+void entity_add_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int));
+void entity_add_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double));
+void entity_add_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*));
 
 void entity_manage_keyboard_input_callbacks(entity_t* entity, GLFWwindow* window, int key, int action);
 void entity_manage_mouse_input_callbacks(entity_t* entity, GLFWwindow* window, double xpos, double ypos);
@@ -166,9 +164,9 @@ void light_set_ambient(light_t* light, vec3_t ambient);
 void light_set_specular(light_t* light, vec3_t specular);
 void light_set_parent_entity(light_t* light, entity_t* parent);
 void light_set_pos(light_t* light, vec3_t pos);
-void light_set_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int));
-void light_set_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double));
-void light_set_update_handler(light_t* light, void (*update_handler)(struct light_s*));
+void light_add_keyboard_input_handler(light_t* light, void (*keyboard_input_handler)(struct light_s*, GLFWwindow*, int, int));
+void light_add_mouse_input_handler(light_t* light, void (*mouse_input_handler)(struct light_s*, GLFWwindow*, double, double));
+void light_add_update_handler(light_t* light, void (*update_handler)(struct light_s*));
 
 void light_manage_keyboard_input_callbacks(light_t* light, GLFWwindow* window, int key, int action);
 void light_manage_mouse_input_callbacks(light_t* light, GLFWwindow* window, double xpos, double ypos);

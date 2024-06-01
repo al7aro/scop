@@ -12,9 +12,10 @@ entity_t* entity_create(const char* name_id)
 
 	entity->model = NULL;
 	entity->shader = NULL;
-	entity->keyboard_input_handler = NULL;
-	entity->update_handler = NULL;
-	entity->mouse_input_handler = NULL;
+
+	entity->keyboard_input_handlers = NULL;
+	entity->mouse_input_handlers = NULL;
+	entity->update_handlers = NULL;
 	return entity;
 }
 
@@ -52,37 +53,58 @@ void entity_set_scale(entity_t* entity, vec3_t scale)
 		entity->empty->scale[i] = scale[i];
 }
 
-void entity_set_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int))
+void entity_add_keyboard_input_handler(entity_t* entity, void (*keyboard_input_handler)(struct entity_s*, GLFWwindow*, int, int))
 {
-	entity->keyboard_input_handler = keyboard_input_handler;
+	ft_lstadd_back(&(entity->keyboard_input_handlers), ft_lstnew((void*)keyboard_input_handler));
 }
 
-void entity_set_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double))
+void entity_add_mouse_input_handler(entity_t* entity, void (*mouse_input_handler)(struct entity_s*, GLFWwindow*, double, double))
 {
-	entity->mouse_input_handler = mouse_input_handler;
+	ft_lstadd_back(&(entity->mouse_input_handlers), ft_lstnew((void*)mouse_input_handler));
 }
 
-void entity_set_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*))
+void entity_add_update_handler(entity_t* entity, void (*update_handler)(struct entity_s*))
 {
-	entity->update_handler = update_handler;
+	ft_lstadd_back(&(entity->update_handlers), ft_lstnew((void*)update_handler));
 }
 
 void entity_manage_keyboard_input_callbacks(entity_t* entity, GLFWwindow* window, int key, int action)
 {
-	if (entity->keyboard_input_handler)
-		entity->keyboard_input_handler(entity, window, key, action);
+	t_list* keyboard_input_handlers_lst = entity->keyboard_input_handlers;
+	while (keyboard_input_handlers_lst)
+	{
+		void (*keyboard_input_handler)(entity_t*, GLFWwindow*, int, int);
+		keyboard_input_handler = (void (*)(entity_t*, GLFWwindow*, int, int))keyboard_input_handlers_lst->content;
+		keyboard_input_handler(entity, window, key, action);
+
+		keyboard_input_handlers_lst = keyboard_input_handlers_lst->next;
+	}
 }
 
 void entity_manage_mouse_input_callbacks(entity_t* entity, GLFWwindow* window, double xpos, double ypos)
 {
-	if (entity->mouse_input_handler)
-		entity->mouse_input_handler(entity, window, xpos, ypos);
+	t_list* keyboard_mouse_handlers_lst = entity->mouse_input_handlers;
+	while (keyboard_mouse_handlers_lst)
+	{
+		void (*keyboard_mouse_handler)(entity_t*, GLFWwindow*, double, double);
+		keyboard_mouse_handler = (void (*)(entity_t*, GLFWwindow*, double, double))keyboard_mouse_handlers_lst->content;
+		keyboard_mouse_handler(entity, window, xpos, ypos);
+
+		keyboard_mouse_handlers_lst = keyboard_mouse_handlers_lst->next;
+	}
 }
 
 void entity_update(entity_t* entity)
 {
-	if (entity->update_handler)
-		entity->update_handler(entity);
+	t_list* update_handlers_lst = entity->update_handlers;
+	while (update_handlers_lst)
+	{
+		void (*update_handler)(entity_t*);
+		update_handler = (void (*)(entity_t*))update_handlers_lst->content;
+		update_handler(entity);
+
+		update_handlers_lst = update_handlers_lst->next;
+	}
 }
 
 void entity_destroy(entity_t* entity)
