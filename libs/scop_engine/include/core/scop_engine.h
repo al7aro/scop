@@ -15,6 +15,8 @@ typedef struct scop_engine_s
 
     t_list* scenes;
     scene_t* ative_scene;
+
+    char pause;
 } scop_engine_t;
 
 scop_engine_t* scop_engine_create();

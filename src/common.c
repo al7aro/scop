@@ -7,8 +7,6 @@ double xprev = -100000, yprev = -100000;
 void common_camera_mouse_callback(cam_t* cam, GLFWwindow* window, double xpos, double ypos)
 {
 	(void)window;
-	printf("MOUSE POS (from cam callback) -> [X: %lf - Y: %lf]\n", xpos, ypos);
-
 	double xdir = xpos - xprev;
 	double ydir = ypos - yprev; (void)ydir;
 	vec2_t dir; dir[0] = (float)xdir; dir[1] = (float)ydir;
@@ -72,7 +70,7 @@ void common_camera_keyboard_callback(cam_t* cam, GLFWwindow* window, int key, in
 
 void common_update_camera(cam_t* cam)
 {
-	float move_speed = 0.08f;
+	float move_speed = 0.06f;
 	float rot_speed = 0.015f;
 
 	vec3_t x;

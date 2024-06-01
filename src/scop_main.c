@@ -8,10 +8,22 @@ void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, i
 	(void)window; (void)key; (void)scancode; (void)action; (void)mods;
 	scop_engine_t* engine_ptr = glfwGetWindowUserPointer(window);
 	scene_t* scene_ptr = engine_ptr->ative_scene;
-	scene_manage_keyboard_input_callbacks(scene_ptr, window, key, action);
 
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+	{
+		engine_ptr->pause = !(engine_ptr->pause);
+		if (!engine_ptr->pause)
+			glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		else
+			glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	if (engine_ptr->pause)
+		return;
 	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 		scop_engine_set_active_scene_next(engine_ptr);
+
+	glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	scene_manage_keyboard_input_callbacks(scene_ptr, window, key, action);
 }
 
 void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
@@ -19,9 +31,10 @@ void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 	(void)window; (double)xpos; (double)ypos;
 	scop_engine_t* engine_ptr = glfwGetWindowUserPointer(window);
 	scene_t* scene_ptr = engine_ptr->ative_scene;
-	scene_manage_mouse_input_callbacks(scene_ptr, window, xpos, ypos);
 
-	printf("MOUSE POS -> [X: %lf - Y: %lf]\n", xpos, ypos);
+	if (engine_ptr->pause)
+		return;
+	scene_manage_mouse_input_callbacks(scene_ptr, window, xpos, ypos);
 }
 
 int main(void)

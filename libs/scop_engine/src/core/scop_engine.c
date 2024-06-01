@@ -11,6 +11,7 @@ scop_engine_t* scop_engine_create()
     scop_engine->current_time = 0;
     scop_engine->ative_scene = NULL;
     scop_engine->scenes = NULL;
+    scop_engine->pause = 1;
 
     if (!glfwInit())
     {
@@ -51,7 +52,6 @@ void scop_engine_set_keyboard_input_callback(scop_engine_t* scop_engine, void (*
 
 void scop_engine_set_mouse_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, double, double))
 {
-    glfwSetInputMode(scop_engine->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(scop_engine->window, scop_engine);
     glfwSetCursorPosCallback(scop_engine->window, input_callback);
 }
@@ -75,7 +75,8 @@ void scop_engine_render(scop_engine_t* scop_engine)
 
 void scop_engine_update(scop_engine_t* scop_engine)
 {
-    scene_update(scop_engine->ative_scene);
+    if (!scop_engine->pause)
+        scene_update(scop_engine->ative_scene);
 }
 
 void scop_engine_set_active_scene(scop_engine_t* scop_engine, const char* name_id)
