@@ -35,6 +35,7 @@ void mesh_init(mesh_t* mesh)
         mesh->mtl->textures[i].chn = 0;
         mesh->mtl->textures[i].id = 0;
     }
+    strcpy(mesh->mtl->textures[SCOP_TEXTURE_ID_DEFAULT].path, "C:/Users/al7ar/DEV/scop/assets/defaults/unicorns.pam");
 }
 
 void mesh_load_GPU(mesh_t* mesh)
@@ -186,6 +187,11 @@ void mesh_render(mesh_t* mesh, unsigned int sh_id)
             {
                 strcpy_s(tex_name, 64, "mat.bump_map");
                 strcpy_s(enabled_tex_name, 64, "mat.bump_map_enabled");
+            }
+            if (SCOP_TEXTURE_ID_DEFAULT == i)
+            {
+                strcpy_s(tex_name, 64, "mat.default_map");
+                strcpy_s(enabled_tex_name, 64, "mat.default_map_enabled");
             }
             if (!tex_name) continue;
             

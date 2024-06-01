@@ -20,7 +20,8 @@
 #define SCOP_TEXTURE_ID_KD 0
 #define SCOP_TEXTURE_ID_KS 1
 #define SCOP_TEXTURE_ID_BUMP 2
-#define SCOP_TEXTURE_ID_MAX 3
+#define SCOP_TEXTURE_ID_DEFAULT 3
+#define SCOP_TEXTURE_ID_MAX 4
 
 typedef struct tex_s
 {
@@ -44,7 +45,7 @@ typedef struct mtl_s
     float d;
     int illum;
 
-    tex_t textures[3];
+    tex_t textures[4]; /* 4TH texture is the default */
 } mtl_t;
 
 typedef struct attrib_format_s

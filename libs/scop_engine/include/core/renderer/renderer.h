@@ -17,6 +17,9 @@ typedef struct motion_state_s
 	float rot_x_world;
 	float rot_y_world;
 	float rot_z_world;
+
+	float trigger;
+	char trigger_flag;
 } motion_state_t;
 
 typedef struct empty_s

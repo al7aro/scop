@@ -32,21 +32,15 @@ void scene_render(scene_t* scene)
 			ent_lst = ent_lst->next;
 			continue;
 		}
-		shader_t* active_shader = 0;
-		if (entity->shader)
-			active_shader = entity->shader;
-		else
-			active_shader = scene->default_shader;
-
 		/* UPLOAD UNIFORMS TO GPU AND RENDER */
-		shader_use(active_shader);
+		shader_use(entity->shader);
 
-		scene_empty_uniform(active_shader, entity->empty);
-		scene_cam_uniform(active_shader, scene);
-		scene_light_uniform(active_shader, scene);
+		scene_empty_uniform(entity->shader, entity->empty);
+		scene_cam_uniform(entity->shader, scene);
+		scene_light_uniform(entity->shader, scene);
 
 		/* Mesh uploads its material uniforms itself */
-		entity_render(entity, active_shader->id);
+		entity_render(entity, entity->shader->id);
 		ent_lst = ent_lst->next;
 	}
 }
@@ -80,6 +74,14 @@ light_t* scene_get_light_by_name(scene_t* scene, const char* name_id)
 void scene_set_shader(scene_t* scene, shader_t* shader)
 {
 	scene->default_shader = shader;
+	t_list* entity_lst = scene->entity_lst;
+	while (entity_lst)
+	{
+		entity_t* entity = entity_lst->content;
+		if (!entity->shader)
+			entity->shader = shader;
+		entity_lst = entity_lst->next;
+	}
 }
 
 void scene_set_ambient(scene_t* scene, vec3_t col)
@@ -110,6 +112,8 @@ void scene_set_update_handler(scene_t* scene, void (*update_handler)(struct scen
 
 void scene_add_entity(scene_t* scene, entity_t* entity)
 {
+	if (!entity->shader)
+		entity->shader = scene->default_shader;
 	ft_lstadd_back(&(scene->entity_lst), ft_lstnew(entity));
 }
 

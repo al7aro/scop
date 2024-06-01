@@ -14,10 +14,6 @@ out vec3 varying_col;
 out vec3 varying_norm;
 out vec3 varying_frag_pos;
 out vec2 varying_tex;
-out vec3 varying_local_frag_pos;
-out vec3 varying_local_x_dir;
-out vec3 varying_local_y_dir;
-out vec3 varying_local_z_dir;
 
 out vec3 default_color;
 
@@ -55,11 +51,6 @@ void main()
     //Texture coordinates are flipped in the Y coordinate because px_image loads them inverted
     varying_tex = vec2(tex.x, -tex.y); 
     varying_frag_pos = vec3(model * vec4(pos, 1.0));
-
-    varying_local_x_dir = mat3(transpose(inverse(model))) * vec3(1.0, 0.0, 0.0);
-    varying_local_y_dir = mat3(transpose(inverse(model))) * vec3(0.0, 1.0, 0.0);
-    varying_local_z_dir = mat3(transpose(inverse(model))) * vec3(0.0, 0.0, 1.0);
-    varying_local_frag_pos = vec3(model * vec4(pos, 1.0));
 
     default_color = get_default_color();
     gl_Position = proj * view * model * vec4(pos, 1.0);
