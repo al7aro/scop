@@ -71,7 +71,7 @@ void common_camera_keyboard_callback(cam_t* cam, GLFWwindow* window, int key, in
 void common_update_camera(cam_t* cam)
 {
 	float move_speed = 0.06f;
-	float rot_speed = 0.015f;
+	float rot_speed = 0.02f;
 
 	vec3_t x;
 	vec3_times_float(cam->lookat, move_speed * cam->empty->input_motion.move_x_local, x);
@@ -85,18 +85,12 @@ void common_update_camera(cam_t* cam)
 	vec3_times_float(cam->up, move_speed * cam->empty->input_motion.move_z_local, z);
 	vec3_plus_vec3(cam->empty->pos, z, cam->empty->pos);
 
+	//TODO: I SHOULD PREVENT CAMERA FROM GO COMPLETELY UP OR DOWN
 	/* COMPUTE CAMERA ROTATION */
 	mat4_t rotY, rotX;
-	vec4_t y_dir, x_dir;
+	vec4_t y_dir, x_dir; y_dir[0] = 0.0; y_dir[1] = 1.0; y_dir[2] = 0.0; y_dir[3] = 1.0;
 	/* Y ROTATION */
-	vec3_to_vec4(cam->up, y_dir);
 	mat4_get_rotU(rot_speed * cam->empty->input_motion.rot_y_world, y_dir, rotY);
-	vec4_t right4; vec3_to_vec4(cam->right, right4);
-	mat4_mult_vec4(rotY, right4, right4);
-	cam->right[0] = right4[0];
-	cam->right[1] = right4[1];
-	cam->right[2] = right4[2];
-	vec3_normal(cam->right, cam->right);
 	vec4_t lookat4; vec3_to_vec4(cam->lookat, lookat4);
 	mat4_mult_vec4(rotY, lookat4, lookat4);
 	cam->lookat[0] = lookat4[0];
@@ -109,6 +103,12 @@ void common_update_camera(cam_t* cam)
 	cam->up[1] = up4[1];
 	cam->up[2] = up4[2];
 	vec3_normal(cam->up, cam->up);
+	vec4_t right4; vec3_to_vec4(cam->right, right4);
+	mat4_mult_vec4(rotY, right4, right4);
+	cam->right[0] = right4[0];
+	cam->right[1] = right4[1];
+	cam->right[2] = right4[2];
+	vec3_normal(cam->right, cam->right);
 	/* X ROTATION */
 	vec3_to_vec4(cam->right, x_dir);
 	mat4_get_rotU(rot_speed * cam->empty->input_motion.rot_x_world, x_dir, rotX);
