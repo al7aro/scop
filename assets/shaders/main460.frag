@@ -32,10 +32,15 @@ struct material
 
 out vec4 frag_color;
 
-in vec2 var_tex;
+in vec2 varying_tex;
 in vec3 varying_col;
 in vec3 varying_norm;
-in vec3 frag_pos;
+in vec3 varying_frag_pos;
+in vec3 varying_local_frag_pos;
+in vec3 varying_local_x_dir;
+in vec3 varying_local_y_dir;
+in vec3 varying_local_z_dir;
+in vec3 default_color;
 
 uniform point_light lights[MAX_POINT_LIGHTS];
 uniform int point_light_cnt;
@@ -46,15 +51,15 @@ vec4 compute_point_lights()
 {
     vec3 material_diffuse, material_specular, material_bump;
     if (mat.diffuse_map_enabled)
-        material_diffuse = vec3(texture(mat.diffuse_map, var_tex));
+        material_diffuse = vec3(texture(mat.diffuse_map, varying_tex));
     else
         material_diffuse = mat.Kd;
     if (mat.specular_map_enabled)
-        material_specular = vec3(texture(mat.specular_map, var_tex));
+        material_specular = vec3(texture(mat.specular_map, varying_tex));
     else
         material_specular = mat.Ks;
     if (mat.bump_map_enabled)
-        material_bump = vec3(texture(mat.bump_map, var_tex));
+        material_bump = vec3(texture(mat.bump_map, varying_tex));
     else
         material_bump = varying_norm;
 
@@ -66,7 +71,7 @@ vec4 compute_point_lights()
         // AMBIENT
         ambient = material_diffuse * mat.Ka * light.ambient;
         // DIFFUSE LIGHT
-        vec3 light_dir = normalize(light.pos - frag_pos);
+        vec3 light_dir = normalize(light.pos - varying_frag_pos);
         vec3 norm = normalize(material_bump);
         float diff = max(dot(norm, light_dir), 0.0);
         if (length(material_bump) <= 0)
@@ -74,7 +79,7 @@ vec4 compute_point_lights()
         else
             diffuse = light.diffuse * diff * material_diffuse;
         // SPECULAR TODO: SOMETHING WEIRD HAPPENS TO THE SPECULAR COMPONENT OF LIGHT
-        vec3 view_dir = normalize(view_pos - frag_pos);
+        vec3 view_dir = normalize(view_pos - varying_frag_pos);
         vec3 reflec_dir = reflect(-light_dir, norm);
         float spec = pow(max(dot(view_dir, reflec_dir), 0.0), mat.Ns);
         specular = max(light.specular * spec * material_specular, vec3(0.0));
@@ -87,4 +92,5 @@ vec4 compute_point_lights()
 void main()
 {
     frag_color = compute_point_lights();
+    frag_color = vec4(default_color, 1.0);
 }

@@ -164,6 +164,8 @@ void mesh_render(mesh_t* mesh, unsigned int sh_id)
         glUniform1f(loc, mesh->mtl->Ni);
         loc = glGetUniformLocation(sh_id, "mat.d");
         glUniform1f(loc, mesh->mtl->d);
+        loc = glGetUniformLocation(sh_id, "vertex_cnt");
+        glUniform1f(loc, (float)mesh->data->buff_cnt);
 
         /* HANDLE TEXTURES */
         for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
