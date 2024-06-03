@@ -3,30 +3,6 @@
 #include "scop_engine.h"
 #include "scop_main.h"
 
-void common_trigger_input_callback(entity_t* e, GLFWwindow* window, int key, int action)
-{
-	(void)window;
-	if (key == GLFW_KEY_C && action == GLFW_PRESS)
-	{
-		if (e->empty->input_motion.trigger >= 1.0)
-			e->empty->input_motion.trigger_flag = -1;
-		else if (e->empty->input_motion.trigger <= 0.0)
-			e->empty->input_motion.trigger_flag = 1;
-	}
-}
-
-void common_trigger_update(entity_t* e)
-{
-	if (e->empty->input_motion.trigger_flag != 0.0)
-	{
-		float change_speed = 0.0025f;
-		e->empty->input_motion.trigger += change_speed * (float)e->empty->input_motion.trigger_flag;
-		if (e->empty->input_motion.trigger >= 1.0 || e->empty->input_motion.trigger <= 0.0)
-			e->empty->input_motion.trigger_flag = 0;
-	}
-	shader_set_float(e->shader, "trigger", e->empty->input_motion.trigger);
-}
-
 void guitar_scene_update_rotating_cube(entity_t* e)
 {
 	e->empty->rot[0] += 0.003f;

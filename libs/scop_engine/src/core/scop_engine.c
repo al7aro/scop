@@ -83,6 +83,8 @@ void scop_engine_set_active_scene(scop_engine_t* scop_engine, const char* name_i
 {
     t_list* scene_lst = scop_engine->scenes;
     
+    if (scop_engine->ative_scene)
+        scene_reset_inputs(scop_engine->ative_scene);
     while (scene_lst)
     {
         scene_t* scene;
@@ -101,6 +103,8 @@ void scop_engine_set_active_scene_next(scop_engine_t* scop_engine)
 {
     t_list* scene_lst = scop_engine->scenes;
 
+    if (scop_engine->ative_scene)
+        scene_reset_inputs(scop_engine->ative_scene);
     while (scene_lst)
     {
         scene_t* scene;

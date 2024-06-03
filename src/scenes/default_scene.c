@@ -14,6 +14,7 @@ scene_t* default_scene_create(const char* scene_name)
 	cam_t* cam = cam_create();
 	cam_set_pos(cam, (vec3_t) { 0.0, 0.0, 7.0 });
 	cam_add_keyboard_input_handler(cam, common_camera_keyboard_callback);
+	cam_add_mouse_input_handler(cam, common_camera_mouse_callback);
 	cam_add_update_handler(cam, common_update_camera);
 
 	entity_t* teapot = entity_create("teapot");
@@ -31,6 +32,8 @@ scene_t* default_scene_create(const char* scene_name)
 	model_t* logo42_model; model_load(&logo42_model, "C:/Users/al7ar/DEV/scop/assets/models/42_resources/42.obj");
 	entity_set_model(logo42, logo42_model);
 	entity_set_pos(logo42, (vec3_t) {0.0, 0.0, 0.0});
+	entity_add_keyboard_input_handler(logo42, common_trigger_input_callback);
+	entity_add_update_handler(logo42, common_trigger_update);
 
 	light_t* light = light_create("light");
 	light_set_pos(light, (vec3_t) {3.0f, 0.0f, 0.0f});

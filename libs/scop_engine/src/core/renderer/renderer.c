@@ -46,6 +46,25 @@ void scene_render(scene_t* scene)
 	}
 }
 
+void scene_reset_inputs(scene_t* scene)
+{
+	t_list* entity_lst = scene->entity_lst;
+	printf("MAN ???\n");
+	while (entity_lst)
+	{
+		entity_t* entity = entity_lst->content;
+		memset(&(entity->empty->input_motion), 0, sizeof(entity->empty->input_motion));
+		entity_lst = entity_lst->next;
+	}
+	t_list* light_lst = scene->light_lst;
+	while (light_lst)
+	{
+		light_t* light = light_lst->content;
+		memset(&(light->empty->input_motion), 0, sizeof(light->empty->input_motion));
+		light_lst = light_lst->next;
+	}
+}
+
 entity_t* scene_get_entity_by_name(scene_t* scene, const char* name_id)
 {
 	t_list* entity_lst = scene->entity_lst;

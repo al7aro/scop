@@ -39,6 +39,7 @@ in vec2 varying_tex;
 in vec3 varying_col;
 in vec3 varying_norm;
 in vec3 varying_frag_pos;
+in vec3 varying_local_frag_pos;
 in vec3 default_color;
 
 uniform point_light lights[MAX_POINT_LIGHTS];
@@ -93,7 +94,7 @@ void main()
 {
     frag_color = compute_point_lights();
 //    frag_color = vec4(default_color, 1.0);
-    vec2 test_tex = vec2(varying_frag_pos.x, varying_frag_pos.y);
+    vec2 test_tex = vec2(varying_local_frag_pos.z, -varying_local_frag_pos.y);
 
     vec4 col1 = texture(mat.default_map, test_tex);
     vec4 col2 = vec4(default_color, 1.0);

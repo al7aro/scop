@@ -93,6 +93,8 @@ void scene_render(scene_t* scene);
 entity_t* scene_get_entity_by_name(scene_t* scene, const char* name_id);
 light_t* scene_get_light_by_name(scene_t* scene, const char* name_id);
 
+void scene_reset_inputs(scene_t* scene);
+
 void scene_light_uniform(shader_t* sh, scene_t* scene);
 void scene_cam_uniform(shader_t* sh, scene_t* scene);
 
