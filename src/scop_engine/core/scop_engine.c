@@ -111,6 +111,7 @@ void scop_engine_set_active_scene_next(scop_engine_t* scop_engine)
                 scop_engine->ative_scene = scop_engine->scenes->content;
             else
                 scop_engine->ative_scene = scene_lst->next->content;
+            scene_reset_inputs(scop_engine->ative_scene);
             return;
         }
         scene_lst = scene_lst->next;

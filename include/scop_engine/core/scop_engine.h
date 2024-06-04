@@ -8,7 +8,7 @@ typedef struct scop_engine_s
 {
     GLFWwindow* window;
     char window_title[128];
-    int window_width; 
+    int window_width;
     int window_height; 
     vec3_t clear_color;
     double current_time;

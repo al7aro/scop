@@ -10,7 +10,10 @@ void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, i
 	{
 		engine_ptr->pause = !(engine_ptr->pause);
 		if (!engine_ptr->pause)
+		{
 			glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			scene_reset_inputs(scene_ptr);
+		}
 		else
 			glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}

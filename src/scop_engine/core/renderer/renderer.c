@@ -170,6 +170,26 @@ void scene_cam_uniform(shader_t* sh, scene_t* scene)
 	shader_set_vec3(sh, "view_pos", view_pos);
 }
 
+
+void scene_reset_inputs(scene_t* scene)
+{
+	memset(&(scene->cam->empty->input_motion), 0, sizeof(scene->cam->empty->input_motion));
+	t_list* entity_lst = scene->entity_lst;
+	while (entity_lst)
+	{
+		entity_t* entity = entity_lst->content;
+		memset(&(entity->empty->input_motion), 0, sizeof(entity->empty->input_motion));
+		entity_lst = entity_lst->next;
+	}
+	t_list* light_lst = scene->light_lst;
+	while (light_lst)
+	{
+		light_t* light = light_lst->content;
+		memset(&(light->empty->input_motion), 0, sizeof(light->empty->input_motion));
+		light_lst = light_lst->next;
+	}
+}
+
 void scene_manage_keyboard_input_callbacks(scene_t* scene, GLFWwindow* window, int key, int action)
 {
 	cam_manage_keyboard_input_callbacks(scene->cam, window, key, action);

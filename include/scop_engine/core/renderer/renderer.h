@@ -99,6 +99,8 @@ light_t* scene_get_light_by_name(scene_t* scene, const char* name_id);
 void scene_light_uniform(shader_t* sh, scene_t* scene);
 void scene_cam_uniform(shader_t* sh, scene_t* scene);
 
+void scene_reset_inputs(scene_t* scene);
+
 void scene_set_ambient(scene_t* scene, vec3_t col);
 void scene_set_cam(scene_t* scene, cam_t* cam);
 void scene_add_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int));
