@@ -49,7 +49,7 @@ void main()
 {
     varying_col = col;
     varying_norm = mat3(transpose(inverse(model))) * norm;
-    //Texture coordinates are flipped in the Y coordinate because px_image loads them inverted
+    //Texture coordinates are flipped in the Y coordinate because scop_image loads them inverted
     varying_tex = vec2(tex.x, -tex.y); 
     varying_frag_pos = vec3(model * vec4(pos, 1.0));
     varying_local_frag_pos = pos;
