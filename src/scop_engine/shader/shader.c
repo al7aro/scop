@@ -69,11 +69,9 @@ shader_t* shader_create(const char* vert_path, const char* frag_path)
 
 void shader_destroy(shader_t* sh)
 {
-	if (sh)
-	{
-		glDeleteProgram(sh->id);
-		free(sh);
-	}
+	if (!sh) return;
+	glDeleteProgram(sh->id);
+	free(sh);
 }
 
 void shader_use(const shader_t* sh)

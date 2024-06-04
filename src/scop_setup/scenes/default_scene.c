@@ -52,12 +52,11 @@ scene_t* default_scene_create(const char* scene_name)
 	light_set_diffuse(light, (vec3_t) { 1.0f, 1.0f, 1.0f });
 	light_set_specular(light, (vec3_t) {1.0f, 1.0f, 1.0f});
 
-	scene_add_entity(scene, teapot);
-	scene_add_entity(scene, teapot2);
-	scene_add_entity(scene, logo42);
-	scene_add_entity(scene, e_42_rot);
+	scene_add_entity(scene, teapot, sh);
+	scene_add_entity(scene, teapot2, sh);
+	scene_add_entity(scene, logo42, sh);
+	scene_add_entity(scene, e_42_rot, sh);
 	scene_set_cam(scene, cam);
-	scene_set_shader(scene, sh);
 	scene_add_light(scene, light);
 
 	return scene;

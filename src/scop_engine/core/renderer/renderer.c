@@ -8,10 +8,10 @@ scene_t* scene_create(const char* name_id)
 	if (!scene) return NULL;
 	for (int i = 0; i < 3; i++)
 		scene->ambient[i] = 1.0;
-	scene->default_shader = NULL;
 	scene->cam = NULL;
 	scene->entity_lst = NULL;
 	scene->light_lst = NULL;
+	scene->shader_lst = NULL;
 
 	scene->keyboard_input_handlers = NULL;
 	scene->mouse_input_handlers = NULL;
@@ -46,24 +46,6 @@ void scene_render(scene_t* scene)
 	}
 }
 
-void scene_reset_inputs(scene_t* scene)
-{
-	t_list* entity_lst = scene->entity_lst;
-	while (entity_lst)
-	{
-		entity_t* entity = entity_lst->content;
-		memset(&(entity->empty->input_motion), 0, sizeof(entity->empty->input_motion));
-		entity_lst = entity_lst->next;
-	}
-	t_list* light_lst = scene->light_lst;
-	while (light_lst)
-	{
-		light_t* light = light_lst->content;
-		memset(&(light->empty->input_motion), 0, sizeof(light->empty->input_motion));
-		light_lst = light_lst->next;
-	}
-}
-
 entity_t* scene_get_entity_by_name(scene_t* scene, const char* name_id)
 {
 	t_list* entity_lst = scene->entity_lst;
@@ -88,19 +70,6 @@ light_t* scene_get_light_by_name(scene_t* scene, const char* name_id)
 		light_lst = light_lst->next;
 	}
 	return NULL;
-}
-
-void scene_set_shader(scene_t* scene, shader_t* shader)
-{
-	scene->default_shader = shader;
-	t_list* entity_lst = scene->entity_lst;
-	while (entity_lst)
-	{
-		entity_t* entity = entity_lst->content;
-		if (!entity->shader)
-			entity->shader = shader;
-		entity_lst = entity_lst->next;
-	}
 }
 
 void scene_set_ambient(scene_t* scene, vec3_t col)
@@ -129,11 +98,19 @@ void scene_add_update_handler(scene_t* scene, void (*update_handler)(struct scen
 	ft_lstadd_back(&(scene->update_handlers), ft_lstnew((void*)update_handler));
 }
 
-void scene_add_entity(scene_t* scene, entity_t* entity)
+void scene_add_entity(scene_t* scene, entity_t* entity, shader_t* shader)
 {
-	if (!entity->shader)
-		entity->shader = scene->default_shader;
+	entity->shader = shader;
+	t_list* shader_lst = scene->shader_lst;
 	ft_lstadd_back(&(scene->entity_lst), ft_lstnew(entity));
+	while (shader_lst)
+	{
+		shader_t* shader_content = shader_lst->content;
+		if (shader_content == shader)
+			return ;
+		shader_lst = shader_lst->next;
+	}
+	ft_lstadd_back(&(scene->shader_lst), ft_lstnew(shader));
 }
 
 void scene_add_light(scene_t* scene, light_t* light)
@@ -284,8 +261,9 @@ void scene_destroy(scene_t* scene)
 	if (!scene) return;
 	ft_lstclear(&(scene->light_lst), light_destroy);
 	ft_lstclear(&(scene->entity_lst), entity_destroy);
+	ft_lstclear(&(scene->shader_lst), shader_destroy);
 	cam_destroy(scene->cam);
-	if (scene->default_shader)
-		shader_destroy(scene->default_shader);
+	// if (scene->default_shader)
+	// 	shader_destroy(scene->default_shader);
 	free(scene);
 }

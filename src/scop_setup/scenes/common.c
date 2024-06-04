@@ -46,6 +46,8 @@ void common_camera_mouse_callback(cam_t* cam, GLFWwindow* window, double xpos, d
 void common_camera_keyboard_callback(cam_t* cam, GLFWwindow* window, int key, int action)
 {
 	(void)window; (void)cam;  (void)key; (void)action;
+	if (glfwGetKey(window, key) == cam->empty->input_motion.last_key_state[key])
+		return ;
 	if (key == GLFW_KEY_W)
 	{
 		if (action == GLFW_PRESS)
@@ -88,6 +90,7 @@ void common_camera_keyboard_callback(cam_t* cam, GLFWwindow* window, int key, in
 		if (action == GLFW_RELEASE)
 			cam->empty->input_motion.move_z_local--;
 	}
+	cam->empty->input_motion.last_key_state[key] = (char)glfwGetKey(window, key);
 }
 
 /* UPDATE CALLBACKS */

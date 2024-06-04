@@ -74,7 +74,6 @@ scene_t* guitar_scene_create(const char* scene_name)
 	entity_set_model(e_bulb, bulb);
 	entity_set_pos(e_bulb, bulb_pos);
 	entity_set_scale(e_bulb, (vec3_t) { 0.2f, 0.2f, 0.2f });
-	entity_set_shader(e_bulb, bulb_sh);
 	light_set_parent_entity(light, e_bulb);
 
 	e_orbit = entity_create("e_orbit");
@@ -83,12 +82,11 @@ scene_t* guitar_scene_create(const char* scene_name)
 	entity_add_update_handler(e_orbit, guitar_scene_update_orbiting_light);
 
 	scene = scene_create(scene_name);
-	scene_set_shader(scene, sh);
 	scene_set_cam(scene, cam);
 	scene_add_light(scene, light);
-	scene_add_entity(scene, e_cube);
-	scene_add_entity(scene, e_orbit);
-	scene_add_entity(scene, e_bulb);
+	scene_add_entity(scene, e_cube, sh);
+	scene_add_entity(scene, e_orbit, NULL);
+	scene_add_entity(scene, e_bulb, bulb_sh);
 
 	return scene;
 }

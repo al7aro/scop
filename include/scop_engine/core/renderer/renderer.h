@@ -20,6 +20,8 @@ typedef struct motion_state_s
 
 	float trigger;
 	char trigger_flag;
+
+	char last_key_state[128];
 } motion_state_t;
 
 typedef struct empty_s
@@ -75,7 +77,8 @@ typedef struct light_s
 typedef struct scene_s
 {
 	char name_id[128];
-	shader_t* default_shader;
+	t_list* shader_lst;
+
 	vec3_t ambient;
 	cam_t* cam;
 	t_list* entity_lst;
@@ -93,19 +96,16 @@ void scene_render(scene_t* scene);
 entity_t* scene_get_entity_by_name(scene_t* scene, const char* name_id);
 light_t* scene_get_light_by_name(scene_t* scene, const char* name_id);
 
-void scene_reset_inputs(scene_t* scene);
-
 void scene_light_uniform(shader_t* sh, scene_t* scene);
 void scene_cam_uniform(shader_t* sh, scene_t* scene);
 
-void scene_set_shader(scene_t* scene, shader_t* shader);
 void scene_set_ambient(scene_t* scene, vec3_t col);
 void scene_set_cam(scene_t* scene, cam_t* cam);
 void scene_add_keyboard_input_handler(scene_t* scene, void (*keyboard_input_handler)(struct scene_s*, GLFWwindow*, int, int));
 void scene_add_mouse_input_handler(scene_t* scene, void (*mouse_input_handler)(struct scene_s*, GLFWwindow*, double, double));
 void scene_add_update_handler(scene_t* scene, void (*update_handler)(struct scene_s*));
 
-void scene_add_entity(scene_t* scene, entity_t* entity);
+void scene_add_entity(scene_t* scene, entity_t* entity, shader_t* shader);
 void scene_add_light(scene_t* scene, light_t* light);
 
 void scene_manage_keyboard_input_callbacks(scene_t* scene, GLFWwindow*, int key, int action);
@@ -138,7 +138,6 @@ void cam_destroy(cam_t* cam);
 entity_t* entity_create(const char* name_id);
 void entity_render(entity_t* entity, unsigned int sh_id);
 
-void entity_set_shader(entity_t* entity, shader_t* shader);
 void entity_set_model(entity_t* entity, model_t* model);
 void entity_set_parent(entity_t* entity, entity_t* parent);
 void entity_set_pos(entity_t* entity, vec3_t pos);

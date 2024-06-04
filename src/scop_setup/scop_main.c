@@ -8,8 +8,6 @@ void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, i
 
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 	{
-		if (engine_ptr->ative_scene)
-			scene_reset_inputs(engine_ptr->ative_scene);
 		engine_ptr->pause = !(engine_ptr->pause);
 		if (!engine_ptr->pause)
 			glfwSetInputMode(engine_ptr->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -57,6 +55,7 @@ int main(void)
 		scop_engine_update(engine);
 		scop_engine_render(engine);
 	}
+	scop_engine_destroy(engine);
 #ifdef _WIN32
 	_CrtDumpMemoryLeaks();
 #endif
