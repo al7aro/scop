@@ -42,8 +42,8 @@ int main(void)
 	printf("Scop is installed at: [%s]\n\n", SCOP_INSTALL_PATH);
 
 	scop_engine_t* engine = scop_engine_create();
-	scene_t* guitar_scene = guitar_scene_create("guitar_scene");
 	scene_t* default_scene = default_scene_create("default_scene");
+	scene_t* guitar_scene = guitar_scene_create("guitar_scene");
 
 
 	scop_engine_add_scene(engine, guitar_scene);

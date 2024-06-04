@@ -7,6 +7,7 @@
 #include <glad/glad.h>
 
 #include "scop_math.h"
+#include "scop_macros.h"
 
 typedef struct shader_s
 {

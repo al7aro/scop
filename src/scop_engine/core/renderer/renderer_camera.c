@@ -123,5 +123,8 @@ void cam_destroy(cam_t* cam)
 {
 	if (!cam) return;
 	empty_destroy(cam->empty);
+	ft_lstclear(&(cam->keyboard_input_handlers), NULL);
+	ft_lstclear(&(cam->mouse_input_handlers), NULL);
+	ft_lstclear(&(cam->update_handlers), NULL);
 	free(cam);
 }

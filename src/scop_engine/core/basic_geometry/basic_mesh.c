@@ -5,7 +5,7 @@ void mesh_destroy(mesh_t* mesh)
     if (!mesh) return;
     free(mesh->data->buff);
     free(mesh->data);
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
         if (mesh->mtl->textures[i].data)
             free(mesh->mtl->textures[i].data);
     free(mesh->mtl);
@@ -143,30 +143,21 @@ void  mesh_set_format(mesh_t* mesh, sol_model_t* model)
     mesh->data->buff_bytes = sizeof(float) * mesh->data->buff_size;
 }
 
-void mesh_render(mesh_t* mesh, unsigned int sh_id)
+void mesh_render(mesh_t* mesh, shader_t* sh)
 {
     glBindVertexArray(*(mesh->VAO));
 
-    if (sh_id)
+    if (sh)
     {
-        glUseProgram(sh_id);
-        unsigned int loc;
-        loc = glGetUniformLocation(sh_id, "mat.Ka");
-        glUniform3fv(loc, 1, mesh->mtl->Ka);
-        loc = glGetUniformLocation(sh_id, "mat.Kd");
-        glUniform3fv(loc, 1, mesh->mtl->Kd);
-        loc = glGetUniformLocation(sh_id, "mat.Ks");
-        glUniform3fv(loc, 1, mesh->mtl->Ks);
-        loc = glGetUniformLocation(sh_id, "mat.Ke");
-        glUniform3fv(loc, 1, mesh->mtl->Ke);
-        loc = glGetUniformLocation(sh_id, "mat.Ns");
-        glUniform1f(loc, mesh->mtl->Ns);
-        loc = glGetUniformLocation(sh_id, "mat.Ni");
-        glUniform1f(loc, mesh->mtl->Ni);
-        loc = glGetUniformLocation(sh_id, "mat.d");
-        glUniform1f(loc, mesh->mtl->d);
-        loc = glGetUniformLocation(sh_id, "vertex_cnt");
-        glUniform1f(loc, (float)mesh->data->buff_cnt);
+        shader_use(sh);
+        shader_set_vec3(sh, "mat.Ka", mesh->mtl->Ka);
+        shader_set_vec3(sh, "mat.Kd", mesh->mtl->Kd);
+        shader_set_vec3(sh, "mat.Ks", mesh->mtl->Ks);
+        shader_set_vec3(sh, "mat.Ke", mesh->mtl->Ke);
+        shader_set_float(sh, "mat.Ns", mesh->mtl->Ns);
+        shader_set_float(sh, "mat.Ni", mesh->mtl->Ni);
+        shader_set_float(sh, "mat.d", mesh->mtl->d);
+        shader_set_float(sh, "vertex_cnt", (float)mesh->data->buff_cnt);
 
         /* HANDLE TEXTURES */
         for (int i = 0; i < SCOP_TEXTURE_ID_MAX; i++)
@@ -195,11 +186,9 @@ void mesh_render(mesh_t* mesh, unsigned int sh_id)
             }
             if (!tex_name) continue;
             
-            loc = glGetUniformLocation(sh_id, enabled_tex_name);
-            glUniform1i(loc, !!(mesh->mtl->textures[i].id));
+            shader_set_int(sh, enabled_tex_name, !!(mesh->mtl->textures[i].id));
+            shader_set_int(sh, tex_name, i);
 
-            loc = glGetUniformLocation(sh_id, tex_name);
-            glUniform1i(loc, i);
             glActiveTexture(GL_TEXTURE0 + i);
             glBindTexture(GL_TEXTURE_2D, mesh->mtl->textures[i].id);
         }

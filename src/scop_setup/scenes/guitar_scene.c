@@ -18,8 +18,8 @@ void guitar_scene_update_orbiting_light(entity_t* e)
 scene_t* guitar_scene_create(const char* scene_name)
 {
 	scene_t* scene;
-	shader_t* sh = (shader_t*)malloc(sizeof(shader_t));
-	shader_t* bulb_sh = (shader_t*)malloc(sizeof(shader_t));
+	shader_t* sh;
+	shader_t* bulb_sh;
 
 	/* LIGHT */
 	vec3_t light_pos = { 0.0, 0.0, 0.0 };

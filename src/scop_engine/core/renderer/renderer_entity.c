@@ -19,11 +19,11 @@ entity_t* entity_create(const char* name_id)
 	return entity;
 }
 
-void entity_render(entity_t* entity, unsigned int sh_id)
+void entity_render(entity_t* entity, shader_t* sh)
 {
 	if (!entity->model)
 		return;
-	model_render(entity->model, sh_id);
+	model_render(entity->model, sh);
 }
 
 void entity_set_shader(entity_t* entity, shader_t* shader)
@@ -113,5 +113,8 @@ void entity_destroy(entity_t* entity)
 	empty_destroy(entity->empty);
 	if (entity->model)
 		model_destroy(entity->model);
+	ft_lstclear(&(entity->keyboard_input_handlers), NULL);
+	ft_lstclear(&(entity->mouse_input_handlers), NULL);
+	ft_lstclear(&(entity->update_handlers), NULL);
 	free(entity);
 }

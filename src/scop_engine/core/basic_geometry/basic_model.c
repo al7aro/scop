@@ -101,12 +101,12 @@ void model_load_GPU(model_t* model)
 	}
 }
 
-void model_render(model_t* model, unsigned int sh_id)
+void model_render(model_t* model, shader_t* sh)
 {
 	t_list* mesh = model->mesh;
 	while (mesh)
 	{
-		mesh_render(mesh->content, sh_id);
+		mesh_render(mesh->content, sh);
 		mesh = mesh->next;
 	}
 }

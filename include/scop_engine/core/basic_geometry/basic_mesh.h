@@ -8,6 +8,7 @@
 #include "glad/glad.h"
 #include "scop_obj_loader.h"
 #include "scop_image.h"
+#include "shader.h"
 
 typedef struct tex_s
 {
@@ -77,7 +78,7 @@ typedef struct mesh_s
 
 void mesh_load_GPU(mesh_t* mesh);
 void mesh_set_format(mesh_t* mesh, sol_model_t* model);
-void mesh_render(mesh_t* mesh, unsigned int sh_id);
+void mesh_render(mesh_t* mesh, shader_t* sh);
 void mesh_destroy(mesh_t* mesh);
 void mesh_init(mesh_t* mesh);
 void mesh_push_att(mesh_t* mesh, float* f, unsigned int n); /* n is MAX 16 */

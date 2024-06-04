@@ -138,7 +138,7 @@ void cam_destroy(cam_t* cam);
 
 /* ENTITIES */
 entity_t* entity_create(const char* name_id);
-void entity_render(entity_t* entity, unsigned int sh_id);
+void entity_render(entity_t* entity, shader_t* sh);
 
 void entity_set_model(entity_t* entity, model_t* model);
 void entity_set_parent(entity_t* entity, entity_t* parent);

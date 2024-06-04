@@ -34,6 +34,9 @@ void scene_render(scene_t* scene)
 			continue;
 		}
 		/* UPLOAD UNIFORMS TO GPU AND RENDER */
+		if (!entity->shader)
+			return;
+
 		shader_use(entity->shader);
 
 		scene_empty_uniform(entity->shader, entity->empty);
@@ -41,7 +44,7 @@ void scene_render(scene_t* scene)
 		scene_light_uniform(entity->shader, scene);
 
 		/* Mesh uploads its material uniforms itself */
-		entity_render(entity, entity->shader->id);
+		entity_render(entity, entity->shader);
 		ent_lst = ent_lst->next;
 	}
 }
@@ -283,7 +286,9 @@ void scene_destroy(scene_t* scene)
 	ft_lstclear(&(scene->entity_lst), entity_destroy);
 	ft_lstclear(&(scene->shader_lst), shader_destroy);
 	cam_destroy(scene->cam);
-	// if (scene->default_shader)
-	// 	shader_destroy(scene->default_shader);
+
+	ft_lstclear(&(scene->keyboard_input_handlers), NULL);
+	ft_lstclear(&(scene->mouse_input_handlers), NULL);
+	ft_lstclear(&(scene->update_handlers), NULL);
 	free(scene);
 }

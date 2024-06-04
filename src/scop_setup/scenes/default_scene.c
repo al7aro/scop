@@ -15,7 +15,7 @@ scene_t* default_scene_create(const char* scene_name)
 {
 	scene_t* scene = scene_create(scene_name);
 
-	shader_t* sh = (shader_t*)malloc(sizeof(shader_t));
+	shader_t* sh;
 	sh = shader_create(SCOP_INSTALL_PATH"/assets/shaders/coltex_switch.vert", SCOP_INSTALL_PATH"/assets/shaders/coltex_switch.frag");
 
 	cam_t* cam = cam_create();

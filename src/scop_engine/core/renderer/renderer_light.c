@@ -139,5 +139,8 @@ void light_destroy(light_t* light)
 {
 	if (!light) return;
 	empty_destroy(light->empty);
+	ft_lstclear(&(light->keyboard_input_handlers), NULL);
+	ft_lstclear(&(light->mouse_input_handlers), NULL);
+	ft_lstclear(&(light->update_handlers), NULL);
 	free(light);
 }

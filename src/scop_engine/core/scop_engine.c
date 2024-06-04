@@ -130,13 +130,6 @@ void scop_engine_destroy(scop_engine_t* scop_engine)
     glfwDestroyWindow(scop_engine->window);
     glfwTerminate();
 
-    t_list* scene_lst = scop_engine->scenes;
-
-    while (scene_lst)
-    {
-        scene_t* scene = scene_lst->content;
-        scene_destroy(scene);
-        scene_lst = scene_lst->next;
-    }
+    ft_lstclear(&(scop_engine->scenes), scene_destroy);
     free(scop_engine);
 }
