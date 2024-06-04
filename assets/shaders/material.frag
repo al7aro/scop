@@ -39,20 +39,18 @@ in vec2 varying_tex;
 in vec3 varying_col;
 in vec3 varying_norm;
 in vec3 varying_frag_pos;
-in vec3 varying_local_frag_pos;
 in vec3 default_color;
 
 uniform point_light lights[MAX_POINT_LIGHTS];
 uniform int point_light_cnt;
 uniform material mat;
 uniform vec3 view_pos;
-uniform float trigger;
 
 vec4 compute_point_lights()
 {
     vec3 material_diffuse, material_specular, material_bump;
     if (mat.diffuse_map_enabled)
-        material_diffuse = vec3(texture(mat.default_map, varying_tex));
+        material_diffuse = vec3(texture(mat.diffuse_map, varying_tex));
     else
         material_diffuse = mat.Kd;
     if (mat.specular_map_enabled)
@@ -93,10 +91,4 @@ vec4 compute_point_lights()
 void main()
 {
     frag_color = compute_point_lights();
-//    frag_color = vec4(default_color, 1.0);
-    vec2 test_tex = vec2(varying_local_frag_pos.z, -varying_local_frag_pos.y);
-
-    vec4 col1 = texture(mat.default_map, test_tex);
-    vec4 col2 = vec4(default_color, 1.0);
-    frag_color = mix(col1, col2, trigger);
 }

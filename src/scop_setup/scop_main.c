@@ -1,8 +1,5 @@
 #include "scop_main.h"
 
-double prev_x = 0;
-double prev_y = 0;
-
 void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	(void)window; (void)key; (void)scancode; (void)action; (void)mods;
@@ -50,7 +47,7 @@ int main(void)
 
 	scop_engine_add_scene(engine, guitar_scene);
 	scop_engine_add_scene(engine, default_scene);
-	scop_engine_set_active_scene(engine, "guitar_scene");
+	scop_engine_set_active_scene(engine, "default_scene");
 	scop_engine_set_clear_color(engine, (vec3_t){0.3f, 0.3f, 0.3f});
 	scop_engine_set_keyboard_input_callback(engine, engine_keyboard_input_callback);
 	scop_engine_set_mouse_input_callback(engine, engine_mouse_input_callback);

@@ -43,8 +43,8 @@ scene_t* guitar_scene_create(const char* scene_name)
 	entity_t* e_bulb;
 	entity_t* e_orbit;
 
-	shader_create(sh, SCOP_INSTALL_PATH"/assets/shaders/main460.vert", SCOP_INSTALL_PATH"/assets/shaders/main460.frag");
-	shader_create(bulb_sh, SCOP_INSTALL_PATH"/assets/shaders/main460.vert", SCOP_INSTALL_PATH"/assets/shaders/main460_light.frag");
+	shader_create(sh, SCOP_INSTALL_PATH"/assets/shaders/material.vert", SCOP_INSTALL_PATH"/assets/shaders/material.frag");
+	shader_create(bulb_sh, SCOP_INSTALL_PATH"/assets/shaders/material.vert", SCOP_INSTALL_PATH"/assets/shaders/light_source.frag");
 
 	model_load(&cube, SCOP_INSTALL_PATH"/assets/models/guitar_backpack/guitar.obj");
 	model_load(&bulb, SCOP_INSTALL_PATH"/assets/models/sphere/sphere.obj");

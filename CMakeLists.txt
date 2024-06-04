@@ -27,17 +27,24 @@ find_package(OpenGL REQUIRED)
 # Project Sources
 file(GLOB_RECURSE ALL_SOURCES
         "${PROJECT_DIR}/src/**/*.c"
+        "${PROJECT_DIR}/include/**/*.h"
 )
 
-foreach (src ${source_files})
+foreach (src ${ALL_SOURCES})
     get_filename_component(dir ${src} DIRECTORY)
-    string(REGEX MATCH "scop/(.*)" CMAKE_MATCH_1 ${dir})
-    string(REPLACE "scop/" "" desired_portion ${CMAKE_MATCH_1})
-    string(REGEX REPLACE "^(scop\/)(.*)" "\\2" desired_portion ${CMAKE_MATCH_1})
+	message(${src})
+    string(REGEX MATCH "scop/.(.*)" CMAKE_MATCH_1 ${dir})
+    string(REPLACE "scop/." "" desired_portion ${CMAKE_MATCH_1})
+    string(REGEX REPLACE "^(scop\/.)(.*)" "\\2" desired_portion ${CMAKE_MATCH_1})
     source_group(${desired_portion} FILES ${src})
 endforeach()
 
-set(SOURCES ${source_files})
+# Assets
+file(GLOB_RECURSE shader_files
+    "${PROJECT_DIR}/assets/shaders/*"
+    "${PROJECT_DIR}/assets/shaders/*"
+)
+source_group("Assets\\Shaders" FILES ${shader_files})
 
 # Executable
 add_executable(${PROJECT_NAME} ${ALL_SOURCES} ${shader_files})

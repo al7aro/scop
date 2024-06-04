@@ -7,14 +7,8 @@ layout (location = 4) in vec3 col;
 uniform mat4 proj;
 uniform mat4 model;
 uniform mat4 view;
-uniform vec3 light_src_pos;
-uniform float vertex_cnt;
 
-out vec3 varying_col;
-out vec3 varying_norm;
-out vec3 varying_frag_pos;
 out vec3 varying_local_frag_pos;
-out vec2 varying_tex;
 
 out vec3 default_color;
 
@@ -47,11 +41,6 @@ vec3 get_default_color()
 
 void main()
 {
-    varying_col = col;
-    varying_norm = mat3(transpose(inverse(model))) * norm;
-    //Texture coordinates are flipped in the Y coordinate because scop_image loads them inverted
-    varying_tex = vec2(tex.x, -tex.y); 
-    varying_frag_pos = vec3(model * vec4(pos, 1.0));
     varying_local_frag_pos = pos;
 
     default_color = get_default_color();
