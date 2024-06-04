@@ -101,17 +101,21 @@ void scop_engine_set_active_scene_next(scop_engine_t* scop_engine)
 {
     t_list* scene_lst = scop_engine->scenes;
 
-    if (!scop_engine->scenes) return;
-    scene_t* new_scene = scop_engine->scenes->content;
     while (scene_lst)
     {
         scene_t* scene;
         scene = scene_lst->content;
-        if (!strcmp(scene->name_id, scop_engine->ative_scene->name_id) && scene_lst->next == NULL)
-            new_scene = scop_engine->scenes->content;
+        if (!strcmp(scene->name_id, scop_engine->ative_scene->name_id))
+        {
+            if (scene_lst->next == NULL)
+                scop_engine->ative_scene = scop_engine->scenes->content;
+            else
+                scop_engine->ative_scene = scene_lst->next->content;
+            return;
+        }
         scene_lst = scene_lst->next;
     }
-    scop_engine->ative_scene = new_scene;
+    scop_engine->ative_scene = scop_engine->scenes->content;
 }
 
 void scop_engine_add_scene(scop_engine_t* scop_engine, scene_t* scene)
