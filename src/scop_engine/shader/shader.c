@@ -45,8 +45,11 @@ GLuint shader_compile_(GLuint type, const char* path)
 	return (id);
 }
 
-void shader_create(shader_t* sh, const char* vert_path, const char* frag_path)
+shader_t* shader_create(const char* vert_path, const char* frag_path)
 {
+	shader_t* sh = (shader_t*)malloc(sizeof(shader_t));
+	if (!sh)
+		return NULL;
 	GLuint vert_id, frag_id, program;
 
 	vert_id = shader_compile_(GL_VERTEX_SHADER, vert_path);
@@ -61,6 +64,16 @@ void shader_create(shader_t* sh, const char* vert_path, const char* frag_path)
 	glDeleteShader(frag_id);
 
 	sh->id = program;
+	return sh;
+}
+
+void shader_destroy(shader_t* sh)
+{
+	if (sh)
+	{
+		glDeleteProgram(sh->id);
+		free(sh);
+	}
 }
 
 void shader_use(const shader_t* sh)
@@ -102,9 +115,4 @@ void shader_set_vec3(const shader_t* sh, const char* name, vec3_t value)
 	shader_use(sh);
 	GLuint loc = glGetUniformLocation(sh->id, name);
 	glUniform3fv(loc, 1, value);
-}
-
-void shader_destroy(shader_t* sh)
-{
-	glDeleteProgram(sh->id);
 }
