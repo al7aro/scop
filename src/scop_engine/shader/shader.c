@@ -93,7 +93,6 @@ shader_t* shader_create(const char* vert_path, const char* frag_path)
 	glDeleteShader(frag_id);
 
 	sh->id = program;
-	printf("sh->id: [%d]\n", program);
 	return sh;
 }
 

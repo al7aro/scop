@@ -14,6 +14,18 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn);
 
 #include "scop_macros.h"
 
+#define SCOP_IMAGE_MIN_MAXVAL 0
+#define SCOP_IMAGE_MAX_MAXVAL 1000000
+
+#define SCOP_IMAGE_MIN_W 0
+#define SCOP_IMAGE_MAX_W 8192
+
+#define SCOP_IMAGE_MIN_H 0
+#define SCOP_IMAGE_MAX_H 8192
+
+#define SCOP_IMAGE_MIN_DEPTH 0
+#define SCOP_IMAGE_MAX_DEPTH 8192
+
 typedef struct img_ctx_s
 {
     int w;
@@ -32,9 +44,6 @@ typedef struct img_ctx_s
 } img_ctx_t;
 
 void parse_pam_headers(img_ctx_t* ctx);
-void parse_ppm_headers(img_ctx_t* ctx);
-void parse_pgm_headers(img_ctx_t* ctx);
-void parse_pbm_headers(img_ctx_t* ctx);
 void scop_image_loader_error(img_ctx_t* ctx, const char* str);
 void read_color_data(img_ctx_t* ctx);
 

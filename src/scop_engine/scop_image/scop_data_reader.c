@@ -20,4 +20,6 @@ void read_color_data(img_ctx_t* ctx)
                 *(ctx->col_data + col_ptr) = col;
             col_ptr++; 
         }
+    if (col_ptr + (ctx->depth * bytes_per_channel) != ctx->w * ctx->h * ctx->depth * bytes_per_channel)
+        printf("Warning! Image is probably corrupted...\n");
 }

@@ -16,6 +16,19 @@ void scop_image_loader_error(img_ctx_t* ctx, const char* str)
     }
 }
 
+char scop_image_is_valid(img_ctx_t* ctx)
+{
+    if (ctx->maxval <= SCOP_IMAGE_MIN_MAXVAL || ctx->maxval >= SCOP_IMAGE_MAX_MAXVAL)
+        return 0;
+    if (ctx->w <= SCOP_IMAGE_MIN_W || ctx->w >= SCOP_IMAGE_MAX_W)
+        return 0;
+    if (ctx->h <= SCOP_IMAGE_MIN_H || ctx->h >= SCOP_IMAGE_MAX_H)
+        return 0;
+    if (ctx->depth <= SCOP_IMAGE_MIN_DEPTH || ctx->depth >= SCOP_IMAGE_MAX_DEPTH)
+        return 0;
+    return 1;
+}
+
 unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
 {
     FILE* fp = fopen(path, "rb");
@@ -48,39 +61,8 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     ctx.current_field = (void *)1;
     switch (ctx.buff[ctx.buff_ptr - 2] << 16 | ctx.buff[ctx.buff_ptr - 1] << 8 | !!isspace(ctx.buff[ctx.buff_ptr]))
     {
-        case ('P' << 16 | '1' << 8 | 1):
-            ctx.bin = 0;
-            // printf("ASCII PBM\n");
-            parse_pbm_headers(&ctx);
-            break;
-        case ('P' << 16 | '2' << 8 | 1):
-            ctx.bin = 0;
-            // printf("ASCII PGM\n");
-            parse_pgm_headers(&ctx);
-            break;
-        case ('P' << 16 | '3' << 8 | 1):
-            ctx.bin = 0;
-            // printf("ASCII PPM\n");
-            parse_ppm_headers(&ctx);
-            break;
-        case ('P' << 16 | '4' << 8 | 1):
-            ctx.bin = 1;
-            // printf("BINARY PBM\n");
-            parse_pbm_headers(&ctx);
-            break;
-        case ('P' << 16 | '5' << 8 | 1):
-            ctx.bin = 1;
-            // printf("BINARY PGM\n");
-            parse_pgm_headers(&ctx);
-            break;
-        case ('P' << 16 | '6' << 8 | 1):
-            ctx.bin = 1;
-            // printf("BINARY PPM\n");
-            parse_ppm_headers(&ctx);
-            break;
         case ('P' << 16 | '7' << 8 | 1):
             ctx.bin = 1;
-            // printf("PAM\n");
             parse_pam_headers(&ctx);
             break;
         default:
@@ -89,8 +71,13 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     }
     if (!ctx.buff)
         return (NULL);
-    // printf("W: %ld | H: %ld | depth: %ld | maxval: %ld\n", ctx.w, ctx.h, ctx.depth, ctx.maxval);
     ctx.buff_ptr++;
+    if (!scop_image_is_valid(&ctx))
+    {
+        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL);
+        return NULL;
+    }
+
     /* At this point the header is correct and colors MUST start at the very next byte */
     ctx.col_data = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.w * ctx.h * ctx.depth));
     if (!ctx.col_data)
