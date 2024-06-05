@@ -5,7 +5,7 @@
 *.slo
 *.lo
 *.o
-*.obj
+# *.obj -> I want to add Wavefront .obj files to the repository
 
 # Precompiled Headers
 *.gch

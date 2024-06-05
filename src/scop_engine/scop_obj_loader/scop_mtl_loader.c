@@ -1,0 +1,155 @@
+#define SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
+#include "scop_obj_loader.h"
+
+char* get_full_path(char* obj_path, char* mtllib)
+{
+    if (!mtllib) return NULL;
+#ifdef __linux__ 
+    if (*mtllib == '/')
+        return strdup(mtllib);
+#elif _WIN32
+    if (*mtllib)
+        if (*(mtllib + 1) == ':')
+            return _strdup(mtllib);
+#endif
+
+    char* dir_end = strrchr(obj_path, '/');
+    if (dir_end) *(dir_end + 1) = '\0';
+
+    size_t path_len = strlen(obj_path) + strlen(mtllib) + 1;
+    char* path = (char*)malloc(sizeof(char) * path_len);
+    if (!path)
+        return NULL;
+    memset(path, 0, sizeof(char) * (strlen(obj_path) + strlen(mtllib)));
+    strcpy_s(path, path_len, obj_path);
+    strcat_s(path, path_len, mtllib);
+    return path;
+}
+
+sol_mtl_group_t* get_mtl_by_name(sol_model_t* model, char* name)
+{
+    t_list* obj_lst = model->obj;
+    while (obj_lst)
+    {
+        sol_obj_t* obj = obj_lst->content;
+        t_list* mtl_lst = obj->mtl_group;
+        while (mtl_lst)
+        {
+            sol_mtl_group_t* mtl = mtl_lst->content;
+            if (!strcmp(mtl->usemtl, name))
+                return mtl;
+            mtl_lst = mtl_lst->next;
+        }
+        obj_lst = obj_lst->next;
+    }
+    return NULL;
+}
+
+static void parse_mtl_line(sol_mtl_group_t* mtl, char* line)
+{
+    char* line_data = NULL;
+    char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
+    if (!line_type) return;
+    unsigned int att_id = 0;
+
+    /* VERTEX ATTRIBUTES */
+    if ('K' == *line_type && line_data)
+    {
+        trim_spaces(line_data);
+        float f[3];
+        int ret = get_line_data(line_data, f, 3);
+        switch (*(line_type + 1))
+        {
+            case 'a':  /* Ka */
+                for (int i = 0; i < ret; i++) mtl->Ka[i] = f[i];
+                break;
+            case 'd':   /* Kd */
+                for (int i = 0; i < ret; i++) mtl->Kd[i] = f[i];
+                break;
+            case 's':   /* Ks */
+                for (int i = 0; i < ret; i++) mtl->Ks[i] = f[i];
+                break;
+            case 'e':   /* Ke */
+                for (int i = 0; i < ret; i++) mtl->Ke[i] = f[i];
+                break;
+            default:
+                printf("unrecogniced\n");
+                break;
+        }
+    }
+    else if ('N' == *line_type && line_data)
+    {
+        trim_spaces(line_data);
+        float f;
+        int ret = get_line_data(line_data, &f, 1);
+        switch (*(line_type + 1))
+        {
+            case 's':  /* Ns */
+                if (ret) mtl->Ns = f;
+                break;
+            case 'i':   /* Ni */
+                if (ret) mtl->Ni = f;
+                att_id = SCOP_TEX_ATT_ID;
+                break;
+            default:
+                printf("unrecogniced\n");
+                break;
+        }
+    }
+    else if ('d' == *line_type && line_data)
+    {
+        trim_spaces(line_data);
+        float f;
+        int ret = get_line_data(line_data, &f, 1);
+        if (ret) mtl->d = f;
+    }
+}
+
+void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path)
+{
+    char* path = get_full_path((char*)obj_path, model->mtllib);
+    if (!path) return;
+    FILE* fp = fopen(path, "rb");
+    free(path);
+    if (!fp)
+    {
+        printf("File not found [%s]\n", path);
+        return ;
+    }
+    char line[512]; memset(line, 0, sizeof(line));
+    sol_mtl_group_t* active_mtl = NULL;
+    while (fgets(line, MAX_LINE_SIZE, fp))
+    {
+        char newmtl[64];
+        char map_Kd[128];
+        char map_Bump[128];
+        char map_Ks[128];
+
+        if (sscanf_s(line, " newmtl %s ", newmtl, 64) > 0)
+            active_mtl = get_mtl_by_name(model, newmtl);
+        else if (sscanf_s(line, " map_Kd %s ", map_Kd, 128) > 0 && active_mtl)
+        {
+            char* Kd_path = get_full_path((char*)obj_path, map_Kd);
+            strcpy_s(active_mtl->map_Kd, 128, Kd_path);
+            free(Kd_path);
+        }
+        else if (sscanf_s(line, " map_Ks %s ", map_Ks, 128) > 0 && active_mtl)
+        {
+            char* Ks_path = get_full_path((char*)obj_path, map_Ks);
+            strcpy_s(active_mtl->map_Ks, 128, Ks_path);
+            free(Ks_path);
+        }
+        else if (sscanf_s(line, " map_Bump %s ", map_Bump, 128) > 0 && active_mtl)
+        {
+            char* Bump_path = get_full_path((char*)obj_path, map_Bump);
+            strcpy_s(active_mtl->map_Bump, 128, Bump_path);
+            free(Bump_path);
+        }
+        else
+        {
+            if (!active_mtl)
+                continue;
+            parse_mtl_line(active_mtl, line);
+        }
+    }
+}
