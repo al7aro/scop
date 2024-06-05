@@ -1,13 +1,6 @@
 #define SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
 #include "scop_obj_loader.h"
 
-void test_print_face(sol_face_t f)
-{
-    for (unsigned int i = 0; i < f.size; i++)
-        printf("%d/%d/%d ",f.att[SCOP_POS_ATT_ID].data[i], f.att[SCOP_NOR_ATT_ID].data[i], f.att[SCOP_TEX_ATT_ID].data[i]);
-    printf("\n");
-}
-
 static void parse_line_face(sol_obj_t* obj, char** line)
 {
     char* token = strtok_r(NULL, " ", line);
@@ -80,7 +73,6 @@ static void parse_obj_line(sol_model_t* model, sol_obj_t* obj, char* line)
         int ret = get_line_data(line_data, f, 16);
         if (ret)
         {
-            /* TODO: THINK OF A BETTER WAY TO ADD COLOR TO .OBJ */
             if (!model->v_cnt[att_id]) model->v_cnt[att_id] = ret;
             if (att_id == SCOP_POS_ATT_ID && ret == 6)
             {
@@ -130,7 +122,6 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
             strcpy_s(model->mtllib, (unsigned int)sizeof(model->mtllib), mtllib);
         if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
         {
-            //printf("Working on material: %s\n", mtl_name);
             if (!model->obj)
             {
                 sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
@@ -143,19 +134,16 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
         }
         if (sscanf_s(line, " o %s ", name, 64) > 0)
         {
-            //printf("Working on object: %s\n", name);
             sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
             init_obj(obj, name);
             ft_lstadd_back(&(model->obj), ft_lstnew(obj));
         }
-        //printf("Parsing line of object: %s\n", ((sol_obj_t*)(tmp->content))->id_name);
         t_list* tmp = ft_lstlast(model->obj);
         if (tmp)
             parse_obj_line(model, tmp->content, line);
         else
             parse_obj_line(model, NULL, line);
     }
-    //printf("SCENE SIZE: %d\n", ft_lstsize(model->obj));
     if (strlen(model->mtllib) > 0)
         sol_load_wavefront_mtl(model, path);
     return model;

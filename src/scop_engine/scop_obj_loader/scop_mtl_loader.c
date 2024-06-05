@@ -3,10 +3,19 @@
 
 char* get_full_path(char* obj_path, char* mtllib)
 {
-    size_t dir_end = strrchr(obj_path, '/') - obj_path + 1;
-    if (dir_end < 0 && dir_end >= strlen(obj_path))
-        return NULL;
-    obj_path[dir_end] = 0;
+    if (!mtllib) return NULL;
+#ifdef __linux__ 
+    if (*mtllib == '/')
+        return strdup(mtllib);
+#elif _WIN32
+    if (*mtllib)
+        if (*(mtllib + 1) == ':')
+            return _strdup(mtllib);
+#endif
+
+    char* dir_end = strrchr(obj_path, '/');
+    if (dir_end) *(dir_end + 1) = '\0';
+
     size_t path_len = strlen(obj_path) + strlen(mtllib) + 1;
     char* path = (char*)malloc(sizeof(char) * path_len);
     if (!path)
@@ -99,6 +108,7 @@ static void parse_mtl_line(sol_mtl_group_t* mtl, char* line)
 void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path)
 {
     char* path = get_full_path((char*)obj_path, model->mtllib);
+    if (!path) return;
     FILE* fp = fopen(path, "rb");
     free(path);
     if (!fp)

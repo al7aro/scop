@@ -47,7 +47,12 @@ mesh_t* model_load_mesh(sol_model_t* model_data, sol_mtl_group_t* mtl_group)
 			{
 				size_t face_id = face->att[att_id].data[i] - 1;
 				for (size_t v_i = 0; v_i < model_data->v_cnt[att_id]; v_i++)
-					f[v_i] = model_data->v[att_id][(face_id * model_data->v_cnt[att_id]) + v_i];
+				{
+					size_t index = (face_id * model_data->v_cnt[att_id]) + v_i;
+					if (index < 0 || index > model_data->v_max_size[att_id])
+						continue;
+					f[v_i] = model_data->v[att_id][index];
+				}
 				mesh_push_att(mesh, f, (unsigned int)model_data->v_cnt[att_id]);
 			}
 			mesh->data->buff_cnt++;
@@ -78,6 +83,13 @@ void model_load(model_t** ret, const char* file)
 	if (!model) return;
 	model->mesh = NULL;
 	sol_model_t* model_data = sol_load_wavefront_obj(file);
+	if (!model_data)
+	{
+		printf("Model [%s] did not load correctly.\n", file);
+		free(model);
+		*ret = NULL;
+		return;
+	}
 	t_list* obj = model_data->obj;
 
 	while (obj)
