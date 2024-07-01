@@ -36,8 +36,12 @@ void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 	scene_manage_mouse_input_callbacks(scene_ptr, window, xpos, ypos);
 }
 
+void l(void){ system("leaks scop"); }
+
 int main(void)
 {
+	atexit(l);
+
 	printf("Scop is installed at: [%s]\n\n", SCOP_INSTALL_PATH);
 
 	scop_engine_t* engine = scop_engine_create();
