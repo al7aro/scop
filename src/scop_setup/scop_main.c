@@ -47,10 +47,12 @@ int main(void)
 	scop_engine_t* engine = scop_engine_create();
 	scene_t* default_scene = default_scene_create("default_scene");
 	scene_t* guitar_scene = guitar_scene_create("guitar_scene");
+	scene_t* placeholder_scene = placeholder_scene_create("placeholder_scene");
 
 
 	scop_engine_add_scene(engine, guitar_scene);
 	scop_engine_add_scene(engine, default_scene);
+	scop_engine_add_scene(engine, placeholder_scene);
 	scop_engine_set_active_scene(engine, "default_scene");
 	scop_engine_set_clear_color(engine, (vec3_t){0.3f, 0.3f, 0.3f});
 	scop_engine_set_keyboard_input_callback(engine, engine_keyboard_input_callback);
