@@ -1,10 +1,11 @@
 #define SCOP_MODEL_LOADER_INTERNAL_FUNCTIONALITY
 #include "scop_obj_loader.h"
 
-char* get_full_path(char* obj_path, char* mtllib)
+char* get_full_path(const char* obj_path, char* mtllib)
 {
+    char* path_aux = strdup(obj_path);
     if (!mtllib) return NULL;
-#ifdef __linux__ 
+#if defined(__APPLE__) || defined(__linux__)
     if (*mtllib == '/')
         return strdup(mtllib);
 #elif _WIN32
@@ -13,16 +14,17 @@ char* get_full_path(char* obj_path, char* mtllib)
             return _strdup(mtllib);
 #endif
 
-    char* dir_end = strrchr(obj_path, '/');
+    char* dir_end = strrchr(path_aux, '/');
     if (dir_end) *(dir_end + 1) = '\0';
 
-    size_t path_len = strlen(obj_path) + strlen(mtllib) + 1;
+    size_t path_len = strlen(path_aux) + strlen(mtllib) + 1;
     char* path = (char*)malloc(sizeof(char) * path_len);
     if (!path)
         return NULL;
-    memset(path, 0, sizeof(char) * (strlen(obj_path) + strlen(mtllib)));
-    strcpy_s(path, path_len, obj_path);
-    strcat_s(path, path_len, mtllib);
+    memset(path, 0, sizeof(char) * (strlen(path_aux) + strlen(mtllib)));
+    strcpy(path, path_aux);
+    strcat(path, mtllib);
+    free(path_aux);
     return path;
 }
 
@@ -50,7 +52,6 @@ static void parse_mtl_line(sol_mtl_group_t* mtl, char* line)
     char* line_data = NULL;
     char* line_type = strtok_r(line, " #\n\t\v\f\r", &line_data);
     if (!line_type) return;
-    unsigned int att_id = 0;
 
     /* VERTEX ATTRIBUTES */
     if ('K' == *line_type && line_data)
@@ -89,7 +90,6 @@ static void parse_mtl_line(sol_mtl_group_t* mtl, char* line)
                 break;
             case 'i':   /* Ni */
                 if (ret) mtl->Ni = f;
-                att_id = SCOP_TEX_ATT_ID;
                 break;
             default:
                 printf("unrecogniced\n");
@@ -125,24 +125,24 @@ void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path)
         char map_Bump[128];
         char map_Ks[128];
 
-        if (sscanf_s(line, " newmtl %s ", newmtl, 64) > 0)
+        if (sscanf(line, " newmtl %s ", newmtl) > 0)
             active_mtl = get_mtl_by_name(model, newmtl);
-        else if (sscanf_s(line, " map_Kd %s ", map_Kd, 128) > 0 && active_mtl)
+        else if (sscanf(line, " map_Kd %s ", map_Kd) > 0 && active_mtl)
         {
             char* Kd_path = get_full_path((char*)obj_path, map_Kd);
-            strcpy_s(active_mtl->map_Kd, 128, Kd_path);
+            strcpy(active_mtl->map_Kd, Kd_path);
             free(Kd_path);
         }
-        else if (sscanf_s(line, " map_Ks %s ", map_Ks, 128) > 0 && active_mtl)
+        else if (sscanf(line, " map_Ks %s ", map_Ks) > 0 && active_mtl)
         {
             char* Ks_path = get_full_path((char*)obj_path, map_Ks);
-            strcpy_s(active_mtl->map_Ks, 128, Ks_path);
+            strcpy(active_mtl->map_Ks, Ks_path);
             free(Ks_path);
         }
-        else if (sscanf_s(line, " map_Bump %s ", map_Bump, 128) > 0 && active_mtl)
+        else if (sscanf(line, " map_Bump %s ", map_Bump) > 0 && active_mtl)
         {
             char* Bump_path = get_full_path((char*)obj_path, map_Bump);
-            strcpy_s(active_mtl->map_Bump, 128, Bump_path);
+            strcpy(active_mtl->map_Bump, Bump_path);
             free(Bump_path);
         }
         else

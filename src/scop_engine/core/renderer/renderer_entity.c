@@ -8,7 +8,7 @@ entity_t* entity_create(const char* name_id)
 	if (!entity) return NULL;
 	entity->empty = empty_create();
 	if (!entity->empty) return NULL;
-	strcpy_s(entity->name_id, sizeof(entity->name_id), name_id);
+	strcpy(entity->name_id, name_id);
 
 	entity->model = NULL;
 	entity->shader = NULL;

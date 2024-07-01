@@ -44,7 +44,7 @@ typedef struct img_ctx_s
 } img_ctx_t;
 
 void parse_pam_headers(img_ctx_t* ctx);
-void scop_image_loader_error(img_ctx_t* ctx, const char* str);
+void scop_image_loader_error(img_ctx_t* ctx, const char* str, const char* str2);
 void read_color_data(img_ctx_t* ctx);
 
 # endif

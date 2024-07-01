@@ -1,11 +1,11 @@
 #include "scop_engine.h"
 
-scop_engine_t* scop_engine_create()
+scop_engine_t* scop_engine_create(void)
 {
     scop_engine_t* scop_engine = (scop_engine_t*)malloc(sizeof(scop_engine_t));
     if (!scop_engine) return NULL;
     memset(scop_engine->clear_color, 0, sizeof(vec3_t));
-    strcpy_s(scop_engine->window_title, sizeof(scop_engine->window_title), "Hello World!");
+    strcpy(scop_engine->window_title, "Hello World!");
     scop_engine->window_height = 900;
     scop_engine->window_width = 900;
     scop_engine->current_time = 0;
@@ -130,6 +130,6 @@ void scop_engine_destroy(scop_engine_t* scop_engine)
     glfwDestroyWindow(scop_engine->window);
     glfwTerminate();
 
-    ft_lstclear(&(scop_engine->scenes), scene_destroy);
+    ft_lstclear(&(scop_engine->scenes), (void (*)(void *))scene_destroy);
     free(scop_engine);
 }

@@ -101,6 +101,7 @@ void model_load(model_t** ret, const char* file)
 	*ret = model;
 	sol_destroy(model_data);
 	model_load_GPU(*ret);
+
 }
 
 void model_load_GPU(model_t* model)

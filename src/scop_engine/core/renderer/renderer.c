@@ -16,7 +16,7 @@ scene_t* scene_create(const char* name_id)
 	scene->keyboard_input_handlers = NULL;
 	scene->mouse_input_handlers = NULL;
 	scene->update_handlers = NULL;
-	strcpy_s(scene->name_id, sizeof(scene->name_id), name_id);
+	strcpy(scene->name_id, name_id);
 
 	return scene;
 }
@@ -282,9 +282,9 @@ void scene_update(scene_t* scene)
 void scene_destroy(scene_t* scene)
 {
 	if (!scene) return;
-	ft_lstclear(&(scene->light_lst), light_destroy);
-	ft_lstclear(&(scene->entity_lst), entity_destroy);
-	ft_lstclear(&(scene->shader_lst), shader_destroy);
+	ft_lstclear(&(scene->light_lst), (void (*)(void *))light_destroy);
+	ft_lstclear(&(scene->entity_lst), (void (*)(void *))entity_destroy);
+	ft_lstclear(&(scene->shader_lst), (void (*)(void *))shader_destroy);
 	cam_destroy(scene->cam);
 
 	ft_lstclear(&(scene->keyboard_input_handlers), NULL);

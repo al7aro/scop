@@ -28,7 +28,6 @@ void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, i
 
 void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	(void)window; (double)xpos; (double)ypos;
 	scop_engine_t* engine_ptr = glfwGetWindowUserPointer(window);
 	scene_t* scene_ptr = engine_ptr->ative_scene;
 

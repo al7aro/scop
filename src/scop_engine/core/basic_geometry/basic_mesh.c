@@ -166,25 +166,24 @@ void mesh_render(mesh_t* mesh, shader_t* sh)
             char enabled_tex_name[64]; memset(enabled_tex_name, 0, sizeof(enabled_tex_name));
             if (SCOP_TEXTURE_ID_KD == i)
             {
-                strcpy_s(tex_name, 64, "mat.diffuse_map");
-                strcpy_s(enabled_tex_name, 64, "mat.diffuse_map_enabled");
+                strcpy(tex_name, "mat.diffuse_map");
+                strcpy(enabled_tex_name, "mat.diffuse_map_enabled");
             }
             if (SCOP_TEXTURE_ID_KS == i)
             {
-                strcpy_s(tex_name, 64, "mat.specular_map");
-                strcpy_s(enabled_tex_name, 64, "mat.specular_map_enabled");
+                strcpy(tex_name, "mat.specular_map");
+                strcpy(enabled_tex_name, "mat.specular_map_enabled");
             }
             if (SCOP_TEXTURE_ID_BUMP == i)
             {
-                strcpy_s(tex_name, 64, "mat.bump_map");
-                strcpy_s(enabled_tex_name, 64, "mat.bump_map_enabled");
+                strcpy(tex_name, "mat.bump_map");
+                strcpy(enabled_tex_name, "mat.bump_map_enabled");
             }
             if (SCOP_TEXTURE_ID_DEFAULT == i)
             {
-                strcpy_s(tex_name, 64, "mat.default_map");
-                strcpy_s(enabled_tex_name, 64, "mat.default_map_enabled");
+                strcpy(tex_name, "mat.default_map");
+                strcpy(enabled_tex_name, "mat.default_map_enabled");
             }
-            if (!tex_name) continue;
             
             shader_set_int(sh, enabled_tex_name, !!(mesh->mtl->textures[i].id));
             shader_set_int(sh, tex_name, i);

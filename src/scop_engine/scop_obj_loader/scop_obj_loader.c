@@ -118,9 +118,9 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
         char name[64]; memset(name, 0, sizeof(name));
         char mtl_name[64]; memset(mtl_name, 0, sizeof(mtl_name));
         char mtllib[64]; memset(mtllib, 0, sizeof(mtllib));
-        if (sscanf_s(line, " mtllib %s ", mtllib, (unsigned int)sizeof(mtllib)) > 0)
-            strcpy_s(model->mtllib, (unsigned int)sizeof(model->mtllib), mtllib);
-        if (sscanf_s(line, " usemtl %s ", mtl_name, 64) > 0)
+        if (sscanf(line, " mtllib %s ", mtllib) > 0)
+            strcpy(model->mtllib, mtllib);
+        if (sscanf(line, " usemtl %s ", mtl_name) > 0)
         {
             if (!model->obj)
             {
@@ -132,7 +132,7 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
             init_mtl_group(mtl, mtl_name);
             ft_lstadd_back(&(((sol_obj_t*)ft_lstlast(model->obj)->content)->mtl_group), ft_lstnew(mtl));
         }
-        if (sscanf_s(line, " o %s ", name, 64) > 0)
+        if (sscanf(line, " o %s ", name) > 0)
         {
             sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
             init_obj(obj, name);

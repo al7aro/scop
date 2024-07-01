@@ -65,14 +65,12 @@ t_list	*ft_lstlast(t_list *lst)
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	int		aux;
 	t_list	*new_list;
 	t_list	*new_list_aux;
 
 	if (!lst)
 		return (0);
-	aux = 0;
-	(void *)del;
+	(void)del;
 	new_list = ft_lstnew(f(lst->content));
 	new_list_aux = new_list;
 	while (lst)

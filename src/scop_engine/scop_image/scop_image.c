@@ -1,7 +1,7 @@
 #define scop_INTERNAL_FUNCTIONALITY
 #include "scop_image.h"
 
-void scop_image_loader_error(img_ctx_t* ctx, const char* str)
+void scop_image_loader_error(img_ctx_t* ctx, const char* str, const char* str2)
 {
     if (ctx)
     {
@@ -12,6 +12,8 @@ void scop_image_loader_error(img_ctx_t* ctx, const char* str)
     if (str)
     {
         fprintf(stderr, "%s", str);
+        if (str2)
+            fprintf(stderr, ": [%s]", str2);
         fprintf(stderr, "\n");
     }
 }
@@ -34,7 +36,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     FILE* fp = fopen(path, "rb");
     if (!fp)
     {
-        scop_image_loader_error(NULL, SCOP_ERROR_FILE_NOT_FOUND);
+        scop_image_loader_error(NULL, SCOP_ERROR_FILE_NOT_FOUND, path);
         return (NULL);
     }
     img_ctx_t ctx;
@@ -46,7 +48,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     ctx.buff = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.file_len + 64));
     if (!ctx.buff)
     {
-        scop_image_loader_error(NULL, SCOP_ERROR_FATAL);
+        scop_image_loader_error(NULL, SCOP_ERROR_FATAL, path);
         fclose(fp);
         return (NULL);
     }
@@ -66,7 +68,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
             parse_pam_headers(&ctx);
             break;
         default:
-            scop_image_loader_error(&ctx, SCOP_ERROR_UNRECOGNICED_FILE);
+            scop_image_loader_error(&ctx, SCOP_ERROR_UNRECOGNICED_FILE, path);
             return NULL;
     }
     if (!ctx.buff)
@@ -74,7 +76,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     ctx.buff_ptr++;
     if (!scop_image_is_valid(&ctx))
     {
-        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL);
+        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL, path);
         return NULL;
     }
 
@@ -82,7 +84,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     ctx.col_data = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.w * ctx.h * ctx.depth));
     if (!ctx.col_data)
     {
-        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL);
+        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL, path);
         return (NULL);
     }
     memset(ctx.col_data, 0, sizeof(unsigned char) * ctx.w * ctx.h * ctx.depth);

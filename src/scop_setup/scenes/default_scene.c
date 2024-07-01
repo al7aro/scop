@@ -31,7 +31,9 @@ scene_t* default_scene_create(const char* scene_name)
 	entity_set_scale(teapot, (vec3_t) { 0.25, 0.25, 0.25 });
 
 	entity_t* teapot2 = entity_create("teapot2");
+
 	model_t* teapot2_model; model_load(&teapot2_model, SCOP_INSTALL_PATH"/assets/models/42_resources/teapot2.obj");
+
 	entity_set_model(teapot2, teapot2_model);
 	entity_set_pos(teapot2, (vec3_t) { -5.0, -5.0, -5.0 });
 

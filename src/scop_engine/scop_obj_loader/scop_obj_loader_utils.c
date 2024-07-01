@@ -2,7 +2,7 @@
 
 void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name)
 {
-    strcpy_s(mtl->usemtl, sizeof(mtl->usemtl), mtl_name);
+    strcpy(mtl->usemtl, mtl_name);
     mtl->faces = NULL;
 
     mtl->d = 1.0;
@@ -41,7 +41,7 @@ void init_model(sol_model_t* model)
 void init_obj(sol_obj_t* obj, char* name)
 {
     obj->mtl_group = NULL;
-    strcpy_s(obj->id_name, sizeof(obj->id_name), name);
+    strcpy(obj->id_name, name);
 }
 
 void buff_push_back_float(sol_model_t* model, unsigned int att_id, float f)
@@ -101,7 +101,7 @@ void free_mlt_group(sol_mtl_group_t* mtl_group)
 
 void free_obj(sol_obj_t* obj)
 {
-    ft_lstclear(&(obj->mtl_group), free_mlt_group);
+    ft_lstclear(&(obj->mtl_group), (void (*)(void *))free_mlt_group);
     free(obj);
 }
 
@@ -112,6 +112,6 @@ void sol_destroy(sol_model_t* model)
         if (model->v[att_id])
             free(model->v[att_id]);
     }
-    ft_lstclear(&(model->obj), free_obj);
+    ft_lstclear(&(model->obj), (void (*)(void *))free_obj);
     free(model);
 }
