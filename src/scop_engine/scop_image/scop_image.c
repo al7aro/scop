@@ -46,12 +46,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
     fseek(fp, 0, SEEK_END);
     fseek(fp, 0, SEEK_SET);
     ctx.buff = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.file_len + 64));
-    if (!ctx.buff)
-    {
-        scop_image_loader_error(NULL, SCOP_ERROR_FATAL, path);
-        fclose(fp);
-        return (NULL);
-    }
+    if (!ctx.buff) exit(-1);
     memset(ctx.buff, 0, sizeof(unsigned char) * (ctx.file_len + 64));
     fread(ctx.buff, ctx.file_len, 1, fp);
     fclose(fp);
@@ -82,11 +77,7 @@ unsigned char* scop_image_load(const char* path, int *w, int *h, int *chn)
 
     /* At this point the header is correct and colors MUST start at the very next byte */
     ctx.col_data = (unsigned char*)malloc(sizeof(unsigned char) * (ctx.w * ctx.h * ctx.depth));
-    if (!ctx.col_data)
-    {
-        scop_image_loader_error(&ctx, SCOP_ERROR_FATAL, path);
-        return (NULL);
-    }
+    if (!ctx.col_data) exit(-1);
     memset(ctx.col_data, 0, sizeof(unsigned char) * ctx.w * ctx.h * ctx.depth);
     read_color_data(&ctx);
     free(ctx.buff);

@@ -5,6 +5,7 @@ static void parse_line_face(sol_obj_t* obj, char** line)
 {
     char* token = strtok_r(NULL, " ", line);
     sol_face_t *face = (sol_face_t*)malloc(sizeof(sol_face_t));
+    if (!face) exit(-1);
     init_face(face);
     for (; token && face->size < MAX_FACE_SIZE; token = strtok_r(NULL, " ", line), face->size += 1)
     {
@@ -29,6 +30,7 @@ static void parse_line_face(sol_obj_t* obj, char** line)
     if (!(obj->mtl_group))
     {
         sol_mtl_group_t* mtl = (sol_mtl_group_t*)malloc(sizeof(sol_mtl_group_t));
+        if (!mtl) exit(-1);
         init_mtl_group(mtl, "nomaterial");
         ft_lstadd_back(&(obj->mtl_group), ft_lstnew(mtl));
     }
@@ -93,6 +95,7 @@ static void parse_obj_line(sol_model_t* model, sol_obj_t* obj, char* line)
         if (!obj)
         {
             obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+            if (!obj) exit(-1);
             init_obj(obj, "noname");
             ft_lstadd_back(&(model->obj), ft_lstnew(obj));
         }
@@ -111,7 +114,7 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
     }
     char line[512]; memset(line, 0, sizeof(line));
     sol_model_t* model = (sol_model_t*)malloc(sizeof(sol_model_t));
-    if (!model) return NULL;
+    if (!model) exit(-1);
     init_model(model);
     while (fgets(line, MAX_LINE_SIZE, fp))
     {
@@ -125,16 +128,19 @@ sol_model_t* sol_load_wavefront_obj(const char* path)
             if (!model->obj)
             {
                 sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+                if (!obj) exit(-1);
                 init_obj(obj, "noname");
                 ft_lstadd_back(&(model->obj), ft_lstnew(obj));
             }
             sol_mtl_group_t* mtl = (sol_mtl_group_t*)malloc(sizeof(sol_mtl_group_t));
+            if (!mtl) exit(-1);
             init_mtl_group(mtl, mtl_name);
             ft_lstadd_back(&(((sol_obj_t*)ft_lstlast(model->obj)->content)->mtl_group), ft_lstnew(mtl));
         }
         if (sscanf(line, " o %s ", name) > 0)
         {
             sol_obj_t* obj = (sol_obj_t*)malloc(sizeof(sol_obj_t));
+            if (!obj) exit(-1);
             init_obj(obj, name);
             ft_lstadd_back(&(model->obj), ft_lstnew(obj));
         }

@@ -9,7 +9,7 @@ t_list* face_subdiv(t_list* face_lst)
 	for (size_t i = 0; i < face->size - 3; i++)
 	{
 		sol_face_t* new_face = (sol_face_t*)malloc(sizeof(sol_face_t));
-		if (!new_face) return NULL;
+		if (!new_face) exit(-1);;
 		new_face->size = 3;
 		for (unsigned int att_id = 0; att_id < SCOP_MAX_ATT; att_id++)
 		{
@@ -31,7 +31,7 @@ mesh_t* model_load_mesh(sol_model_t* model_data, sol_mtl_group_t* mtl_group)
 {
 	t_list* face_lst = mtl_group->faces;
 	mesh_t* mesh = (mesh_t*)malloc(sizeof(mesh_t));
-	if (!mesh) return NULL;
+	if (!mesh) exit(-1);;
 
 	mesh_init(mesh);
 	mesh_set_mtl(mesh, mtl_group);
@@ -80,7 +80,7 @@ void model_load_obj(model_t* model, sol_model_t* model_data, sol_obj_t* obj)
 void model_load(model_t** ret, const char* file)
 {
 	model_t* model = (model_t*)malloc(sizeof(model_t));
-	if (!model) return;
+	if (!model) exit(-1);;
 	model->mesh = NULL;
 	sol_model_t* model_data = sol_load_wavefront_obj(file);
 	if (!model_data)

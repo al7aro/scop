@@ -19,8 +19,7 @@ char* get_full_path(const char* obj_path, char* mtllib)
 
     size_t path_len = strlen(path_aux) + strlen(mtllib) + 1;
     char* path = (char*)malloc(sizeof(char) * path_len);
-    if (!path)
-        return NULL;
+    if (!path) exit(-1);
     memset(path, 0, sizeof(char) * (strlen(path_aux) + strlen(mtllib)));
     strcpy(path, path_aux);
     strcat(path, mtllib);

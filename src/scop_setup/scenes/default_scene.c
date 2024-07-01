@@ -19,7 +19,7 @@ scene_t* default_scene_create(const char* scene_name)
 	sh = shader_create(SCOP_INSTALL_PATH"/assets/shaders/coltex_switch.vert", SCOP_INSTALL_PATH"/assets/shaders/coltex_switch.frag");
 
 	cam_t* cam = cam_create();
-	cam_set_pos(cam, (vec3_t) { 0.0, 0.0, 7.0 });
+	cam_set_pos(cam, (vec3_t) { 0.0, 0.0, 20.0 });
 	cam_add_keyboard_input_handler(cam, common_camera_keyboard_callback);
 	cam_add_mouse_input_handler(cam, common_camera_mouse_callback);
 	cam_add_update_handler(cam, common_update_camera);
@@ -38,6 +38,7 @@ scene_t* default_scene_create(const char* scene_name)
 	entity_set_pos(teapot2, (vec3_t) { -5.0, -5.0, -5.0 });
 
 	entity_t* e_42_rot = entity_create("42_rot");
+	e_42_rot->empty->rot[1] = 3.14/2.0;
 	entity_add_update_handler(e_42_rot, update_42_rot);
 
 	entity_t* logo42 = entity_create("logo42");

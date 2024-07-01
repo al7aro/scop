@@ -5,7 +5,7 @@ scene_t* scene_create(const char* name_id)
 {
 	scene_t* scene;
 	scene = (scene_t*)malloc(sizeof(scene_t));
-	if (!scene) return NULL;
+	if (!scene) exit(-1);
 	for (int i = 0; i < 3; i++)
 		scene->ambient[i] = 1.0;
 	scene->cam = NULL;

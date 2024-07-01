@@ -3,7 +3,7 @@
 scop_engine_t* scop_engine_create(void)
 {
     scop_engine_t* scop_engine = (scop_engine_t*)malloc(sizeof(scop_engine_t));
-    if (!scop_engine) return NULL;
+    if (!scop_engine) exit(-1);
     memset(scop_engine->clear_color, 0, sizeof(vec3_t));
     strcpy(scop_engine->window_title, "Hello World!");
     scop_engine->window_height = 900;

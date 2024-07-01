@@ -58,6 +58,7 @@ void buff_push_back_float(sol_model_t* model, unsigned int att_id, float f)
         {
             *max_size = 16;
             tmp = (float*)malloc(sizeof(float) * *max_size);
+            if (!tmp) exit(-1);
         }
         else
             tmp = realloc(*buff, sizeof(float) * *max_size);

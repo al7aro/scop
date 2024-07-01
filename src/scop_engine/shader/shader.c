@@ -21,8 +21,7 @@ static char* read_file_(const char *path)
 	fseek(fp, 0, SEEK_SET);
 	len = end - start;
 	buff = (char*)malloc(sizeof(char) * (len + 1));
-	if (NULL == buff)
-		return (NULL);
+	if (!buff) exit(-1);
 	fread(buff, len, 1, fp);
 	buff[len] = 0;
 	fclose(fp);
@@ -58,8 +57,7 @@ GLuint shader_compile_(GLuint type, const char* path)
 shader_t* shader_create(const char* vert_path, const char* frag_path)
 {
 	shader_t* sh = (shader_t*)malloc(sizeof(shader_t));
-	if (!sh)
-		return NULL;
+	if (!sh) exit(-1);
 	GLuint vert_id, frag_id, program;
 
 	vert_id = shader_compile_(GL_VERTEX_SHADER, vert_path);
