@@ -38,7 +38,7 @@ void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 
 void l(void){ system("leaks scop"); }
 
-int main(void)
+int main(int argc, char** argv)
 {
 	atexit(l);
 
@@ -47,8 +47,17 @@ int main(void)
 	scop_engine_t* engine = scop_engine_create();
 	scene_t* default_scene = default_scene_create("default_scene");
 	scene_t* guitar_scene = guitar_scene_create("guitar_scene");
-	scene_t* placeholder_scene = placeholder_scene_create("placeholder_scene");
 
+	char* vShader = NULL; char* fShader = NULL; char* obj = NULL;
+	if (argc == 2)
+		obj = argv[1];
+	if (argc == 4)
+	{
+		obj = argv[1];
+		vShader = argv[2];
+		fShader = argv[3];
+	}
+	scene_t* placeholder_scene = placeholder_scene_create("placeholder_scene", obj, vShader, fShader);
 
 	scop_engine_add_scene(engine, guitar_scene);
 	scop_engine_add_scene(engine, default_scene);
