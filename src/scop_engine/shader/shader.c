@@ -42,11 +42,12 @@ GLuint shader_compile_(GLuint type, const char* path)
 
 	int success;
 	char info_log[512];
-	glGetProgramiv(id, GL_COMPILE_STATUS, &success);
+	glGetShaderiv(id, GL_COMPILE_STATUS, &success);
+
 	if (!success)
 	{
 		glGetShaderInfoLog(id, sizeof(info_log), NULL, info_log);
-		printf("SHADER COMPILATION ERROR: [%s]\n", info_log);
+		printf("SHADER COMPILATION ERROR: [%s] | FILE: [%s]\n", info_log, path);
 		free(shader_src);
 		return (0);
 	}

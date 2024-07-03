@@ -48,8 +48,8 @@ mesh_t* model_load_mesh(sol_model_t* model_data, sol_mtl_group_t* mtl_group)
 				size_t face_id = face->att[att_id].data[i] - 1;
 				for (size_t v_i = 0; v_i < model_data->v_cnt[att_id]; v_i++)
 				{
-					size_t index = (face_id * model_data->v_cnt[att_id]) + v_i;
-					if (index < 0 || index > model_data->v_max_size[att_id])
+					int index = (face_id * model_data->v_cnt[att_id]) + v_i;
+					if (index < 0 || (size_t)index > model_data->v_max_size[att_id])
 						continue;
 					f[v_i] = model_data->v[att_id][index];
 				}

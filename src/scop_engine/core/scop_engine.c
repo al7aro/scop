@@ -37,6 +37,7 @@ scop_engine_t* scop_engine_create(void)
 		return(NULL);
 	}
 
+    printf("OpenGL version supported by this platform (%s): \n", glGetString(GL_VERSION));
 	glfwSwapInterval(1);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);

@@ -21,7 +21,7 @@ void init_mtl_group(sol_mtl_group_t* mtl, const char* mtl_name)
 void init_face(sol_face_t* obj)
 {
     for (unsigned int att_id = 0; att_id < SCOP_MAX_ATT; att_id++)
-        memset(obj->att[att_id].data, 0, MAX_FACE_SIZE);
+        memset(obj->att[att_id].data, 0, sizeof(unsigned int) * MAX_FACE_SIZE); //TODO: Is this correct?
     obj->size = 0;
 }
 
@@ -75,7 +75,7 @@ void trim_spaces(char* str)
 {
     char* comment_ptr = strrchr(str, '#');
     if (comment_ptr > str) comment_ptr -= 1;
-    size_t start = 0, end = (comment_ptr) ? comment_ptr - str : strlen(str) - 1;
+    size_t start = 0, end = (comment_ptr) ? (size_t)(comment_ptr - str) : strlen(str) - 1;
     while (isspace(str[start])) start++;
     while (end > start && isspace(str[end])) end--;
 

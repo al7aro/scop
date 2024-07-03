@@ -66,12 +66,13 @@ int main(int argc, char** argv)
 	scop_engine_set_clear_color(engine, (vec3_t){0.3f, 0.3f, 0.3f});
 	scop_engine_set_keyboard_input_callback(engine, engine_keyboard_input_callback);
 	scop_engine_set_mouse_input_callback(engine, engine_mouse_input_callback);
-	printf("Everything loaded correctly. Enjoy!");
+	printf("Everything loaded correctly. Enjoy!\n"); fflush(stdout);
 	while (!glfwWindowShouldClose(engine->window))
 	{
 		scop_engine_update(engine);
 		scop_engine_render(engine);
 	}
+	//TODO: DELETION FAILS
 	scop_engine_destroy(engine);
 #ifdef _WIN32
 	_CrtDumpMemoryLeaks();

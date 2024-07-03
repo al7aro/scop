@@ -4,10 +4,16 @@
 char* get_full_path(const char* obj_path, char* mtllib)
 {
     char* path_aux = strdup(obj_path);
+    if (!path_aux) exit(-1);
     if (!mtllib) return NULL;
 #if defined(__APPLE__) || defined(__linux__)
     if (*mtllib == '/')
-        return strdup(mtllib);
+    {
+        char* ret;
+        ret = strdup(mtllib);
+        if (!ret) exit(-1);
+        return ret;
+    }
 #elif _WIN32
     if (*mtllib)
         if (*(mtllib + 1) == ':')
@@ -109,12 +115,15 @@ void sol_load_wavefront_mtl(sol_model_t* model, const char* obj_path)
     char* path = get_full_path((char*)obj_path, model->mtllib);
     if (!path) return;
     FILE* fp = fopen(path, "rb");
-    free(path);
     if (!fp)
     {
         printf("File not found [%s]\n", path);
+        free(path);
+        path = NULL;
         return ;
     }
+    if (path)
+        free(path);
     char line[512]; memset(line, 0, sizeof(line));
     sol_mtl_group_t* active_mtl = NULL;
     while (fgets(line, MAX_LINE_SIZE, fp))
