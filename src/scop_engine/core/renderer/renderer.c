@@ -284,7 +284,8 @@ void scene_destroy(scene_t* scene)
 	if (!scene) return;
 	ft_lstclear(&(scene->light_lst), (void (*)(void *))light_destroy);
 	ft_lstclear(&(scene->entity_lst), (void (*)(void *))entity_destroy);
-	ft_lstclear(&(scene->shader_lst), (void (*)(void *))shader_destroy);
+	//TODO: I think shaders are already destroyed on each entity
+	// ft_lstclear(&(scene->shader_lst), (void (*)(void *))shader_destroy);
 	cam_destroy(scene->cam);
 
 	ft_lstclear(&(scene->keyboard_input_handlers), NULL);
