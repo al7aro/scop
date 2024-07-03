@@ -128,9 +128,9 @@ void scop_engine_add_scene(scop_engine_t* scop_engine, scene_t* scene)
 void scop_engine_destroy(scop_engine_t* scop_engine)
 {
     if (!scop_engine) return;
-    glfwDestroyWindow(scop_engine->window);
-    glfwTerminate();
 
     ft_lstclear(&(scop_engine->scenes), (void (*)(void *))scene_destroy);
+    glfwDestroyWindow(scop_engine->window);
+    glfwTerminate();
     free(scop_engine);
 }
