@@ -5,10 +5,10 @@ entity_t* entity_create(const char* name_id)
 {
 	entity_t* entity;
 	entity = (entity_t*)malloc(sizeof(entity_t));
-	if (!entity) return NULL;
+	if (!entity) exit(-1);
 	entity->empty = empty_create();
 	if (!entity->empty) return NULL;
-	strcpy_s(entity->name_id, sizeof(entity->name_id), name_id);
+	strcpy(entity->name_id, name_id);
 
 	entity->model = NULL;
 	entity->shader = NULL;

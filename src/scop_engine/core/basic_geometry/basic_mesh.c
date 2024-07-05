@@ -15,8 +15,9 @@ void mesh_destroy(mesh_t* mesh)
 void mesh_init(mesh_t* mesh)
 {
     mesh->mtl = (mtl_t*)malloc(sizeof(mtl_t));
-    if (!mesh->mtl) return;
+    if (!mesh->mtl) exit(-1);
     mesh->data = (vertex_data_t*)malloc(sizeof(vertex_data_t));
+    if (!mesh->data) exit(-1);
     if (mesh->data)
     {
         mesh->data->buff = NULL;
@@ -100,6 +101,7 @@ void mesh_push_att(mesh_t* mesh, float* f, unsigned int n) /* n is MAX 16 */
         {
             mesh->data->buff_max_size = 16;
             tmp = (float*)malloc(sizeof(float) * mesh->data->buff_max_size);
+            if (!tmp) exit(-1);
         }
         else
             tmp = realloc(mesh->data->buff, sizeof(float) * mesh->data->buff_max_size);
@@ -166,25 +168,24 @@ void mesh_render(mesh_t* mesh, shader_t* sh)
             char enabled_tex_name[64]; memset(enabled_tex_name, 0, sizeof(enabled_tex_name));
             if (SCOP_TEXTURE_ID_KD == i)
             {
-                strcpy_s(tex_name, 64, "mat.diffuse_map");
-                strcpy_s(enabled_tex_name, 64, "mat.diffuse_map_enabled");
+                strcpy(tex_name, "mat.diffuse_map");
+                strcpy(enabled_tex_name, "mat.diffuse_map_enabled");
             }
             if (SCOP_TEXTURE_ID_KS == i)
             {
-                strcpy_s(tex_name, 64, "mat.specular_map");
-                strcpy_s(enabled_tex_name, 64, "mat.specular_map_enabled");
+                strcpy(tex_name, "mat.specular_map");
+                strcpy(enabled_tex_name, "mat.specular_map_enabled");
             }
             if (SCOP_TEXTURE_ID_BUMP == i)
             {
-                strcpy_s(tex_name, 64, "mat.bump_map");
-                strcpy_s(enabled_tex_name, 64, "mat.bump_map_enabled");
+                strcpy(tex_name, "mat.bump_map");
+                strcpy(enabled_tex_name, "mat.bump_map_enabled");
             }
             if (SCOP_TEXTURE_ID_DEFAULT == i)
             {
-                strcpy_s(tex_name, 64, "mat.default_map");
-                strcpy_s(enabled_tex_name, 64, "mat.default_map_enabled");
+                strcpy(tex_name, "mat.default_map");
+                strcpy(enabled_tex_name, "mat.default_map_enabled");
             }
-            if (!tex_name) continue;
             
             shader_set_int(sh, enabled_tex_name, !!(mesh->mtl->textures[i].id));
             shader_set_int(sh, tex_name, i);

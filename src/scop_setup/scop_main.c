@@ -28,7 +28,6 @@ void engine_keyboard_input_callback(GLFWwindow* window, int key, int scancode, i
 
 void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	(void)window; (double)xpos; (double)ypos;
 	scop_engine_t* engine_ptr = glfwGetWindowUserPointer(window);
 	scene_t* scene_ptr = engine_ptr->ative_scene;
 
@@ -37,27 +36,43 @@ void engine_mouse_input_callback(GLFWwindow* window, double xpos, double ypos)
 	scene_manage_mouse_input_callbacks(scene_ptr, window, xpos, ypos);
 }
 
-int main(void)
+void l(void){ system("leaks scop"); }
+
+int main(int argc, char** argv)
 {
+	atexit(l);
+
 	printf("Scop is installed at: [%s]\n\n", SCOP_INSTALL_PATH);
 
 	scop_engine_t* engine = scop_engine_create();
 	scene_t* default_scene = default_scene_create("default_scene");
 	scene_t* guitar_scene = guitar_scene_create("guitar_scene");
 
+	char* vShader = NULL; char* fShader = NULL; char* obj = NULL;
+	if (argc == 2)
+		obj = argv[1];
+	if (argc == 4)
+	{
+		obj = argv[1];
+		vShader = argv[2];
+		fShader = argv[3];
+	}
+	scene_t* placeholder_scene = placeholder_scene_create("placeholder_scene", obj, vShader, fShader);
 
 	scop_engine_add_scene(engine, guitar_scene);
 	scop_engine_add_scene(engine, default_scene);
+	scop_engine_add_scene(engine, placeholder_scene);
 	scop_engine_set_active_scene(engine, "default_scene");
 	scop_engine_set_clear_color(engine, (vec3_t){0.3f, 0.3f, 0.3f});
 	scop_engine_set_keyboard_input_callback(engine, engine_keyboard_input_callback);
 	scop_engine_set_mouse_input_callback(engine, engine_mouse_input_callback);
-	printf("Everything loaded correctly. Enjoy!");
+	printf("Everything loaded correctly. Enjoy!\n"); fflush(stdout);
 	while (!glfwWindowShouldClose(engine->window))
 	{
 		scop_engine_update(engine);
 		scop_engine_render(engine);
 	}
+	//TODO: DELETION FAILS
 	scop_engine_destroy(engine);
 #ifdef _WIN32
 	_CrtDumpMemoryLeaks();

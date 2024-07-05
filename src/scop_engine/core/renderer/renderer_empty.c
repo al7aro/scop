@@ -5,7 +5,7 @@ empty_t* empty_create(void)
 {
 	empty_t* empty;
 	empty = (empty_t*)malloc(sizeof(empty_t));
-	if (!empty) return NULL;
+	if (!empty) exit(-1);;
 
 	empty->parent = NULL;
 	for (int i = 0; i < 3; i++)

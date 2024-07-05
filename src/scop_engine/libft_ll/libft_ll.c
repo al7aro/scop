@@ -65,14 +65,12 @@ t_list	*ft_lstlast(t_list *lst)
 
 t_list	*ft_lstmap(t_list *lst, void *(*f)(void *), void (*del)(void *))
 {
-	int		aux;
 	t_list	*new_list;
 	t_list	*new_list_aux;
 
 	if (!lst)
 		return (0);
-	aux = 0;
-	(void *)del;
+	(void)del;
 	new_list = ft_lstnew(f(lst->content));
 	new_list_aux = new_list;
 	while (lst)
@@ -88,8 +86,8 @@ t_list	*ft_lstnew(void *content)
 {
 	t_list	*new_el;
 
-	if (!(new_el = (t_list *)malloc(sizeof(t_list))))
-		return (0);
+	new_el = (t_list *)malloc(sizeof(t_list));
+	if (!new_el) exit(-1);
 	new_el->content = content;
 	new_el->next = NULL;
 	return (new_el);

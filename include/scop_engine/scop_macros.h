@@ -22,11 +22,11 @@
 
 
 #define MAX_LINE_SIZE 512
-#define SCOP_ERROR_INVALID_SYNTAX "Invalid syntax."
-#define SCOP_ERROR_FILE_NOT_FOUND "File not found."
-#define SCOP_ERROR_UNRECOGNICED_FILE "Unrecogniced file type. (Available formats: PAM)."
-#define SCOP_ERROR_FATAL "Fatal error."
-#define SCOP_INVALID_ARGUMENTS "Invalid arguments."
+#define SCOP_ERROR_INVALID_SYNTAX "Invalid syntax"
+#define SCOP_ERROR_FILE_NOT_FOUND "File not found"
+#define SCOP_ERROR_UNRECOGNICED_FILE "Unrecogniced file type. (Available formats: PAM)"
+#define SCOP_ERROR_FATAL "Fatal error"
+#define SCOP_INVALID_ARGUMENTS "Invalid arguments"
 
 #ifndef SCOP_INSTALL_PATH
 # define SCOP_INSTALL_PATH "/"

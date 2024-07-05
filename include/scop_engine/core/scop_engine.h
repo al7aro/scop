@@ -19,7 +19,7 @@ typedef struct scop_engine_s
     char pause;
 } scop_engine_t;
 
-scop_engine_t* scop_engine_create();
+scop_engine_t* scop_engine_create(void);
 void scop_engine_destroy(scop_engine_t* scop_engine);
 
 void scop_engine_set_keyboard_input_callback(scop_engine_t* scop_engine, void (*input_callback)(GLFWwindow*, int, int, int, int));

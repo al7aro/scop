@@ -55,8 +55,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux" OR CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     target_compile_options(${PROJECT_NAME} PRIVATE 
         -Wall
         -Wextra
-        -Werror 
-        -pedantic
+        -Werror
     )
 endif()
 if(MSVC) 

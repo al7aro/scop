@@ -8,6 +8,8 @@
 #include "scop_math.h"
 #include "shader.h"
 
+#include "scop_macros.h"
+
 typedef struct motion_state_s
 {
 	char move_x_local;

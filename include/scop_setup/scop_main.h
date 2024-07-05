@@ -19,5 +19,6 @@ void common_trigger_update(entity_t* e);
 
 scene_t* default_scene_create(const char* scene_name);
 scene_t* guitar_scene_create(const char* scene_name);
+scene_t* placeholder_scene_create(const char* scene_name, const char* obj, const char* vShader, const char* fShader);
 
 #endif

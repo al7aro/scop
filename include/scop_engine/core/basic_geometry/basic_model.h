@@ -10,6 +10,8 @@
 #include "scop_obj_loader.h"
 #include "shader.h"
 
+#include "scop_macros.h"
+
 typedef struct model_s
 {
 	t_list* mesh;

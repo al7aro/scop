@@ -5,7 +5,7 @@ scene_t* scene_create(const char* name_id)
 {
 	scene_t* scene;
 	scene = (scene_t*)malloc(sizeof(scene_t));
-	if (!scene) return NULL;
+	if (!scene) exit(-1);
 	for (int i = 0; i < 3; i++)
 		scene->ambient[i] = 1.0;
 	scene->cam = NULL;
@@ -16,7 +16,7 @@ scene_t* scene_create(const char* name_id)
 	scene->keyboard_input_handlers = NULL;
 	scene->mouse_input_handlers = NULL;
 	scene->update_handlers = NULL;
-	strcpy_s(scene->name_id, sizeof(scene->name_id), name_id);
+	strcpy(scene->name_id, name_id);
 
 	return scene;
 }
@@ -106,6 +106,7 @@ void scene_add_entity(scene_t* scene, entity_t* entity, shader_t* shader)
 	entity->shader = shader;
 	t_list* shader_lst = scene->shader_lst;
 	ft_lstadd_back(&(scene->entity_lst), ft_lstnew(entity));
+	if (!shader) return;
 	while (shader_lst)
 	{
 		shader_t* shader_content = shader_lst->content;
@@ -282,9 +283,10 @@ void scene_update(scene_t* scene)
 void scene_destroy(scene_t* scene)
 {
 	if (!scene) return;
-	ft_lstclear(&(scene->light_lst), light_destroy);
-	ft_lstclear(&(scene->entity_lst), entity_destroy);
-	ft_lstclear(&(scene->shader_lst), shader_destroy);
+	ft_lstclear(&(scene->light_lst), (void (*)(void *))light_destroy);
+	ft_lstclear(&(scene->entity_lst), (void (*)(void *))entity_destroy);
+	//TODO: I think shaders are already destroyed on each entity
+	ft_lstclear(&(scene->shader_lst), (void (*)(void *))shader_destroy);
 	cam_destroy(scene->cam);
 
 	ft_lstclear(&(scene->keyboard_input_handlers), NULL);

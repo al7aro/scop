@@ -5,7 +5,7 @@ cam_t* cam_create(void)
 {
 	cam_t* cam;
 	cam = (cam_t*)malloc(sizeof(cam_t));
-	if (!cam) return NULL;
+	if (!cam) exit(-1);;
 	cam->empty = empty_create();
 	if (!cam->empty) return NULL;
 

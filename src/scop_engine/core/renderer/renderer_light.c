@@ -5,10 +5,10 @@ light_t* light_create(const char* name_id)
 {
 	light_t* light;
 	light = (light_t*)malloc(sizeof(light_t));
-	if (!light) return NULL;
+	if (!light) exit(-1);
 	light->empty = empty_create();
 	if (!light->empty) return NULL;
-	strcpy_s(light->name_id, sizeof(light->name_id), name_id);
+	strcpy(light->name_id, name_id);
 
 	for (int i = 0; i < 3; i++)
 		light->diffuse[i] = 0.25;
