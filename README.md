@@ -63,7 +63,3 @@ cmake ..
 - Butterflies in your stomach <img src="https://png.pngtree.com/png-clipart/20230224/ourmid/pngtree-simple-butterfly-paper-style-png-image_6614364.png" width=30 align="center"/>
 
 But fear not, my friend! Your current trepidation is an echo felt by countless adventurers who have dared to unlock the secrets of <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a>.
-
-And this is but the first step! If you yearn to truly quench your thirst for knowledge, stay tuned to the <a href="https://github.com/al7aro/scop/wiki">**WIKI**</a>, where I shall lay bare the inner workings of this project, dissecting its secrets piece by piece:
-
-<a href="https://github.com/al7aro/scop/wiki"><img src="https://i.pinimg.com/originals/62/b7/46/62b746a3f5c7dd6fc0b96cdd4acf43e3.gif" width=250/><a/>
