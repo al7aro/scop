@@ -10,8 +10,7 @@
 <h3>Table of contents</h3>
 
 - [About the project](#about-the-project)
-- [Current power of the SCOP](#current-power-of-the-scop)
-- [How cool is this project, I want to know more!](#how-cool-is-this-project-i-want-to-know-more)
+- [Screenshots](#screenshots)
 
 ---
 
@@ -22,7 +21,7 @@ It is a simple 3D model viewer written in <a href="https://en.wikipedia.org/wiki
 - Load and display 3D models in the <a href="https://en.wikipedia.org/wiki/Wavefront_.obj_file">**Wavefront**<img src="https://storage.googleapis.com/thangs-thumbnails/production/2e4d4f39-5625-4169-a175-2f15af381bc6/2b.png" width=35 align="center"/>**.OBJ**</a> format.
 - Load textures in the <a href="https://en.wikipedia.org/wiki/Netpbm">**PAM**</a> format.
 
-A usual in <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> we are not allowed to use any **external libraries**, except for:
+As usual in <a href="https://42.fr/"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" width=30 align="center"/></a> we are not allowed to use any **external libraries**, except for:
 
 - <a href="https://www.glfw.org/" ><img src="https://www.glfw.org/img/favicon/favicon-196x196.png" width=30 align="center"/> **GLFW**</a> for window and input management.
 - <a href="https://glad.dav1d.de/">**GLAD**</a> for <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> extension loading.
@@ -42,24 +41,10 @@ cd biuld &&\
 cmake ..
 ```
 
-<em>Yeah, the installation of some drivers or libraries to access <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> is probably needed.</em>
+<em>The installation of some drivers or libraries to access <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a> is probably needed.</em>
 
 ---
 
-## Current power of the **SCOP**
-
-![progress](https://progress-bar.dev/99/)
+## Screenshots
 
 ![scop](https://raw.githubusercontent.com/wiki/al7aro/scop/images/square_scop.gif)
-
----
-
-## How cool is this project, I want to know more!
-
-### Yeah, I know... 
-
-- Goose bumps <img src="https://preview.redd.it/h9m39vv630h51.png?width=3412&format=png&auto=webp&s=451fbe18a44ad01c9545afcaab9b807b91968103" width=30 align="center"/>
-- Wet hands <img src="https://gallery.yopriceville.com/downloadfullsize/send/5598" width=30 align="center"/>
-- Butterflies in your stomach <img src="https://png.pngtree.com/png-clipart/20230224/ourmid/pngtree-simple-butterfly-paper-style-png-image_6614364.png" width=30 align="center"/>
-
-But fear not, my friend! Your current trepidation is an echo felt by countless adventurers who have dared to unlock the secrets of <a href="https://www.opengl.org"><img src="https://upload.wikimedia.org/wikipedia/commons/e/e9/Opengl-logo.svg" align="center" width=50/></h1></a>.
